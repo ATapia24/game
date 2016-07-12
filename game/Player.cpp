@@ -22,6 +22,7 @@ Player::Player()
 	walkSpeed = 8;
 	jumpStrength = 4;
 	direction = Direction::RIGHT;
+	//test
 }
 
 
