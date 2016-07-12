@@ -23,6 +23,8 @@ Player::Player()
 	jumpStrength = 4;
 	direction = Direction::RIGHT;
 	//test
+	//
+	//
 }
 
 
