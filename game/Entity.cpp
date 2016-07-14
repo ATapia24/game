@@ -114,8 +114,8 @@ void Entity::draw()
 {
 	if (spawned)
 	{
-		window->add(hitbox, 0);
-		window->add(sprite, 0);
+		window->addWorld(hitbox);
+		window->addWorld(sprite);
 	}
 }
 

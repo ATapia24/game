@@ -15,31 +15,28 @@ StageDev::StageDev(StageManager* _stageManager, WindowMgr* _window)
 //LOAD
 void StageDev::load()
 {
-	world = new b2World(b2Vec2(0, -20));
+	world = new b2World(b2Vec2(0, -0));
 	world->SetContactListener(this);
 	
 	player.setName("player");
 	player.getSprite().setScale(3, 3);
-	player.getHitbox().setSize(sf::Vector2f(48, 96));
-	player.initialize(window, world, 1.f, 0.3f, 1.f, 0.f);
+	player.getHitbox().setSize(sf::Vector2f(25, 25));
+	player.setMap(strike);
+	player.initialize(window, world, 1.f, 0.3f, 30.f, -31.875f);
 	player.spawn();
 
 	
-	bgText.loadFromFile("assets/bg.jpg");
-	bg.setTexture(bgText);
-	bg.setScale(2.75, 2.75);
-
-	floor.setName("floor");
-	floor.getHitbox().setSize(sf::Vector2f(1000, 50));
-	floor.initialize(window, world, 0, 0, 10.f, -10.f);
-	floor.spawn();
+	bgText.loadFromFile("assets/strike.jpg");
+	strike.getSprite()->setTexture(bgText);
+	strike.initialize(window, world, 1.0f, 0.3f, 5.f, 5.f);
 }
 
 //UPDATE
 void StageDev::update()
 {
+	strike.update();
 	player.update();
-	floor.update();
+
 	world->Step(1.0f / 65.f, 8, 3);
 	
 	//MISC
@@ -71,15 +68,14 @@ void StageDev::update()
 //DRAW
 void StageDev::draw()
 {
+	strike.draw();
 	player.draw();
-	floor.draw();
-	//bottom.draw();
-	//stop.draw();
 }
 
 //UNLOAD
 void StageDev::unload()
 {
+	delete world;
 }
 
 //BEGIN CONTACT

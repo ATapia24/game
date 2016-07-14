@@ -54,7 +54,7 @@ void AnimatedBackground::update()
 
 void AnimatedBackground::draw()
 {
-	window->add(image, 0);
+	window->addWorld(image);
 }
 
 void AnimatedBackground::setWindow(WindowMgr& _window)

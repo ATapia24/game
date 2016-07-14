@@ -20,22 +20,16 @@
 #include "Entity.h"
 #include "Floor.h"
 #include "Box2D\Box2D.h"
+#include "Map.h"
 
 class StageDev : public Stage, public b2ContactListener
 {
 private:
 	sf::Texture bgText;
-	sf::Sprite bg;
+	Floor bg;
 
+	Map strike;
 	Player player;
-	Entity* bots;
-	int n_bots;
-	Floor floor, bottom, stop, bullet;
-	Floor *box;
-	//Entity bullet;
-
-	//tmp
-	bool q_rel, a_rel, d_rel, b_c, q_rel2, a_rel2, d_rel2, b_c2;
 
 	b2World* world;
 	const float SCALE = 100;

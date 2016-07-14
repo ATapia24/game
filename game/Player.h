@@ -1,6 +1,8 @@
 #pragma once
 #include "Entity.h"
 #include "Animation.h"
+#include "Map.h"
+#include <cmath>
 
 enum PlayerState
 {
@@ -15,6 +17,7 @@ class Player : public Entity {
 private:
 	PlayerState state;
 	sf::Sprite weapon;
+	Map* map;
 
 	float walkSpeed;
 	float jumpStrength;
@@ -35,6 +38,7 @@ public:
 	void initialize(WindowMgr* _window, b2World* _world, float density, float friction, float x, float y);
 	void update();
 	void draw();
+	void setMap(Map& _map) { map = &_map; };
 
 	//movement
 	void input();

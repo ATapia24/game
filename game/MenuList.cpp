@@ -16,7 +16,6 @@ MenuList::MenuList()
 //LOAD
 void MenuList::load()
 {
-	layer = 0;
 	font.loadFromFile("assets/font.ttf");
 	menuPosition.set(0, 0);
 	topPadding = 0;
@@ -24,7 +23,7 @@ void MenuList::load()
 	topSpacing = 0;
 	leftSpacing = 0;
 	fontSize = 12;
-	lineHeight = fontSize * (float)1.5;
+	lineHeight = fontSize * 1.5f;
 }
 
 
@@ -41,7 +40,7 @@ void MenuList::draw()
 	{
 		lines[i].text.setString(*lines[i].string);
 		lines[i].text.setPosition(lines[i].linePosition.get());
-		window->add(lines[i].text, layer);
+		window->addGui(lines[i].text);
 	}
 
 

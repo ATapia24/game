@@ -10,10 +10,13 @@ WindowMgr::WindowMgr(sf::RenderWindow& window, const float _NATIVE_WIDTH, const 
 	NATIVE_HEIGHT = _NATIVE_HEIGHT;
 	widthScale = window.getSize().x / _NATIVE_WIDTH;
 	heightScale = window.getSize().y / _NATIVE_HEIGHT;
+	setResolution(1280, 720, 0, 1);
 
-	//queue
-	drawQueue = new queueType[MAX_DRAW_SIZE];
-	queueSize = 0;
+	//queues setup
+	guiQueue = new queueType[MAX_DRAW_SIZE];
+	worldQueue = new queueType[MAX_DRAW_SIZE];
+	guiSize = 0;
+	worldSize = 0;
 }
 
 //DRAW
@@ -21,38 +24,69 @@ void WindowMgr::draw()
 {
 	windowPtr->clear();
 
-	//draw
-	for (unsigned int i = 0; i<queueSize; i++)
+	//world
+	windowPtr->setView(worldView);
+	for (unsigned int i = 0; i<worldSize; i++)
 	{
-		switch (drawQueue[i].type)
+		switch (worldQueue[i].type)
 		{
 			case 1:
-				windowPtr->draw(*drawQueue[i].sprite);
-				delete drawQueue[i].sprite;
+				windowPtr->draw(*worldQueue[i].sprite);
+				delete worldQueue[i].sprite;
 				break;
 			case 2:
-				windowPtr->draw(*drawQueue[i].text);
-				delete drawQueue[i].text;
+				windowPtr->draw(*worldQueue[i].text);
+				delete worldQueue[i].text;
 				break;
 			case 3:
-				windowPtr->draw(*drawQueue[i].rectangle);
-				delete drawQueue[i].rectangle;
+				windowPtr->draw(*worldQueue[i].rectangle);
+				delete worldQueue[i].rectangle;
 				break;
 			case 4:
-				windowPtr->draw(*drawQueue[i].circle);
-				delete drawQueue[i].circle;
+				windowPtr->draw(*worldQueue[i].circle);
+				delete worldQueue[i].circle;
 				break;
 			case 5:
-				windowPtr->draw(*drawQueue[i].convex);
-				delete drawQueue[i].convex;
+				windowPtr->draw(*worldQueue[i].convex);
+				delete worldQueue[i].convex;
 				break;
+		}
+	}
+
+	//gui
+	windowPtr->setView(guiView);
+	for (unsigned int i = 0; i<guiSize; i++)
+	{
+		switch (guiQueue[i].type)
+		{
+		case 1:
+			windowPtr->draw(*guiQueue[i].sprite);
+			delete guiQueue[i].sprite;
+			break;
+		case 2:
+			windowPtr->draw(*guiQueue[i].text);
+			delete guiQueue[i].text;
+			break;
+		case 3:
+			windowPtr->draw(*guiQueue[i].rectangle);
+			delete guiQueue[i].rectangle;
+			break;
+		case 4:
+			windowPtr->draw(*guiQueue[i].circle);
+			delete guiQueue[i].circle;
+			break;
+		case 5:
+			windowPtr->draw(*guiQueue[i].convex);
+			delete guiQueue[i].convex;
+			break;
 		}
 	}
 
 	windowPtr->display();
 
 	//clear queue
-	queueSize = 0;
+	guiSize = 0;
+	worldSize = 0;
 }
 
 //GET WINDOW
@@ -70,60 +104,110 @@ void WindowMgr::setResolution(int width, int height, bool fullscreen, bool borde
 
 	//set resolution
 	windowPtr->create(sf::VideoMode(width, height), "Game", (fullscreen ? sf::Style::Fullscreen : (border ? sf::Style::Titlebar : sf::Style::None)));
+	windowPtr->setPosition(sf::Vector2i(0, 0));
 	windowPtr->setFramerateLimit(65);
+
+	guiView.reset((sf::FloatRect(0, 0, width, height)));
+	worldView.reset((sf::FloatRect(0, 0, width, height)));
+
 }
 
-//ADD SPRITE
-void WindowMgr::add(sf::Sprite& sprite, int layer)
+//GUI - ADD SPRITE
+void WindowMgr::addGui(sf::Sprite& sprite)
 {
-	drawQueue[queueSize].type = 1;
-	drawQueue[queueSize].layer = layer;
-	drawQueue[queueSize].sprite = new sf::Sprite(sprite);
-	drawQueue[queueSize].sprite->setScale(widthScale * drawQueue[queueSize].sprite->getScale().x, heightScale* drawQueue[queueSize].sprite->getScale().y);
-	drawQueue[queueSize].sprite->setPosition(widthScale * drawQueue[queueSize].sprite->getPosition().x, heightScale* drawQueue[queueSize].sprite->getPosition().y);
-	queueSize++;
+	guiQueue[guiSize].type = 1;
+	guiQueue[guiSize].sprite = new sf::Sprite(sprite);
+	guiQueue[guiSize].sprite->setScale(guiQueue[guiSize].sprite->getScale().x, guiQueue[guiSize].sprite->getScale().y);
+	guiQueue[guiSize].sprite->setPosition(guiQueue[guiSize].sprite->getPosition().x * widthScale, guiQueue[guiSize].sprite->getPosition().y * heightScale);
+	guiSize++;
 }
 
-//ADD TEXT
-void WindowMgr::add(sf::Text& text, int layer)
+//GUI - ADD TEXT
+void WindowMgr::addGui(sf::Text& text)
 {
-	drawQueue[queueSize].type = 2;
-	drawQueue[queueSize].layer = layer;
-	drawQueue[queueSize].text = new sf::Text(text);
-	drawQueue[queueSize].text->setScale(widthScale, heightScale);
-	drawQueue[queueSize].text->setPosition(widthScale * drawQueue[queueSize].text->getPosition().x, heightScale* drawQueue[queueSize].text->getPosition().y);
-	queueSize++;
+	guiQueue[guiSize].type = 2;
+	guiQueue[guiSize].text = new sf::Text(text);
+	guiQueue[guiSize].text->setScale(widthScale, heightScale);
+	guiQueue[guiSize].text->setPosition(guiQueue[guiSize].text->getPosition().x * widthScale, guiQueue[guiSize].text->getPosition().y * heightScale);
+	guiSize++;
 }
 
-//ADD RECTANGLE
-void WindowMgr::add(sf::RectangleShape& rectangle, int layer)
+//GUI - ADD RECTANGLE
+void WindowMgr::addGui(sf::RectangleShape& rectangle)
 {
-	drawQueue[queueSize].type = 3;
-	drawQueue[queueSize].layer = layer;
-	drawQueue[queueSize].rectangle = new sf::RectangleShape(rectangle);
-	drawQueue[queueSize].rectangle->setScale(widthScale, heightScale);
-	drawQueue[queueSize].rectangle->setPosition(widthScale * drawQueue[queueSize].rectangle->getPosition().x, heightScale* drawQueue[queueSize].rectangle->getPosition().y);
-	queueSize++;
+	guiQueue[guiSize].type = 3;
+	guiQueue[guiSize].rectangle = new sf::RectangleShape(rectangle);
+	guiQueue[guiSize].rectangle->setScale(widthScale, heightScale);
+	guiQueue[guiSize].rectangle->setPosition(widthScale * guiQueue[guiSize].rectangle->getPosition().x, heightScale* guiQueue[guiSize].rectangle->getPosition().y);
+	guiSize++;
 }
 
-//ADD CIRCLE
-void WindowMgr::add(sf::CircleShape& circle, int layer)
+//GUI - ADD CIRCLE
+void WindowMgr::addGui(sf::CircleShape& circle)
 {
-	drawQueue[queueSize].type = 4;
-	drawQueue[queueSize].layer = layer;
-	drawQueue[queueSize].circle = new sf::CircleShape(circle);
-	drawQueue[queueSize].circle->setScale(widthScale, heightScale);
-	drawQueue[queueSize].circle->setPosition(widthScale * drawQueue[queueSize].circle->getPosition().x, heightScale* drawQueue[queueSize].circle->getPosition().y);
-	queueSize++;
+	guiQueue[guiSize].type = 4;
+	guiQueue[guiSize].circle = new sf::CircleShape(circle);
+	guiQueue[guiSize].circle->setScale(widthScale, heightScale);
+	guiQueue[guiSize].circle->setPosition(widthScale * guiQueue[guiSize].circle->getPosition().x, heightScale* guiQueue[guiSize].circle->getPosition().y);
+	guiSize++;
 }
 
-//ADD CONVEX
-void WindowMgr::add(sf::ConvexShape& convex, int layer)
+//GUI - ADD CONVEX
+void WindowMgr::addGui(sf::ConvexShape& convex)
 {
-	drawQueue[queueSize].type = 5;
-	drawQueue[queueSize].layer = layer;
-	drawQueue[queueSize].convex = new sf::ConvexShape(convex);
-	drawQueue[queueSize].convex->setScale(widthScale, heightScale);
-	drawQueue[queueSize].convex->setPosition(widthScale * drawQueue[queueSize].convex->getPosition().x, heightScale* drawQueue[queueSize].convex->getPosition().y);
-	queueSize++;
+	guiQueue[guiSize].type = 5;
+	guiQueue[guiSize].convex = new sf::ConvexShape(convex);
+	guiQueue[guiSize].convex->setScale(widthScale, heightScale);
+	guiQueue[guiSize].convex->setPosition(widthScale * guiQueue[guiSize].convex->getPosition().x, heightScale* guiQueue[guiSize].convex->getPosition().y);
+	guiSize++;
+}
+
+//World - ADD SPRITE
+void WindowMgr::addWorld(sf::Sprite& sprite)
+{
+	worldQueue[worldSize].type = 1;
+	worldQueue[worldSize].sprite = new sf::Sprite(sprite);
+	worldQueue[worldSize].sprite->setScale(widthScale * worldQueue[worldSize].sprite->getScale().x, heightScale* worldQueue[worldSize].sprite->getScale().y);
+	worldQueue[worldSize].sprite->setPosition(worldQueue[worldSize].sprite->getPosition().x * widthScale, worldQueue[worldSize].sprite->getPosition().y * heightScale);
+	worldSize++;
+}
+
+//World - ADD TEXT
+void WindowMgr::addWorld(sf::Text& text)
+{
+	worldQueue[worldSize].type = 2;
+	worldQueue[worldSize].text = new sf::Text(text);
+	worldQueue[worldSize].text->setScale(widthScale, heightScale);
+	worldQueue[worldSize].text->setPosition(widthScale * worldQueue[worldSize].text->getPosition().x, heightScale* worldQueue[worldSize].text->getPosition().y);
+	worldSize++;
+}
+
+//World - ADD RECTANGLE
+void WindowMgr::addWorld(sf::RectangleShape& rectangle)
+{
+	worldQueue[worldSize].type = 3;
+	worldQueue[worldSize].rectangle = new sf::RectangleShape(rectangle);
+	worldQueue[worldSize].rectangle->setScale(widthScale, heightScale);
+	worldQueue[worldSize].rectangle->setPosition(widthScale * worldQueue[worldSize].rectangle->getPosition().x, heightScale* worldQueue[worldSize].rectangle->getPosition().y);
+	worldSize++;
+}
+
+//World - ADD CIRCLE
+void WindowMgr::addWorld(sf::CircleShape& circle)
+{
+	worldQueue[worldSize].type = 4;
+	worldQueue[worldSize].circle = new sf::CircleShape(circle);
+	worldQueue[worldSize].circle->setScale(widthScale, heightScale);
+	worldQueue[worldSize].circle->setPosition(widthScale * worldQueue[worldSize].circle->getPosition().x, heightScale* worldQueue[worldSize].circle->getPosition().y);
+	worldSize++;
+}
+
+//World - ADD CONVEX
+void WindowMgr::addWorld(sf::ConvexShape& convex)
+{
+	worldQueue[worldSize].type = 5;
+	worldQueue[worldSize].convex = new sf::ConvexShape(convex);
+	worldQueue[worldSize].convex->setScale(widthScale, heightScale);
+	worldQueue[worldSize].convex->setPosition(widthScale * worldQueue[worldSize].convex->getPosition().x, heightScale* worldQueue[worldSize].convex->getPosition().y);
+	worldSize++;
 }

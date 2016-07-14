@@ -99,44 +99,6 @@ void Animation::load(sf::Sprite& _sprite, sf::Sprite& _parent, std::string _file
 //UPDATE
 void Animation::update(sf::Sprite& s, int start, int end)
 {
-	s.setTexture(texture);
-	//sprite->setTexture(texture);
-	if (timer.getTimeInt() > frameSpeed)
-	{
-		timer.stop();
 
-		if (xFrame < col-1)
-		{
-			xFrame++;
-		}
-		else
-		{
-
-			xFrame = 0;
-			yFrame++;
-			yFrame > row ? yFrame = 0 : yFrame;
-			frameCount++;
-			
-
-			if (frameCount == end + 1)
-			{
-				xFrame = n_frames % 4;
-				yFrame = 0;
-				frameCount = start;
-			}
-		}
-
-		std::cout << "x: " << xFrame << " y: " << yFrame << std::endl;
-		sprite->setTextureRect(sf::IntRect(xFrame * width, yFrame * height, width, height));
-
-		if (parent != nullptr)
-		{
-			std::cout << "parent\n";
-			sprite->setPosition(parent->getPosition().x - directionOffset, sprite->getPosition().y);
-			//sprite->setPosition(100, 100);
-		}
-		
-		timer.reset_ms();
-	}
 
 }

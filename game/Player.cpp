@@ -19,12 +19,14 @@ Player::Player()
 	hitbox.setFillColor(sf::Color::Magenta);
 	
 	//stats
-	walkSpeed = 8;
+	walkSpeed = 4;
 	jumpStrength = 4;
 	direction = Direction::RIGHT;
-	//test
-	//
-	//
+
+	sprite.setOrigin(sf::Vector2f(hitbox.getSize().x / 2, hitbox.getSize().y / 2));
+	
+	//tmp
+	hitbox.setRotation(0);
 }
 
 
@@ -60,11 +62,18 @@ void Player::update()
 	if (spawned)
 	{
 		input();
+
+		//update position and rotation
 		hitbox.setPosition(body->GetPosition().x * 32, -body->GetPosition().y * 32);
 		sprite.setPosition(hitbox.getPosition());
 		hitbox.setRotation(body->GetAngle() * -57.29578f);
 		sprite.setRotation(hitbox.getRotation());
+
+		//TODO: adjust for scale
+		window->getWorldView()->setCenter(hitbox.getPosition());
+		
 		updateAnimations();
+		//map->changeOrigin(originOffsetX / 32, originOffsetY / 32);
 	}
 }
 
@@ -73,9 +82,8 @@ void Player::draw()
 {
 	if (spawned)
 	{
-		window->add(sprite, 0);
-		//weapon.setPosition(sf::Vector2f(sprite.getPosition().x - originOffsetX - 5, sprite.getPosition().y - originOffsetY));
-		window->add(weapon, 0);
+		window->addWorld(sprite);
+		window->addWorld(hitbox);
 	}
 }
 
@@ -124,10 +132,10 @@ void Player::input()
 //WALK RIGHT
 void Player::walkRight()
 {
-	direction = Direction::RIGHT;
 	float velChange = walkSpeed - body->GetLinearVelocity().x;
 	float impulse = body->GetMass() * velChange;
 	body->ApplyLinearImpulse(b2Vec2(impulse, 0), body->GetWorldCenter(), 1);
+	direction = Direction::RIGHT;
 	state = PlayerState::walking_right;
 }
 
@@ -143,10 +151,10 @@ void Player::stopWalkRight()
 //WALK LEFT
 void Player::walkLeft()
 {
-	direction = Direction::LEFT;
 	float velChange = -walkSpeed - body->GetLinearVelocity().x;
 	float impulse = body->GetMass() * velChange;
 	body->ApplyLinearImpulse(b2Vec2(impulse, 0), body->GetWorldCenter(), 1);
+	direction = Direction::LEFT;
 	state = PlayerState::walking_left;
 }
 
@@ -183,7 +191,7 @@ void Player::initialize(WindowMgr* _window, b2World* _world, float density, floa
 
 	//def
 	bodyDef = new b2BodyDef();
-	bodyDef->fixedRotation = true;
+	//bodyDef->fixedRotation = true;
 	bodyDef->type = b2_dynamicBody;
 	spawnPointX = x;
 	spawnPointY = y;
@@ -204,5 +212,6 @@ void Player::initialize(WindowMgr* _window, b2World* _world, float density, floa
 	fixtureDef->friction = friction;
 	body->CreateFixture(this->fixtureDef);
 
-	//player_body.load(sprite, "assets/player.png", 4, 16, 32);
+	//tmp
+	window->getWorldView()->setCenter(hitbox.getPosition());
 }

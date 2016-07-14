@@ -225,6 +225,9 @@
     <ClInclude Include="Box2D\Box2D.h">
       <Filter>Box2d</Filter>
     </ClInclude>
+    <ClInclude Include="Map.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="assets\bg.jpg">
@@ -461,6 +464,9 @@
     </ClCompile>
     <ClCompile Include="Box2D\Rope\b2Rope.cpp">
       <Filter>Box2d</Filter>
+    </ClCompile>
+    <ClCompile Include="Map.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
