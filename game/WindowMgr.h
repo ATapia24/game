@@ -15,6 +15,7 @@ private:
 	sf::View worldView;
 	float NATIVE_WIDTH, NATIVE_HEIGHT;
 	float widthScale, heightScale;
+	bool fullscreen;
 	
 	struct queueType
 	{
@@ -48,4 +49,6 @@ public:
 	sf::RenderWindow* getWindow();
 	sf::View* getWorldView() { return &worldView; };
 	sf::View* getGuiView() { return &guiView; };
+	sf::Vector2f getScale() { return sf::Vector2f(widthScale, heightScale); };
+	bool isFullscreen() { return fullscreen; };
 };

@@ -9,6 +9,7 @@
 #include "Stage.h"
 #include "StageMainMenu.h"
 #include "StageDev.h"
+#include "StageEditor.h"
 
 class Stage;
 
@@ -22,6 +23,7 @@ private:
 	//stages
 	StageMainMenu* stageMainMenu;
 	StageDev* stageDev;
+	StageEditor* stageEditor;
 
 public:
 	GameManager();

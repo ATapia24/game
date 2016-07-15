@@ -48,7 +48,6 @@ void Map::initialize(WindowMgr* _window, b2World* _world, float density, float f
 //UPDATE
 void Map::update()
 {
-	//sprite.setPosition(body->GetPosition().x * 32, body->GetPosition().y * 32);
 	rotate();
 }
 
@@ -61,8 +60,8 @@ void Map::draw()
 //ROTATE
 void Map::rotate()
 {
-	window->getWorldView()->rotate(window->getGuiView()->getRotation() + ((600 - (float)sf::Mouse::getPosition().x) / 100.f));
-	sf::Mouse::setPosition(sf::Vector2i(600, 600));
+	//window->getWorldView()->rotate(window->getGuiView()->getRotation() + ((600 - (float)sf::Mouse::getPosition().x) / 100.f));
+	//sf::Mouse::setPosition(sf::Vector2i(600, 600));
 }
 
 //CHANGE ORGIN

@@ -18,9 +18,10 @@ void GameManager::load()
 	//stages
 	stageMainMenu = new StageMainMenu(stageManager, window);
 	stageDev = new StageDev(stageManager, window);
+	stageEditor = new StageEditor(stageManager, window);
 
 	//go str8 to dev mode
-	stageManager->changeStage("Dev");
+	stageManager->changeStage("Editor");
 }
 
 //UPDATE

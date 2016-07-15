@@ -211,6 +211,7 @@
     <ClInclude Include="Player.h" />
     <ClInclude Include="Stage.h" />
     <ClInclude Include="StageDev.h" />
+    <ClInclude Include="StageEditor.h" />
     <ClInclude Include="StageMainMenu.h" />
     <ClInclude Include="StageManager.h" />
     <ClInclude Include="stdafx.h" />
@@ -296,6 +297,7 @@
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Stage.cpp" />
     <ClCompile Include="StageDev.cpp" />
+    <ClCompile Include="StageEditor.cpp" />
     <ClCompile Include="StageMainMenu.cpp" />
     <ClCompile Include="StageManager.cpp" />
     <ClCompile Include="stdafx.cpp" />

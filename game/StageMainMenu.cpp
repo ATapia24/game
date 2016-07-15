@@ -25,6 +25,7 @@ void StageMainMenu::load()
 		menu.addStatic("Start", 45);
 		menu.addStatic("Settings", 45);
 		menu.addStatic("Dev Mode", 45);
+		menu.addStatic("Editor", 45);
 		menu.load();
 		menu.setMargins(2, -1, 1, 4);
 		menu.setFontSize(35);
@@ -45,6 +46,9 @@ void StageMainMenu::update()
 			break;
 		case 2:
 			stageManager->changeStage("Dev");
+			break;
+		case 3:
+			stageManager->changeStage("Editor");
 			break;
 	}
 

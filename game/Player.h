@@ -3,6 +3,7 @@
 #include "Animation.h"
 #include "Map.h"
 #include <cmath>
+#include "globals.h"
 
 enum PlayerState
 {
@@ -31,6 +32,7 @@ private:
 	Animation walk_right, walk_left, stand_right, stand_left;
 	Animation lmg_right, lmg_left;
 	Animation player_body;
+	float viewOffsetY;
 
 public:
 	Player();
@@ -38,10 +40,14 @@ public:
 	void initialize(WindowMgr* _window, b2World* _world, float density, float friction, float x, float y);
 	void update();
 	void draw();
+	void updateMovement();
+	void updateCamera();
 	void setMap(Map& _map) { map = &_map; };
 
 	//movement
 	void input();
+	void walkForward();
+	void stopWalkForward();
 	void walkRight();
 	void walkLeft();
 	void stopWalkRight();

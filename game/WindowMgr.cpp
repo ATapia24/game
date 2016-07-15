@@ -11,7 +11,7 @@ WindowMgr::WindowMgr(sf::RenderWindow& window, const float _NATIVE_WIDTH, const 
 	widthScale = window.getSize().x / _NATIVE_WIDTH;
 	heightScale = window.getSize().y / _NATIVE_HEIGHT;
 	setResolution(1280, 720, 0, 1);
-
+	fullscreen = 0;
 	//queues setup
 	guiQueue = new queueType[MAX_DRAW_SIZE];
 	worldQueue = new queueType[MAX_DRAW_SIZE];
@@ -96,16 +96,17 @@ sf::RenderWindow* WindowMgr::getWindow()
 }
 
 //SET RESOLUTION
-void WindowMgr::setResolution(int width, int height, bool fullscreen, bool border)
+void WindowMgr::setResolution(int width, int height, bool _fullscreen, bool border)
 {
 	//calculate new scales
 	widthScale = width / NATIVE_WIDTH;
 	heightScale = height / NATIVE_HEIGHT;
 
 	//set resolution
-	windowPtr->create(sf::VideoMode(width, height), "Game", (fullscreen ? sf::Style::Fullscreen : (border ? sf::Style::Titlebar : sf::Style::None)));
+	windowPtr->create(sf::VideoMode(width, height), "Game", (_fullscreen ? sf::Style::Fullscreen : (border ? sf::Style::Titlebar : sf::Style::None)));
 	windowPtr->setPosition(sf::Vector2i(0, 0));
 	windowPtr->setFramerateLimit(65);
+	fullscreen = _fullscreen;
 
 	guiView.reset((sf::FloatRect(0, 0, width, height)));
 	worldView.reset((sf::FloatRect(0, 0, width, height)));

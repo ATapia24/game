@@ -28,6 +28,7 @@ void StageDev::load()
 	
 	bgText.loadFromFile("assets/strike.jpg");
 	strike.getSprite()->setTexture(bgText);
+	strike.getSprite()->setScale(5, 5);
 	strike.initialize(window, world, 1.0f, 0.3f, 5.f, 5.f);
 }
 

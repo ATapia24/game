@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include <string>
+#include <windows.h>
 #include <SFML/Graphics.hpp>
 #include "globals.h"
 #include "GameManager.h"
@@ -11,6 +12,12 @@ using namespace globals;
 
 int main()
 {
+	//console
+	HWND consoleWindow = GetConsoleWindow();
+	//SetWindowPos(consoleWindow, 0, 1283, 0, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+	SetWindowPos(consoleWindow, 0, 1283, 0, 640, 1080, 0);
+
+	//window
 	sf::RenderWindow screen(sf::VideoMode(1280, 720), "Game");
 	screen.setFramerateLimit(65);
 	WindowMgr window(screen, globals::NATIVE_WIDTH, globals::NATIVE_HEIGHT);
