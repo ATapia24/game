@@ -19,6 +19,9 @@
     <Filter Include="Resource Files\assets">
       <UniqueIdentifier>{963ab13c-b7b9-4f0e-b76d-c0ea5ff65d9c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Editor">
+      <UniqueIdentifier>{4d306fdc-940b-4bd7-b131-b4ac1ad32fef}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -224,9 +227,6 @@
     </ClInclude>
     <ClInclude Include="Box2D\Box2D.h">
       <Filter>Box2d</Filter>
-    </ClInclude>
-    <ClInclude Include="Map.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="StageEditor.h">
       <Filter>Header Files</Filter>
@@ -467,9 +467,6 @@
     </ClCompile>
     <ClCompile Include="Box2D\Rope\b2Rope.cpp">
       <Filter>Box2d</Filter>
-    </ClCompile>
-    <ClCompile Include="Map.cpp">
-      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="StageEditor.cpp">
       <Filter>Source Files</Filter>

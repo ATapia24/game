@@ -1,7 +1,6 @@
 #pragma once
 #include "Entity.h"
 #include "Animation.h"
-#include "Map.h"
 #include <cmath>
 #include "globals.h"
 
@@ -13,12 +12,12 @@ enum PlayerState
 	standing_right
 };
 
-class Player : public Entity {
+class Player : public Entity
+{
 
 private:
 	PlayerState state;
 	sf::Sprite weapon;
-	Map* map;
 
 	float walkSpeed;
 	float jumpStrength;
@@ -42,7 +41,6 @@ public:
 	void draw();
 	void updateMovement();
 	void updateCamera();
-	void setMap(Map& _map) { map = &_map; };
 
 	//movement
 	void input();

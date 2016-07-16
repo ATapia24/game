@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "misc.h"
 
-
 //FLOAT -> STRING
 std::string misc::floatToString(float num)
 {

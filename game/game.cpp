@@ -14,7 +14,6 @@ int main()
 {
 	//console
 	HWND consoleWindow = GetConsoleWindow();
-	//SetWindowPos(consoleWindow, 0, 1283, 0, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
 	SetWindowPos(consoleWindow, 0, 1283, 0, 640, 1080, 0);
 
 	//window

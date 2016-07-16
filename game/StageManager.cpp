@@ -50,9 +50,7 @@ void StageManager::changeStage(std::string stageName)
 	}
 
 	if (!found)
-	{
 		std::cout << "Stage \"" << stageName << "\" not found.\n";
-	}
 }
 
 //ADD STAGE

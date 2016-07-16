@@ -23,43 +23,64 @@ StageEditor::StageEditor(StageManager* _stageManager, WindowMgr* _window)
 //LOAD
 void StageEditor::load()
 {
-	world = new b2World(b2Vec2(0, -0));
-	world->SetContactListener(this);
 	view->setRotation(0);
 	view->setCenter(0, 0);
 
-	player.setName("player");
-	player.getSprite().setScale(2, 2);
-	player.getHitbox().setSize(sf::Vector2f(25, 25));
-	player.setMap(strike);
-	player.initialize(window, world, 1.f, 0.3f, 30.f, -31.875f);
-	player.spawn();
 
-	background.setSize(sf::Vector2f(9600, 9600));
-	//background.setFillColor(sf::Color::Magenta);
-	gridTexture.loadFromFile("assets/grid_green.png", sf::IntRect(0, 0, 20, 20));
-	gridTexture.setRepeated(1);
-	background.setTexture(&gridTexture);
+	gridTexture.loadFromFile("assets/grid_green.png", sf::IntRect(0, 0, 1920, 1080));
+	gridTexture.setRepeated(true);
+	background.setTexture(gridTexture);
 
 	zoomSpeed = 0.01f;
+	zoomAmount = 1;
 	viewSpeed = 10.f;
 	viewSpeedOffset = view->getSize().x / window->getWindow()->getSize().x * viewSpeed;
 
-	/*bgText.loadFromFile("assets/strike.jpg");
-	strike.getSprite()->setTexture(bgText);
-	strike.getSprite()->setScale(5, 5);
-	strike.initialize(window, world, 1.0f, 0.3f, 5.f, 5.f);*/
+	//tmp
+	objects = new Object[10000];
+	for (int i = 0; i < 100; i++)
+	{
+		objects[i].rectangle.setFillColor(sf::Color::White);
+		objects[i].rectangle.setPosition(0, 0);
+		objects[i].rectangle.setSize(sf::Vector2f(0, 0));
+	}
+
+	currentRect = 0;
+	n_rect = 0;
+
+	dragRect.setFillColor(sf::Color::Green);
+	dragRect.setPosition(0, 0);
+	dragRect.setSize(sf::Vector2f(100, 100));
+
+	background.setPosition(0, 0);
+	background.setTextureRect(sf::IntRect(0, 0, 6000, 6000));
+	background.setColor(sf::Color::Green);
+
+	//menu
+	menu.setWindow(window);
+	menu.setPosition(0, 200);
+	menu.setMargins(3, -1, 1, 4);
+	menu.setFontSize(25);
+	menu.addStatic("Editor Menu");
+
+
+	//tmp //float y = (((float)-sf::Mouse::getPosition(*window->getWindow()).y * zoomAmount) + (view->getSize().y / 2) - view->getCenter().y) / window->getScale().y;
+	//x = ((((float)sf::Mouse::getPosition(*window->getWindow()).x * zoomAmount) - (view->getSize().x / 2) + view->getCenter().x) / window->getScale().x) / 32.f;
+	//y = ((((float)-sf::Mouse::getPosition(*window->getWindow()).y * zoomAmount) + (view->getSize().y / 2) - view->getCenter().y) / window->getScale().y) / 32.f;
+
+
 }
 
 //UPDATE
 void StageEditor::update()
 {
-	//strike.update();
-	player.update();
 
-	world->Step(1.0f / 65.f, 8, 3);
+	menu.update();
 
 	input();
+
+	if (dragging)
+		updateDrag();
 
 	//MISC
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Tab))
@@ -114,120 +135,95 @@ void StageEditor::input()
 	}
 
 	//zoom out and in
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::F))
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::R))
 	{
-		view->zoom(1.f - zoomSpeed);
+		float zoom = 1.f - zoomSpeed;
+		zoomAmount = zoomAmount * (zoom);
+		view->zoom(zoom);
 		viewSpeedOffset = view->getSize().x / window->getWindow()->getSize().x * viewSpeed;
 	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::R))
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::F))
 	{
-		view->zoom(1.f + zoomSpeed);
+		float zoom = 1.f + zoomSpeed;
+		zoomAmount = zoomAmount * (zoom);
+		view->zoom(zoom);
 		viewSpeedOffset = view->getSize().x / window->getWindow()->getSize().x * viewSpeed;
+	}
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::C))
+	{
+		view->zoom(1.f / zoomAmount);
+		zoomAmount = 1.f;
 	}
 
 	//left mouse click
-	if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+	if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && !dragging)
 	{
-		float x, y;
-		if (window->isFullscreen())
-		{
-			x = ((float)sf::Mouse::getPosition(*window->getWindow()).x / window->getScale().x) / 32.f;
-			y = ((float)-sf::Mouse::getPosition(*window->getWindow()).y / window->getScale().y) / 32.f;
-		}
-		else {
-			x = (((float)sf::Mouse::getPosition(*window->getWindow()).x - (view->getSize().x / 2)) / window->getScale().x) / 32.f;
-			y = (((float)-sf::Mouse::getPosition(*window->getWindow()).y + (view->getSize().y / 2)) / window->getScale().y) / 32.f;
-		}
-		player.getBody()->SetTransform(b2Vec2(x, y), view->getRotation());
+		startDrag();
+	}else if(!sf::Mouse::isButtonPressed(sf::Mouse::Left) && dragging)
+	{
+		endDrag();
 	}
+}
+
+//UPDATE DRAG
+void StageEditor::updateDrag()
+{
+	//calculate size based on rect and mouse position
+	float x = (((float)sf::Mouse::getPosition(*window->getWindow()).x * zoomAmount) - (view->getSize().x / 2) + view->getCenter().x) / window->getScale().x - objects[currentRect].rectangle.getPosition().x;
+	float y = (((float)sf::Mouse::getPosition(*window->getWindow()).y * zoomAmount) - (view->getSize().y / 2) + view->getCenter().y) / window->getScale().y - objects[currentRect].rectangle.getPosition().y;
+	objects[currentRect].rectangle.setSize(sf::Vector2f(x, y));
+}
+
+//START DRAG
+void StageEditor::startDrag()
+{
+	//set rect position to mouse pos
+	float x = (((float)sf::Mouse::getPosition(*window->getWindow()).x * zoomAmount) - (view->getSize().x / 2) + view->getCenter().x) / window->getScale().x;
+	float y = (((float)sf::Mouse::getPosition(*window->getWindow()).y * zoomAmount) - (view->getSize().y / 2) + view->getCenter().y) / window->getScale().y;
+	objects[currentRect].rectangle.setPosition(x, y);
+	objects[currentRect].rectangle.setFillColor(sf::Color::Red);
+	n_rect++;
+	dragging = 1;
+}
+
+//END DRAG
+void StageEditor::endDrag()
+{
+
+	sf::RectangleShape* rect = &objects[currentRect].rectangle;
+	
+	//adjust for negative size
+	if (rect->getPosition().x < 0)
+	{
+		rect->setPosition(rect->getPosition().x + rect->getSize().x, rect->getPosition().y);
+		rect->setSize(sf::Vector2f(-rect->getSize().x, rect->getSize().y));
+	}
+	if (rect->getPosition().y < 0)
+	{
+		rect->setPosition(rect->getPosition().x, rect->getPosition().y + rect->getSize().y);
+		rect->setSize(sf::Vector2f(rect->getSize().x, -rect->getSize().y));
+	}
+
+	rect->setFillColor(sf::Color::White);
+	currentRect++;
+	dragging = 0;
 }
 
 //DRAW
 void StageEditor::draw()
 {
 	window->addWorld(background);
-	player.draw();
+	window->addWorld(dragRect);
+	for (int i = 0; i < n_rect; i++)
+	{
+		window->addWorld(objects[i].rectangle);
+	}
+
+	menu.draw();
 }
 
 //UNLOAD
 void StageEditor::unload()
 {
-	delete world;
-}
 
-//BEGIN CONTACT
-void StageEditor::BeginContact(b2Contact* contact)
-{
-	Entity* a = static_cast<Entity*>(contact->GetFixtureA()->GetBody()->GetUserData());
-	Entity* b = static_cast<Entity*>(contact->GetFixtureB()->GetBody()->GetUserData());
-
-
-	//a collisions
-	switch (a->getType())
-	{
-	case EntityType::PLAYER:
-		static_cast<Player*>(a)->startContact(b);
-		break;
-
-	case EntityType::FLOOR:
-		static_cast<Floor*>(a)->startContact(b);
-		break;
-
-	default:
-		break;
-	}
-
-	//b collisions
-	switch (b->getType())
-	{
-	case EntityType::PLAYER:
-		static_cast<Player*>(b)->startContact(a);
-		break;
-
-	case EntityType::FLOOR:
-		static_cast<Floor*>(b)->startContact(a);
-		break;
-
-	default:
-		break;
-	}
-
-}
-
-//END CONTACT
-void StageEditor::EndContact(b2Contact* contact)
-{
-	Entity* a = static_cast<Entity*>(contact->GetFixtureA()->GetBody()->GetUserData());
-	Entity* b = static_cast<Entity*>(contact->GetFixtureB()->GetBody()->GetUserData());
-
-
-	//a collisions
-	switch (a->getType())
-	{
-	case EntityType::PLAYER:
-		static_cast<Player*>(a)->endContact(b);
-		break;
-
-	case EntityType::FLOOR:
-		static_cast<Floor*>(a)->endContact(b);
-		break;
-
-	default:
-		break;
-	}
-
-	//b collisions
-	switch (b->getType())
-	{
-	case EntityType::PLAYER:
-		static_cast<Player*>(b)->endContact(a);
-		break;
-
-	case EntityType::FLOOR:
-		static_cast<Floor*>(b)->endContact(a);
-		break;
-
-	default:
-		break;
-	}
 }

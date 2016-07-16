@@ -16,30 +16,44 @@
 #include "MenuList.h"
 #include "MenuSelect.h"
 #include "misc.h"
-#include "Player.h"
 #include "NativePosition.h"
 #include "Entity.h"
-#include "Floor.h"
-#include "Box2D\Box2D.h"
-#include "Map.h"
+#include "MenuSelect.h"
 
-class StageEditor : public Stage, public b2ContactListener
+enum ObjType
+{
+	RECTANGLE,
+	CIRCLE
+};
+struct Object
+{
+	ObjType type;
+	sf::RectangleShape rectangle;
+	sf::CircleShape circle;
+};
+
+class StageEditor : public Stage
 {
 private:
-	sf::Texture bgText;
-	Floor bg;
-
-	Map strike;
-	Player player;
-	sf::RectangleShape background;
+	sf::Sprite background;
 	sf::Texture gridTexture;
+	sf::RectangleShape dragRect;
+	Object* objects;
+	int currentRect, n_rect;
+
+	MenuSelect menu;
 	
 
 	float viewSpeed, viewSpeedOffset;
-	float zoomSpeed;
+	float zoomSpeed, zoomAmount;
 	b2World* world;
 	sf::View* view;
 	void input();
+	bool dragging;
+	
+	void startDrag();
+	void endDrag();
+	void updateDrag();
 public:
 	StageEditor();
 	~StageEditor();
@@ -48,7 +62,5 @@ public:
 	void unload();
 	void update();
 	void draw();
-	void BeginContact(b2Contact* contact);
-	void EndContact(b2Contact* contact);
 };
 
