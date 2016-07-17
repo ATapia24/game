@@ -20,7 +20,6 @@
 #include "Entity.h"
 #include "Floor.h"
 #include "Box2D\Box2D.h"
-#include "Map.h"
 
 class StageDev : public Stage, public b2ContactListener
 {
@@ -28,7 +27,6 @@ private:
 	sf::Texture bgText;
 	Floor bg;
 
-	Map strike;
 	Player player;
 
 	b2World* world;

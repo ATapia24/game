@@ -21,21 +21,16 @@ void StageDev::load()
 	player.setName("player");
 	player.getSprite().setScale(3, 3);
 	player.getHitbox().setSize(sf::Vector2f(25, 25));
-	player.setMap(strike);
 	player.initialize(window, world, 1.f, 0.3f, 30.f, -31.875f);
 	player.spawn();
 
 	
 	bgText.loadFromFile("assets/strike.jpg");
-	strike.getSprite()->setTexture(bgText);
-	strike.getSprite()->setScale(5, 5);
-	strike.initialize(window, world, 1.0f, 0.3f, 5.f, 5.f);
 }
 
 //UPDATE
 void StageDev::update()
 {
-	strike.update();
 	player.update();
 
 	world->Step(1.0f / 65.f, 8, 3);
@@ -69,7 +64,6 @@ void StageDev::update()
 //DRAW
 void StageDev::draw()
 {
-	strike.draw();
 	player.draw();
 }
 

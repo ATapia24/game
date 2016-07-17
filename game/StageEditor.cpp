@@ -26,8 +26,8 @@ void StageEditor::load()
 	view->setRotation(0);
 	view->setCenter(0, 0);
 
-
-	gridTexture.loadFromFile("assets/grid_green.png", sf::IntRect(0, 0, 1920, 1080));
+	//gridTexture.loadFromFile("assets/grid_green.png", sf::IntRect(0, 0, 1920, 1080));
+	gridTexture.loadFromFile("assets/strike.jpg");
 	gridTexture.setRepeated(true);
 	background.setTexture(gridTexture);
 
@@ -37,6 +37,9 @@ void StageEditor::load()
 	viewSpeedOffset = view->getSize().x / window->getWindow()->getSize().x * viewSpeed;
 
 	//tmp
+	dragTypeIndex = 0;
+	updateDragType();
+
 	objects = new Object[10000];
 	for (int i = 0; i < 100; i++)
 	{
@@ -45,16 +48,12 @@ void StageEditor::load()
 		objects[i].rectangle.setSize(sf::Vector2f(0, 0));
 	}
 
-	currentRect = 0;
-	n_rect = 0;
-
-	dragRect.setFillColor(sf::Color::Green);
-	dragRect.setPosition(0, 0);
-	dragRect.setSize(sf::Vector2f(100, 100));
+	objectIndex = 0;
+	n_objects = 0;
 
 	background.setPosition(0, 0);
 	background.setTextureRect(sf::IntRect(0, 0, 6000, 6000));
-	background.setColor(sf::Color::Green);
+	//background.setColor(sf::Color::Green);
 
 	//menu
 	menu.setWindow(window);
@@ -62,13 +61,11 @@ void StageEditor::load()
 	menu.setMargins(3, -1, 1, 4);
 	menu.setFontSize(25);
 	menu.addStatic("Editor Menu");
-
+	menu.add(dragTypeString);
 
 	//tmp //float y = (((float)-sf::Mouse::getPosition(*window->getWindow()).y * zoomAmount) + (view->getSize().y / 2) - view->getCenter().y) / window->getScale().y;
 	//x = ((((float)sf::Mouse::getPosition(*window->getWindow()).x * zoomAmount) - (view->getSize().x / 2) + view->getCenter().x) / window->getScale().x) / 32.f;
 	//y = ((((float)-sf::Mouse::getPosition(*window->getWindow()).y * zoomAmount) + (view->getSize().y / 2) - view->getCenter().y) / window->getScale().y) / 32.f;
-
-
 }
 
 //UPDATE
@@ -111,7 +108,7 @@ void StageEditor::input()
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
 	{
-		view->move(sf::Vector2f(sin(angle * globals::DEG2RAD) * viewSpeedOffset, cos(angle * globals::DEG2RAD) * viewSpeedOffset));
+		view->move(sf::Vector2f(-sin(angle * globals::DEG2RAD) * viewSpeedOffset, cos(angle * globals::DEG2RAD) * viewSpeedOffset));
 	}
 
 	//left and right
@@ -137,22 +134,15 @@ void StageEditor::input()
 	//zoom out and in
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::R))
 	{
-		float zoom = 1.f - zoomSpeed;
-		zoomAmount = zoomAmount * (zoom);
-		view->zoom(zoom);
-		viewSpeedOffset = view->getSize().x / window->getWindow()->getSize().x * viewSpeed;
+		zoomIn();
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::F))
 	{
-		float zoom = 1.f + zoomSpeed;
-		zoomAmount = zoomAmount * (zoom);
-		view->zoom(zoom);
-		viewSpeedOffset = view->getSize().x / window->getWindow()->getSize().x * viewSpeed;
+		zoomOut();
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::C))
 	{
-		view->zoom(1.f / zoomAmount);
-		zoomAmount = 1.f;
+		zoomReset();
 	}
 
 	//left mouse click
@@ -163,49 +153,180 @@ void StageEditor::input()
 	{
 		endDrag();
 	}
+
+	//drag left and right
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num1) && dragTypeLeftRel)
+	{
+		dragTypeLeft();
+		dragTypeLeftRel = 0;
+	}
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num2) && dragTypeRightRel)
+	{
+		dragTypeRight();
+		dragTypeRightRel = 0;
+	}
+
+	//drag left and right released
+	if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Num1) && !dragTypeLeftRel)
+	{
+		dragTypeLeftRel = 1;
+	}
+	else if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Num2) && !dragTypeRightRel)
+	{
+		dragTypeRightRel = 1;
+	}
+
+}
+
+
+//DRAG TYPE LEFT
+void StageEditor::dragTypeLeft()
+{
+	dragTypeIndex--;
+	dragTypeIndex < 0 ? dragTypeIndex = ObjType::N_TYPES-1 : dragTypeIndex;
+	updateDragType();
+}
+
+//DRAG TYPE RIGHT
+void StageEditor::dragTypeRight()
+{
+	dragTypeIndex++;
+	dragTypeIndex == ObjType::N_TYPES ? dragTypeIndex = 0 : dragTypeIndex;
+	updateDragType();
+}
+
+//UPDATE DRAG TYPE
+void StageEditor::updateDragType()
+{
+	switch (dragTypeIndex)
+	{
+	case ObjType::RECTANGLE:
+		dragTypeString = "Rectangle";
+		break;
+	case ObjType::CIRCLE:
+		dragTypeString = "Circle";
+		break;
+	case ObjType::STATIC_OBJ:
+		dragTypeString = "Static Object";
+		break;
+	case ObjType::DYNAMIC_OBJ:
+		dragTypeString = "Dynamic Object";
+		break;
+	}
+}
+
+//ZOOM IN
+void StageEditor::zoomIn()
+{
+	float zoom = 1.f - zoomSpeed;
+	zoomAmount = zoomAmount * (zoom);
+	view->zoom(zoom);
+	viewSpeedOffset = view->getSize().x / window->getWindow()->getSize().x * viewSpeed;
+}
+
+//ZOOM OUT
+void StageEditor::zoomOut()
+{
+	float zoom = 1.f + zoomSpeed;
+	zoomAmount = zoomAmount * (zoom);
+	view->zoom(zoom);
+	viewSpeedOffset = view->getSize().x / window->getWindow()->getSize().x * viewSpeed;
+}
+
+//ZOOM RESET
+void StageEditor::zoomReset()
+{
+	view->setRotation(0.f);
+	view->zoom(1.f / zoomAmount);
+	zoomAmount = 1.f;
 }
 
 //UPDATE DRAG
 void StageEditor::updateDrag()
 {
 	//calculate size based on rect and mouse position
-	float x = (((float)sf::Mouse::getPosition(*window->getWindow()).x * zoomAmount) - (view->getSize().x / 2) + view->getCenter().x) / window->getScale().x - objects[currentRect].rectangle.getPosition().x;
-	float y = (((float)sf::Mouse::getPosition(*window->getWindow()).y * zoomAmount) - (view->getSize().y / 2) + view->getCenter().y) / window->getScale().y - objects[currentRect].rectangle.getPosition().y;
-	objects[currentRect].rectangle.setSize(sf::Vector2f(x, y));
+	float x, y;
+	switch (dragTypeIndex)
+	{
+	case ObjType::RECTANGLE:
+		x = (((float)sf::Mouse::getPosition(*window->getWindow()).x * zoomAmount) - (view->getSize().x / 2) + view->getCenter().x) / window->getScale().x - objects[objectIndex].rectangle.getPosition().x;
+		y = (((float)sf::Mouse::getPosition(*window->getWindow()).y * zoomAmount) - (view->getSize().y / 2) + view->getCenter().y) / window->getScale().y - objects[objectIndex].rectangle.getPosition().y;
+		objects[objectIndex].rectangle.setSize(sf::Vector2f(x, y));
+		break;
+
+	case ObjType::CIRCLE:
+		float x1 = (((float)sf::Mouse::getPosition(*window->getWindow()).x * zoomAmount) - (view->getSize().x / 2) + view->getCenter().x) / window->getScale().x - objects[objectIndex].circle.getPosition().x;
+		float y1 = (((float)sf::Mouse::getPosition(*window->getWindow()).y * zoomAmount) - (view->getSize().y / 2) + view->getCenter().y) / window->getScale().y - objects[objectIndex].circle.getPosition().y;
+		float x2 = objects[objectIndex].circle.getPosition().x;
+		float y2 = window->getScale().y - objects[objectIndex].circle.getPosition().y;
+		float radius = sqrt(pow(x2 - x1, 2.f) + pow(y2 - y1, 2.f));
+		objects[objectIndex].circle.setRadius(radius);
+		break;
+	}
 }
 
 //START DRAG
 void StageEditor::startDrag()
 {
-	//set rect position to mouse pos
-	float x = (((float)sf::Mouse::getPosition(*window->getWindow()).x * zoomAmount) - (view->getSize().x / 2) + view->getCenter().x) / window->getScale().x;
-	float y = (((float)sf::Mouse::getPosition(*window->getWindow()).y * zoomAmount) - (view->getSize().y / 2) + view->getCenter().y) / window->getScale().y;
-	objects[currentRect].rectangle.setPosition(x, y);
-	objects[currentRect].rectangle.setFillColor(sf::Color::Red);
-	n_rect++;
+	//set object position to mouse pos
+	float x, y;
+	switch (dragTypeIndex)
+	{
+	case ObjType::RECTANGLE:
+		objects[objectIndex].type = ObjType::RECTANGLE;
+		x = (((float)sf::Mouse::getPosition(*window->getWindow()).x * zoomAmount) - (view->getSize().x / 2) + view->getCenter().x) / window->getScale().x;
+		y = (((float)sf::Mouse::getPosition(*window->getWindow()).y * zoomAmount) - (view->getSize().y / 2) + view->getCenter().y) / window->getScale().y;
+		objects[objectIndex].rectangle.setPosition(x, y);
+		objects[objectIndex].rectangle.setFillColor(sf::Color::Red);
+		break;
+
+	case ObjType::CIRCLE:
+		objects[objectIndex].type = ObjType::CIRCLE;
+		x = (((float)sf::Mouse::getPosition(*window->getWindow()).x * zoomAmount) - (view->getSize().x / 2) + view->getCenter().x) / window->getScale().x;
+		y = (((float)sf::Mouse::getPosition(*window->getWindow()).y * zoomAmount) - (view->getSize().y / 2) + view->getCenter().y) / window->getScale().y;
+		objects[objectIndex].circle.setPosition(x, y);
+		objects[objectIndex].circle.setFillColor(sf::Color::Red);
+		break;
+	
+	case ObjType::STATIC_OBJ:
+		break;
+
+	case ObjType::DYNAMIC_OBJ:
+		break;
+	}
+
+	n_objects++;
 	dragging = 1;
 }
 
 //END DRAG
 void StageEditor::endDrag()
 {
-
-	sf::RectangleShape* rect = &objects[currentRect].rectangle;
-	
-	//adjust for negative size
-	if (rect->getPosition().x < 0)
+	switch (dragTypeIndex)
 	{
-		rect->setPosition(rect->getPosition().x + rect->getSize().x, rect->getPosition().y);
-		rect->setSize(sf::Vector2f(-rect->getSize().x, rect->getSize().y));
-	}
-	if (rect->getPosition().y < 0)
-	{
-		rect->setPosition(rect->getPosition().x, rect->getPosition().y + rect->getSize().y);
-		rect->setSize(sf::Vector2f(rect->getSize().x, -rect->getSize().y));
+	case ObjType::RECTANGLE:
+		sf::RectangleShape* rect = &objects[objectIndex].rectangle;
+
+		//adjust for negative size
+		if (rect->getPosition().x < 0)
+		{
+			rect->setPosition(rect->getPosition().x + rect->getSize().x, rect->getPosition().y);
+			rect->setSize(sf::Vector2f(-rect->getSize().x, rect->getSize().y));
+		}
+		if (rect->getPosition().y < 0)
+		{
+			rect->setPosition(rect->getPosition().x, rect->getPosition().y + rect->getSize().y);
+			rect->setSize(sf::Vector2f(rect->getSize().x, -rect->getSize().y));
+		}
+
+		rect->setFillColor(sf::Color::White);
+		break;
+
+	//case ObjType::CIRCLE:
+		//break;
 	}
 
-	rect->setFillColor(sf::Color::White);
-	currentRect++;
+	objectIndex++;
 	dragging = 0;
 }
 
@@ -213,17 +334,30 @@ void StageEditor::endDrag()
 void StageEditor::draw()
 {
 	window->addWorld(background);
-	window->addWorld(dragRect);
-	for (int i = 0; i < n_rect; i++)
-	{
-		window->addWorld(objects[i].rectangle);
-	}
-
+	drawObjects();
 	menu.draw();
+}
+
+//DRAW OBJECTS
+void StageEditor::drawObjects()
+{
+	for (int i = 0; i < n_objects; i++)
+	{
+		switch (objects[i].type)
+		{
+		case ObjType::RECTANGLE:
+			window->addWorld(objects[i].rectangle);
+			break;
+
+		case ObjType::CIRCLE:
+			window->addWorld(objects[i].circle);
+			break;
+		}
+	}
 }
 
 //UNLOAD
 void StageEditor::unload()
 {
-
+	zoomReset();
 }

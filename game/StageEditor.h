@@ -23,7 +23,10 @@
 enum ObjType
 {
 	RECTANGLE,
-	CIRCLE
+	CIRCLE,
+	STATIC_OBJ,
+	DYNAMIC_OBJ,
+	N_TYPES
 };
 struct Object
 {
@@ -37,20 +40,34 @@ class StageEditor : public Stage
 private:
 	sf::Sprite background;
 	sf::Texture gridTexture;
-	sf::RectangleShape dragRect;
 	Object* objects;
-	int currentRect, n_rect;
+	int objectIndex, n_objects;
 
 	MenuSelect menu;
-	
+
+	Object dragType;
+	short int dragTypeIndex;
+	std::string dragTypeString;
+	void updateDragType();
+	void dragTypeLeft();
+	void dragTypeRight();
+	bool dragTypeLeftRel;
+	bool dragTypeRightRel;
+	void drawObjects();
 
 	float viewSpeed, viewSpeedOffset;
 	float zoomSpeed, zoomAmount;
 	b2World* world;
 	sf::View* view;
 	void input();
-	bool dragging;
+
+	//zoom
+	void zoomIn();
+	void zoomOut();
+	void zoomReset();
 	
+	//drag
+	bool dragging;
 	void startDrag();
 	void endDrag();
 	void updateDrag();
