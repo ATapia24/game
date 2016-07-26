@@ -66,6 +66,18 @@ void StageEditor::load()
 	//tmp //float y = (((float)-sf::Mouse::getPosition(*window->getWindow()).y * zoomAmount) + (view->getSize().y / 2) - view->getCenter().y) / window->getScale().y;
 	//x = ((((float)sf::Mouse::getPosition(*window->getWindow()).x * zoomAmount) - (view->getSize().x / 2) + view->getCenter().x) / window->getScale().x) / 32.f;
 	//y = ((((float)-sf::Mouse::getPosition(*window->getWindow()).y * zoomAmount) + (view->getSize().y / 2) - view->getCenter().y) / window->getScale().y) / 32.f;
+
+	loadTextures();
+}
+
+//LOAD TEXTURES
+void StageEditor::loadTextures()
+{
+	std::vector<std::string> files = misc::getFileNames("assets");
+	for (unsigned int i = 0; i < files.size(); i++)
+	{
+	std::cout << misc::getFileType(files[i]) << std::endl;
+	}
 }
 
 //UPDATE
@@ -129,6 +141,10 @@ void StageEditor::input()
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::E))
 	{
 		view->setRotation(window->getWorldView()->getRotation() + 1.f);
+	}
+	else if(sf::Keyboard::isKeyPressed(sf::Keyboard::X))
+	{
+		rotateReset();
 	}
 
 	//zoom out and in
@@ -236,9 +252,14 @@ void StageEditor::zoomOut()
 //ZOOM RESET
 void StageEditor::zoomReset()
 {
-	view->setRotation(0.f);
 	view->zoom(1.f / zoomAmount);
 	zoomAmount = 1.f;
+}
+
+//ROTATE RESET
+void StageEditor::rotateReset()
+{
+	view->setRotation(0.f);
 }
 
 //UPDATE DRAG
@@ -255,12 +276,13 @@ void StageEditor::updateDrag()
 		break;
 
 	case ObjType::CIRCLE:
-		float x1 = (((float)sf::Mouse::getPosition(*window->getWindow()).x * zoomAmount) - (view->getSize().x / 2) + view->getCenter().x) / window->getScale().x - objects[objectIndex].circle.getPosition().x;
+		/*float x1 = (((float)sf::Mouse::getPosition(*window->getWindow()).x * zoomAmount) - (view->getSize().x / 2) + view->getCenter().x) / window->getScale().x - objects[objectIndex].circle.getPosition().x;
 		float y1 = (((float)sf::Mouse::getPosition(*window->getWindow()).y * zoomAmount) - (view->getSize().y / 2) + view->getCenter().y) / window->getScale().y - objects[objectIndex].circle.getPosition().y;
-		float x2 = objects[objectIndex].circle.getPosition().x;
-		float y2 = window->getScale().y - objects[objectIndex].circle.getPosition().y;
+		float x2 = objects[objectIndex].circle.getPosition().x + objects[objectIndex].circle.getRadius() / window->getScale().x;
+		float y2 = objects[objectIndex].circle.getPosition().y + objects[objectIndex].circle.getRadius() / window->getScale().y;
 		float radius = sqrt(pow(x2 - x1, 2.f) + pow(y2 - y1, 2.f));
-		objects[objectIndex].circle.setRadius(radius);
+		std::cout << radius << std::endl;
+		objects[objectIndex].circle.setRadius(radius);*/
 		break;
 	}
 }
@@ -282,13 +304,18 @@ void StageEditor::startDrag()
 
 	case ObjType::CIRCLE:
 		objects[objectIndex].type = ObjType::CIRCLE;
-		x = (((float)sf::Mouse::getPosition(*window->getWindow()).x * zoomAmount) - (view->getSize().x / 2) + view->getCenter().x) / window->getScale().x;
-		y = (((float)sf::Mouse::getPosition(*window->getWindow()).y * zoomAmount) - (view->getSize().y / 2) + view->getCenter().y) / window->getScale().y;
+		x = ((float)sf::Mouse::getPosition(*window->getWindow()).x * zoomAmount) - (view->getSize().x / 2) + view->getCenter().x / window->getScale().x;
+		y = ((float)sf::Mouse::getPosition(*window->getWindow()).y * zoomAmount) - (view->getSize().y / 2) + view->getCenter().y / window->getScale().y;
 		objects[objectIndex].circle.setPosition(x, y);
 		objects[objectIndex].circle.setFillColor(sf::Color::Red);
 		break;
 	
 	case ObjType::STATIC_OBJ:
+		objects[objectIndex].type = ObjType::RECTANGLE;
+		x = (((float)sf::Mouse::getPosition(*window->getWindow()).x * zoomAmount) - (view->getSize().x / 2) + view->getCenter().x) / window->getScale().x;
+		y = (((float)sf::Mouse::getPosition(*window->getWindow()).y * zoomAmount) - (view->getSize().y / 2) + view->getCenter().y) / window->getScale().y;
+		objects[objectIndex].rectangle.setPosition(x, y);
+		objects[objectIndex].rectangle.setFillColor(sf::Color::Red);
 		break;
 
 	case ObjType::DYNAMIC_OBJ:
@@ -360,4 +387,5 @@ void StageEditor::drawObjects()
 void StageEditor::unload()
 {
 	zoomReset();
+	rotateReset();
 }

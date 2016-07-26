@@ -30,7 +30,7 @@ void Entity::initialize(WindowMgr* _window, b2World* _world, float density, floa
 
 	//size and origin setup
 	sprite.setTexture(texture);
-	sprite.setTextureRect(sf::IntRect(0, 0, hitbox.getSize().x / sprite.getScale().x, hitbox.getSize().y / sprite.getScale().y));
+	sprite.setTextureRect(sf::IntRect(0, 0, (int)(hitbox.getSize().x / sprite.getScale().x), (int)(hitbox.getSize().y / (int)sprite.getScale().y)));
 	originOffsetX = hitbox.getSize().x / 2;
 	originOffsetY = hitbox.getSize().y / 2;
 	hitbox.setOrigin(originOffsetX, originOffsetY);

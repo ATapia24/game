@@ -1,11 +1,9 @@
 #include "stdafx.h"
-#include <string>
 #include <windows.h>
 #include <SFML/Graphics.hpp>
 #include "globals.h"
 #include "GameManager.h"
 #include "WindowMgr.h"
-#include "MenuList.h"
 #include "Debug.h"
 
 using namespace globals;

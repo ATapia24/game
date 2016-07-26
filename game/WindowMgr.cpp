@@ -108,8 +108,8 @@ void WindowMgr::setResolution(int width, int height, bool _fullscreen, bool bord
 	windowPtr->setFramerateLimit(65);
 	fullscreen = _fullscreen;
 
-	guiView.reset((sf::FloatRect(0, 0, width, height)));
-	worldView.reset((sf::FloatRect(0, 0, width, height)));
+	guiView.reset((sf::FloatRect(0, 0, (float)width, (float)height)));
+	worldView.reset((sf::FloatRect(0, 0, (float)width, (float)height)));
 
 }
 

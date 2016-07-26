@@ -19,6 +19,7 @@
 #include "NativePosition.h"
 #include "Entity.h"
 #include "MenuSelect.h"
+#include "dirent.h"
 
 enum ObjType
 {
@@ -31,6 +32,7 @@ enum ObjType
 struct Object
 {
 	ObjType type;
+	sf::Sprite sprite;
 	sf::RectangleShape rectangle;
 	sf::CircleShape circle;
 };
@@ -65,12 +67,15 @@ private:
 	void zoomIn();
 	void zoomOut();
 	void zoomReset();
+	void rotateReset();
 	
 	//drag
 	bool dragging;
 	void startDrag();
 	void endDrag();
 	void updateDrag();
+
+	void loadTextures();
 public:
 	StageEditor();
 	~StageEditor();

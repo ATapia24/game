@@ -24,3 +24,33 @@ std::string misc::doubleToString(double num)
 	string << num;
 	return string.str();
 }
+
+//GET FILE NAMES
+std::vector<std::string> misc::getFileNames(std::string path)
+{
+	DIR *dpdf;
+	struct dirent *epdf;
+	std::vector<std::string> vector;
+
+	dpdf = opendir(path.c_str());
+
+	if (dpdf != NULL) {
+		while (epdf = readdir(dpdf)) {
+			vector.push_back(std::string(epdf->d_name));
+		}
+	}
+
+	return vector;
+}
+
+std::string misc::getFileType(std::string filename)
+{
+	if (filename.length() < 4)
+	{
+		return "folder";
+	}
+	else
+	{
+		return filename.substr(filename.length() - 3, 3);
+	}
+}
