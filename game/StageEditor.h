@@ -27,8 +27,10 @@ enum ObjType
 	CIRCLE,
 	STATIC_OBJ,
 	DYNAMIC_OBJ,
-	N_TYPES
+	N_TYPES,
+	DELETED
 };
+
 struct Object
 {
 	ObjType type;
@@ -43,7 +45,15 @@ private:
 	sf::Sprite background;
 	sf::Texture gridTexture;
 	Object* objects;
+	int MAX_OBJECTS;
 	int objectIndex, n_objects;
+	void objectIndexUp();
+	void objectIndexDown();
+	void objectIndexUpdate(int lastIndex);
+	bool objectIndexUpRel;
+	bool objectIndexDownRel;
+	void deleteObject(int index);
+	bool objectDeleteRel;
 
 	MenuSelect menu;
 

@@ -40,8 +40,9 @@ void StageEditor::load()
 	dragTypeIndex = 0;
 	updateDragType();
 
-	objects = new Object[10000];
-	for (int i = 0; i < 100; i++)
+	MAX_OBJECTS = 10000;
+	objects = new Object[MAX_OBJECTS];
+	for (int i = 0; i < MAX_OBJECTS; i++)
 	{
 		objects[i].rectangle.setFillColor(sf::Color::White);
 		objects[i].rectangle.setPosition(0, 0);
@@ -76,7 +77,7 @@ void StageEditor::loadTextures()
 	std::vector<std::string> files = misc::getFileNames("assets");
 	for (unsigned int i = 0; i < files.size(); i++)
 	{
-	std::cout << misc::getFileType(files[i]) << std::endl;
+		std::cout << misc::getFileType(files[i]) << std::endl;
 	}
 }
 
@@ -192,6 +193,38 @@ void StageEditor::input()
 		dragTypeRightRel = 1;
 	}
 
+	//object index up and down
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::T) && objectIndexUpRel)
+	{
+		objectIndexUp();
+		objectIndexUpRel = 0;
+	}
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::G) && objectIndexDownRel)
+	{
+		objectIndexDown();
+		objectIndexDownRel = 0;
+	}
+
+	//object index up and down
+	if (!sf::Keyboard::isKeyPressed(sf::Keyboard::T) && !objectIndexUpRel)
+	{
+		objectIndexUpRel = 1;
+	}
+	else if (!sf::Keyboard::isKeyPressed(sf::Keyboard::G) && !objectIndexDownRel)
+	{
+		objectIndexDownRel = 1;
+	}
+
+	//delete object
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Delete) && objectDeleteRel)
+	{
+		deleteObject(objectIndex);
+		objectDeleteRel = 0;
+	}
+	else if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Delete) && !objectDeleteRel)
+	{
+		objectDeleteRel = 1;
+	}
 }
 
 
@@ -292,6 +325,12 @@ void StageEditor::startDrag()
 {
 	//set object position to mouse pos
 	float x, y;
+	int last = objectIndex;
+	if (n_objects > 0)
+	{
+		objectIndex = n_objects;
+	}
+
 	switch (dragTypeIndex)
 	{
 	case ObjType::RECTANGLE:
@@ -299,7 +338,6 @@ void StageEditor::startDrag()
 		x = (((float)sf::Mouse::getPosition(*window->getWindow()).x * zoomAmount) - (view->getSize().x / 2) + view->getCenter().x) / window->getScale().x;
 		y = (((float)sf::Mouse::getPosition(*window->getWindow()).y * zoomAmount) - (view->getSize().y / 2) + view->getCenter().y) / window->getScale().y;
 		objects[objectIndex].rectangle.setPosition(x, y);
-		objects[objectIndex].rectangle.setFillColor(sf::Color::Red);
 		break;
 
 	case ObjType::CIRCLE:
@@ -307,7 +345,6 @@ void StageEditor::startDrag()
 		x = ((float)sf::Mouse::getPosition(*window->getWindow()).x * zoomAmount) - (view->getSize().x / 2) + view->getCenter().x / window->getScale().x;
 		y = ((float)sf::Mouse::getPosition(*window->getWindow()).y * zoomAmount) - (view->getSize().y / 2) + view->getCenter().y / window->getScale().y;
 		objects[objectIndex].circle.setPosition(x, y);
-		objects[objectIndex].circle.setFillColor(sf::Color::Red);
 		break;
 	
 	case ObjType::STATIC_OBJ:
@@ -315,15 +352,102 @@ void StageEditor::startDrag()
 		x = (((float)sf::Mouse::getPosition(*window->getWindow()).x * zoomAmount) - (view->getSize().x / 2) + view->getCenter().x) / window->getScale().x;
 		y = (((float)sf::Mouse::getPosition(*window->getWindow()).y * zoomAmount) - (view->getSize().y / 2) + view->getCenter().y) / window->getScale().y;
 		objects[objectIndex].rectangle.setPosition(x, y);
-		objects[objectIndex].rectangle.setFillColor(sf::Color::Red);
+		break;
+
+	case ObjType::DYNAMIC_OBJ:
+		break;
+	}
+	
+	objectIndexUpdate(last);
+	n_objects++;
+
+	dragging = 1;
+}
+
+//OBJECT INDEX UP
+void StageEditor::objectIndexUp()
+{
+	int lastIndex = objectIndex;
+	objectIndex++;
+	objectIndex == n_objects ? objectIndex = 0 : objectIndex;
+	objectIndexUpdate(lastIndex);
+}
+
+//OBJECT INDEX DOWN
+void StageEditor::objectIndexDown()
+{
+	int lastIndex = objectIndex;
+	objectIndex--;
+	objectIndex < 0 ? objectIndex = n_objects - 1 : objectIndex;
+	objectIndexUpdate(lastIndex);
+}
+
+//DELETE OBJECT
+void StageEditor::deleteObject(int index)
+{
+	std::cout << "deleting: " << index << '\n';
+
+	if (n_objects > 0)
+	{
+		int offset = 0;
+		for (int i = 0; i < n_objects; i++)
+		{
+			i == index ? offset++ : offset;
+			objects[i] = objects[i + offset];
+		}
+
+		n_objects--;
+		objectIndex > 0 ? objectIndex-- : objectIndex;
+		objectIndexUpdate(-1);
+	}
+}
+
+//OBJECT INDEX UPDATE *pass -1 to only update current
+void StageEditor::objectIndexUpdate(int lastIndex)
+{
+	sf::Color selectedColor = sf::Color::Red;
+
+	if (lastIndex != -1)
+	{
+		//update last
+		switch (objects[lastIndex].type)
+		{
+		case ObjType::RECTANGLE:
+			objects[lastIndex].rectangle.setFillColor(sf::Color::White);
+			break;
+
+		case ObjType::CIRCLE:
+			objects[lastIndex].circle.setFillColor(sf::Color::White);
+			break;
+
+		case ObjType::STATIC_OBJ:
+			objects[lastIndex].rectangle.setFillColor(sf::Color::White);
+			break;
+
+		case ObjType::DYNAMIC_OBJ:
+			break;
+		}
+	}
+
+	//update current
+	switch (objects[objectIndex].type)
+	{
+	case ObjType::RECTANGLE:
+		objects[objectIndex].rectangle.setFillColor(selectedColor);
+		break;
+
+	case ObjType::CIRCLE:
+		objects[objectIndex].circle.setFillColor(selectedColor);
+		break;
+
+	case ObjType::STATIC_OBJ:
+		objects[objectIndex].rectangle.setFillColor(selectedColor);
 		break;
 
 	case ObjType::DYNAMIC_OBJ:
 		break;
 	}
 
-	n_objects++;
-	dragging = 1;
 }
 
 //END DRAG
@@ -345,15 +469,12 @@ void StageEditor::endDrag()
 			rect->setPosition(rect->getPosition().x, rect->getPosition().y + rect->getSize().y);
 			rect->setSize(sf::Vector2f(rect->getSize().x, -rect->getSize().y));
 		}
-
-		rect->setFillColor(sf::Color::White);
 		break;
 
 	//case ObjType::CIRCLE:
 		//break;
 	}
 
-	objectIndex++;
 	dragging = 0;
 }
 
@@ -368,6 +489,7 @@ void StageEditor::draw()
 //DRAW OBJECTS
 void StageEditor::drawObjects()
 {
+	std::cout << "n: " << n_objects << "  i: " << objectIndex << '\n';
 	for (int i = 0; i < n_objects; i++)
 	{
 		switch (objects[i].type)
@@ -388,4 +510,5 @@ void StageEditor::unload()
 {
 	zoomReset();
 	rotateReset();
+	delete objects;
 }
