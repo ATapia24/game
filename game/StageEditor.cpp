@@ -41,7 +41,7 @@ void StageEditor::load()
 	updateDragType();
 
 	MAX_OBJECTS = 10000;
-	objects = new Object[MAX_OBJECTS];
+	objects = new EditorObject[MAX_OBJECTS];
 	for (int i = 0; i < MAX_OBJECTS; i++)
 	{
 		objects[i].rectangle.setFillColor(sf::Color::White);
@@ -225,6 +225,27 @@ void StageEditor::input()
 	{
 		objectDeleteRel = 1;
 	}
+
+	int tmp = 3;
+	//tmp up and down
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+	{
+		objects[objectIndex].shrinkTop(tmp);
+	}
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+	{
+		objects[objectIndex].shrinkBottom(tmp);
+	}
+
+	//tmp object left or right
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+	{
+		objects[objectIndex].rotateLeft(tmp);
+	}
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+	{
+		objects[objectIndex].rotateRight(tmp);
+	}
 }
 
 
@@ -385,8 +406,6 @@ void StageEditor::objectIndexDown()
 //DELETE OBJECT
 void StageEditor::deleteObject(int index)
 {
-	std::cout << "deleting: " << index << '\n';
-
 	if (n_objects > 0)
 	{
 		int offset = 0;
@@ -459,12 +478,12 @@ void StageEditor::endDrag()
 		sf::RectangleShape* rect = &objects[objectIndex].rectangle;
 
 		//adjust for negative size
-		if (rect->getPosition().x < 0)
+		if (rect->getSize().x < 0)
 		{
 			rect->setPosition(rect->getPosition().x + rect->getSize().x, rect->getPosition().y);
 			rect->setSize(sf::Vector2f(-rect->getSize().x, rect->getSize().y));
 		}
-		if (rect->getPosition().y < 0)
+		if (rect->getSize().y < 0)
 		{
 			rect->setPosition(rect->getPosition().x, rect->getPosition().y + rect->getSize().y);
 			rect->setSize(sf::Vector2f(rect->getSize().x, -rect->getSize().y));
@@ -489,7 +508,6 @@ void StageEditor::draw()
 //DRAW OBJECTS
 void StageEditor::drawObjects()
 {
-	std::cout << "n: " << n_objects << "  i: " << objectIndex << '\n';
 	for (int i = 0; i < n_objects; i++)
 	{
 		switch (objects[i].type)

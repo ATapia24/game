@@ -234,6 +234,9 @@
     <ClInclude Include="..\Box2D\Box2D.h">
       <Filter>Header Files\Box2d</Filter>
     </ClInclude>
+    <ClInclude Include="EditorObject.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="assets\bg.jpg">
@@ -473,6 +476,9 @@
     </ClCompile>
     <ClCompile Include="..\Box2D\Rope\b2Rope.cpp">
       <Filter>Header Files\Box2d</Filter>
+    </ClCompile>
+    <ClCompile Include="EditorObject.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

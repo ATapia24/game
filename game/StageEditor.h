@@ -20,16 +20,7 @@
 #include "Entity.h"
 #include "MenuSelect.h"
 #include "dirent.h"
-
-enum ObjType
-{
-	RECTANGLE,
-	CIRCLE,
-	STATIC_OBJ,
-	DYNAMIC_OBJ,
-	N_TYPES,
-	DELETED
-};
+#include "EditorObject.h"
 
 struct Object
 {
@@ -44,7 +35,7 @@ class StageEditor : public Stage
 private:
 	sf::Sprite background;
 	sf::Texture gridTexture;
-	Object* objects;
+	EditorObject* objects;
 	int MAX_OBJECTS;
 	int objectIndex, n_objects;
 	void objectIndexUp();
