@@ -25,7 +25,7 @@ class StageDev : public Stage, public b2ContactListener
 {
 private:
 	sf::Texture bgText;
-	Floor bg;
+	sf::RectangleShape bg;
 
 	Player player;
 

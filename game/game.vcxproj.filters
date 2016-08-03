@@ -237,6 +237,9 @@
     <ClInclude Include="EditorObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="KeyManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="assets\bg.jpg">
@@ -478,6 +481,9 @@
       <Filter>Header Files\Box2d</Filter>
     </ClCompile>
     <ClCompile Include="EditorObject.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="KeyManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

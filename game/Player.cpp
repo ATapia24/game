@@ -41,10 +41,10 @@ void Player::update()
 {
 	if (spawned)
 	{
-		//input();
+		input();
 		updateMovement();
 		//updateAnimations();
-		//updateCamera();
+		updateCamera();
 	}
 }
 
@@ -62,12 +62,12 @@ void Player::updateMovement()
 {
 	//mouse rotation - reset on full rotation (radians)
 	float rotation = body->GetAngle() + ((600 - (float)sf::Mouse::getPosition().x) * -0.001f);
-	//sf::Mouse::setPosition(sf::Vector2i(600, 600));
+	sf::Mouse::setPosition(sf::Vector2i(600, 500));
 	rotation > globals::PI2 ? rotation = 0: rotation;
 	rotation < 0 ? rotation = globals::PI2 : rotation;
+	
 	//update pos/rot
-	body->SetTransform(body->GetPosition(), body->GetAngle());
-	//del^^body->SetTransform(body->GetPosition(), rotation); 
+	body->SetTransform(body->GetPosition(), rotation); 
 	hitbox.setPosition(body->GetPosition().x * 32, -body->GetPosition().y * 32);
 	sprite.setPosition(hitbox.getPosition());
 	hitbox.setRotation(body->GetAngle() * globals::RAD2DEG);
@@ -163,6 +163,11 @@ void Player::input()
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
 	{
 		walkForward();
+		rel = 0;
+	}if (!sf::Keyboard::isKeyPressed(sf::Keyboard::W) && !rel)
+	{
+		stopWalkForward();
+		rel = 1;
 	}
 
 	/*

@@ -52,9 +52,9 @@ void StageEditor::load()
 	objectIndex = 0;
 	n_objects = 0;
 
+
 	background.setPosition(0, 0);
 	background.setTextureRect(sf::IntRect(0, 0, 6000, 6000));
-	//background.setColor(sf::Color::Green);
 
 	//menu
 	menu.setWindow(window);
@@ -63,6 +63,29 @@ void StageEditor::load()
 	menu.setFontSize(25);
 	menu.addStatic("Editor Menu");
 	menu.add(dragTypeString);
+	menu.add(modeString);
+
+	modeIndex = 0;
+	modeUpdate();
+
+	//keys
+	modeKey.set(sf::Keyboard::Space, KeyType::SINGLE);
+	objectIndexUpKey.set(sf::Keyboard::Key::G, KeyType::SINGLE);
+	objectIndexDownKey.set(sf::Keyboard::Key::T, KeyType::SINGLE);
+	deleteKey.set(sf::Keyboard::Delete, KeyType::SINGLE);
+	dragLeftKey.set(sf::Keyboard::Num1, KeyType::SINGLE);
+	dragRightKey.set(sf::Keyboard::Num2, KeyType::SINGLE);
+	keyZoomIn.set(sf::Keyboard::R, KeyType::REPEATED);
+	keyZoomOut.set(sf::Keyboard::F, KeyType::REPEATED);
+	keyZoomReset.set(sf::Keyboard::C, KeyType::SINGLE);
+	keyRotateLeft.set(sf::Keyboard::Q, KeyType::REPEATED);
+	keyRotateRight.set(sf::Keyboard::E, KeyType::REPEATED);
+	keyRotateReset.set(sf::Keyboard::X, KeyType::SINGLE);
+	keyMoveUp.set(sf::Keyboard::W, KeyType::REPEATED);
+	keyMoveDown.set(sf::Keyboard::S, KeyType::REPEATED);
+	keyMoveLeft.set(sf::Keyboard::A, KeyType::REPEATED);
+	keyMoveRight.set(sf::Keyboard::D, KeyType::REPEATED);
+
 
 	//tmp //float y = (((float)-sf::Mouse::getPosition(*window->getWindow()).y * zoomAmount) + (view->getSize().y / 2) - view->getCenter().y) / window->getScale().y;
 	//x = ((((float)sf::Mouse::getPosition(*window->getWindow()).x * zoomAmount) - (view->getSize().x / 2) + view->getCenter().x) / window->getScale().x) / 32.f;
@@ -112,55 +135,40 @@ void StageEditor::update()
 //UPDATE CAMERA
 void StageEditor::input()
 {
+	if (modeKey.getValue())
+	{
+		modeIndexUp();
+	}
+
 	float angle = view->getRotation();
 
 	//up and down
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
-	{
+	if (keyMoveUp.getValue())
 		view->move(sf::Vector2f(sin(angle * globals::DEG2RAD) * viewSpeedOffset, -cos(angle * globals::DEG2RAD) * viewSpeedOffset));
-	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
-	{
+	else if (keyMoveDown.getValue())
 		view->move(sf::Vector2f(-sin(angle * globals::DEG2RAD) * viewSpeedOffset, cos(angle * globals::DEG2RAD) * viewSpeedOffset));
-	}
 
 	//left and right
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
-	{
+	if (keyMoveLeft.getValue())
 		view->move(sf::Vector2f(-cos(angle * globals::DEG2RAD) * viewSpeedOffset, -sin(angle * globals::DEG2RAD) * viewSpeedOffset));
-	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
-	{
+	else if (keyMoveRight.getValue())
 		view->move(sf::Vector2f(cos(angle * globals::DEG2RAD) * viewSpeedOffset, sin(angle * globals::DEG2RAD) * viewSpeedOffset));
-	}
 
 	//rotate
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q))
-	{
+	if (keyRotateLeft.getValue())
 		view->setRotation(window->getWorldView()->getRotation() - 1.f);
-	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::E))
-	{
+	else if (keyRotateRight.getValue())
 		view->setRotation(window->getWorldView()->getRotation() + 1.f);
-	}
-	else if(sf::Keyboard::isKeyPressed(sf::Keyboard::X))
-	{
+	else if(keyRotateReset.getValue())
 		rotateReset();
-	}
 
 	//zoom out and in
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::R))
-	{
+	if (keyZoomIn.getValue())
 		zoomIn();
-	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::F))
-	{
+	else if (keyZoomOut.getValue())
 		zoomOut();
-	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::C))
-	{
+	else if (keyZoomReset.getValue())
 		zoomReset();
-	}
 
 	//left mouse click
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && !dragging)
@@ -172,59 +180,20 @@ void StageEditor::input()
 	}
 
 	//drag left and right
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num1) && dragTypeLeftRel)
-	{
+	if (dragLeftKey.getValue())
 		dragTypeLeft();
-		dragTypeLeftRel = 0;
-	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num2) && dragTypeRightRel)
-	{
-		dragTypeRight();
-		dragTypeRightRel = 0;
-	}
-
-	//drag left and right released
-	if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Num1) && !dragTypeLeftRel)
-	{
-		dragTypeLeftRel = 1;
-	}
-	else if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Num2) && !dragTypeRightRel)
-	{
-		dragTypeRightRel = 1;
-	}
+	else if (dragRightKey.getValue())
+		dragTypeRight();	
 
 	//object index up and down
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::T) && objectIndexUpRel)
-	{
+	if (objectIndexUpKey.getValue())
 		objectIndexUp();
-		objectIndexUpRel = 0;
-	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::G) && objectIndexDownRel)
-	{
+	else if (objectIndexDownKey.getValue())
 		objectIndexDown();
-		objectIndexDownRel = 0;
-	}
-
-	//object index up and down
-	if (!sf::Keyboard::isKeyPressed(sf::Keyboard::T) && !objectIndexUpRel)
-	{
-		objectIndexUpRel = 1;
-	}
-	else if (!sf::Keyboard::isKeyPressed(sf::Keyboard::G) && !objectIndexDownRel)
-	{
-		objectIndexDownRel = 1;
-	}
 
 	//delete object
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Delete) && objectDeleteRel)
-	{
+	if (deleteKey.getValue())
 		deleteObject(objectIndex);
-		objectDeleteRel = 0;
-	}
-	else if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Delete) && !objectDeleteRel)
-	{
-		objectDeleteRel = 1;
-	}
 
 	int tmp = 3;
 	//tmp up and down
@@ -248,6 +217,33 @@ void StageEditor::input()
 	}
 }
 
+//MODE UPDATE
+void StageEditor::modeUpdate()
+{
+	switch(modeIndex)
+	{
+	case Mode::PAN:
+		mode = Mode::PAN;
+		modeString = "Pan";
+		break;
+
+	case Mode::PLACE:
+		mode = Mode::PLACE;
+		modeString = "Place";
+		break;
+	case Mode::TRANSFORM:
+		mode = Mode::PLACE;
+		modeString = "Transform";
+		break;
+	}
+}
+
+//MODE INDEX UP
+void StageEditor::modeIndexUp()
+{
+	modeIndex < 2 ? modeIndex++ : modeIndex = 0;
+	modeUpdate();
+}
 
 //DRAG TYPE LEFT
 void StageEditor::dragTypeLeft()
@@ -528,5 +524,4 @@ void StageEditor::unload()
 {
 	zoomReset();
 	rotateReset();
-	delete objects;
 }

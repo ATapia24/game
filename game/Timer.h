@@ -10,7 +10,7 @@ public:
 	void start();
 	void stop();
 	float getDelta_ms();
-	int getTimeInt();
+	long int getTimeInt();
 	float getTimeDec();
 	float reset_ms();
 	Timer();

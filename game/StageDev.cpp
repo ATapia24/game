@@ -24,8 +24,10 @@ void StageDev::load()
 	player.initialize(window, world, 1.f, 0.3f, 30.f, -31.875f);
 	player.spawn();
 
-	
 	bgText.loadFromFile("assets/strike.jpg");
+	bg.setPosition(0, 0);
+	bg.setSize(sf::Vector2f(bgText.getSize().x, bgText.getSize().y));
+	bg.setTexture(&bgText);
 }
 
 //UPDATE
@@ -39,14 +41,10 @@ void StageDev::update()
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Tab))
 	{
 		stageManager->changeStage("Main Menu");
-	}
-
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::F1))
+	}else if (sf::Keyboard::isKeyPressed(sf::Keyboard::F1))
 	{
 		window->setResolution(1920, 1080, 1, 0);
-	}
-
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::F2))
+	}else if (sf::Keyboard::isKeyPressed(sf::Keyboard::F2))
 	{
 		window->setResolution(1280, 720, 1, 0);
 	}
@@ -64,6 +62,7 @@ void StageDev::update()
 //DRAW
 void StageDev::draw()
 {
+	window->addWorld(bg);
 	player.draw();
 }
 

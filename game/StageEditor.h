@@ -16,11 +16,10 @@
 #include "MenuList.h"
 #include "MenuSelect.h"
 #include "misc.h"
-#include "NativePosition.h"
-#include "Entity.h"
-#include "MenuSelect.h"
 #include "dirent.h"
 #include "EditorObject.h"
+#include "KeyManager.h"
+#include "Timer.h"
 
 struct Object
 {
@@ -28,6 +27,13 @@ struct Object
 	sf::Sprite sprite;
 	sf::RectangleShape rectangle;
 	sf::CircleShape circle;
+};
+
+enum Mode
+{
+	PLACE,
+	PAN,
+	TRANSFORM,
 };
 
 class StageEditor : public Stage
@@ -38,16 +44,26 @@ private:
 	EditorObject* objects;
 	int MAX_OBJECTS;
 	int objectIndex, n_objects;
+	Key objectIndexUpKey;
+	Key objectIndexDownKey;
 	void objectIndexUp();
 	void objectIndexDown();
 	void objectIndexUpdate(int lastIndex);
-	bool objectIndexUpRel;
-	bool objectIndexDownRel;
 	void deleteObject(int index);
-	bool objectDeleteRel;
+	Key deleteKey;
 
 	MenuSelect menu;
 
+	//mode
+	Mode mode;
+	short int modeIndex;
+	std::string modeString;
+	Key modeKey;
+	void modeIndexUp();
+	void modeUpdate();
+	bool modeRel;
+
+	//drag
 	Object dragType;
 	short int dragTypeIndex;
 	std::string dragTypeString;
@@ -57,6 +73,8 @@ private:
 	bool dragTypeLeftRel;
 	bool dragTypeRightRel;
 	void drawObjects();
+	Key dragLeftKey;
+	Key dragRightKey;
 
 	float viewSpeed, viewSpeedOffset;
 	float zoomSpeed, zoomAmount;
@@ -69,6 +87,14 @@ private:
 	void zoomOut();
 	void zoomReset();
 	void rotateReset();
+	Key keyMoveUp, keyMoveDown;
+	Key keyMoveLeft, keyMoveRight;
+	Key keyZoomIn;
+	Key keyZoomOut;
+	Key keyZoomReset;
+	Key keyRotateLeft;
+	Key keyRotateRight;
+	Key keyRotateReset;
 	
 	//drag
 	bool dragging;

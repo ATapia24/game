@@ -42,7 +42,7 @@ float Timer::reset_ms()
 
 
 //GET TIME - MILLISECONDS
-int Timer::getTimeInt()
+long int Timer::getTimeInt()
 {
 	return std::clock() - begin;
 }

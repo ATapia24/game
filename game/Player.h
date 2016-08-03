@@ -22,6 +22,8 @@ private:
 	float walkSpeed;
 	float jumpStrength;
 	bool onFloor;
+	//tmp
+	bool rel;
 	
 	//input
 	bool q_rel, a_rel, d_rel, b_c, q_rel2, a_rel2, d_rel2, b_c2;
