@@ -26,6 +26,7 @@ class StageDev : public Stage, public b2ContactListener
 private:
 	sf::Texture bgText;
 	sf::RectangleShape bg;
+	MenuList menu;
 
 	Player player;
 

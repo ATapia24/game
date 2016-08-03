@@ -63,6 +63,12 @@ private:
 	void modeIndexUp();
 	void modeUpdate();
 	bool modeRel;
+	void placeUpdate();
+	void panUpdate();
+	void transformUpdate();
+	void placeInput();
+	void panInput();
+	void transformInput();
 
 	//drag
 	Object dragType;
@@ -80,7 +86,7 @@ private:
 	float viewSpeed, viewSpeedOffset;
 	float zoomSpeed, zoomAmount;
 	sf::View* view;
-	void input();
+	void generalInput();
 
 	//zoom
 	void zoomIn();

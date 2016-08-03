@@ -17,112 +17,90 @@ MenuList::MenuList()
 void MenuList::load()
 {
 	font.loadFromFile("assets/font.ttf");
-	menuPosition.set(0, 0);
-	topPadding = 0;
-	leftPadding = 0;
-	topSpacing = 0;
-	leftSpacing = 0;
 	fontSize = 12;
-	lineHeight = fontSize * 1.5f;
+	position.x = 0;
+	position.y = 0;
+	horizontalSpacing = 10;
+	verticalSpacing = 10;
+	backgroundEnabled = 1;
+	count = 0;
+
+	//tmp
+	background.setFillColor(sf::Color(76, 88, 68, 255));
+	s = "HELLO";
+	t.setFont(font);
+	t.setColor(sf::Color::Red);
+	t.setCharacterSize(fontSize);
+	t.setPosition(sf::Vector2f(100, 100));
+	t.setString(s);
 }
 
 
 MenuList::~MenuList()
 {
-	std::cout << "Menu decon\n";
+
 }
 
 
 //DRAW
 void MenuList::draw()
 {
-	for (unsigned int i = 0; i < lines.size(); i++)
+	if (backgroundEnabled)
+		window->addGui(background);
+
+	for (int y = 0; y < grid.size(); y++)
 	{
-		lines[i].text.setString(*lines[i].string);
-		lines[i].text.setPosition(lines[i].linePosition.get());
-		window->addGui(lines[i].text);
+		for (int x = 0; x < grid[y].size(); x++)
+		{
+			MenuObject* obj = &grid[y][x];
+
+			if (backgroundEnabled)
+				window->addGui(obj->bg);
+
+			if (obj->type == MenuObjectType::TEXT)
+			{
+				window->addGui(obj->text);
+			}
+			else if (obj->type == MenuObjectType::SPRITE)
+			{
+
+			}
+			else if (obj->type == MenuObjectType::COMBO)
+			{
+
+			}
+		}
 	}
-
-
 }
 
 
 //ADD - Dynamic
 void MenuList::add(std::string& string)
 {
-	Line temp;
-	temp.string = &string;
-	temp.text.setFont(font);
-	temp.lineHeight = lineHeight;
-	lines.push_back(temp);
-	recalculateLine();
-}
 
-//ADD - Dynamic w/ line height
-void MenuList::add(std::string & string, float _lineHeight)
-{
-	Line temp;
-	temp.string = &string;
-	temp.text.setFont(font);
-	temp.lineHeight = _lineHeight;
-	lines.push_back(temp);
-	recalculateLine();
 }
 
 //ADD - Static
 void MenuList::addStatic(std::string string)
 {
-	//store
+	//store string
 	std::string* tmp = new std::string;
 	*tmp = string;
 	staticStrings.push_back(tmp);
 
-	Line temp;
-	temp.string = staticStrings[staticStrings.size() - 1];	
-	temp.text.setFont(font);
-	temp.lineHeight = lineHeight;
-	lines.push_back(temp);
-	recalculateLine();
+	//store text
+	count++;
+	int i = count % grid.size();
+	MenuObject* obj = &grid[i - count][i];
 
-
-}
-
-//ADD - Static w/ line height
-void MenuList::addStatic(std::string string, float _lineHeight)
-{
-	//store
-	std::string* tmp = new std::string;
-	*tmp = string;
-	staticStrings.push_back(tmp);
-
-	Line temp;
-	temp.string = staticStrings[staticStrings.size() - 1];
-	temp.text.setFont(font);
-	temp.lineHeight = _lineHeight;
-	lines.push_back(temp);
-	recalculateLine();
-
-}
-
-//SET LAYER
-void MenuList::setLayer(int _layer)
-{
-	layer = _layer;
-}
-
-//SET POSITION
-void MenuList::setPosition(float _x, float _y)
-{
-	menuPosition.set(_x, _y);
-}
-
-//SET MARGINS
-void MenuList::setMargins(float _leftPadding, float _topPadding, float _leftSpacing, float _topSpacing)
-{
-	leftPadding = _leftPadding;
-	topPadding = _topPadding;
-	leftSpacing = _leftSpacing;
-	topSpacing = _topSpacing;
+	obj->type = MenuObjectType::TEXT;
+	obj->active = 1;
+	obj->string = staticStrings[staticStrings.size() - 1];
+	obj->text.setFont(font);
+	obj->text.setCharacterSize(fontSize);
+	obj->text.setPosition(sf::Vector2f(position.x, position.y));
+	obj->text.setColor(sf::Color::Black);
+	obj->text.setString(obj->string->c_str());
 }
 
 //SET WINDOW
@@ -131,34 +109,56 @@ void MenuList::setWindow(WindowMgr* _window)
 	window = _window;
 }
 
-//SET FONT SIZE
-void MenuList::setFontSize(float _fontSize)
+//SET DIMENSIONS
+void MenuList::setDimensions(int n_cols, int n_rows, int _width, int _height)
 {
-	fontSize = _fontSize;
-	for (unsigned int i = 0; i < lines.size(); i++)
+	//objects size
+	width = _width;
+	height = _height;
+
+	//resize gid
+	grid.resize(n_rows);
+	for (int i = 0; i < n_rows; i++)
 	{
-		lines[i].text.setCharacterSize((unsigned int)fontSize);
+		grid[i].resize(n_cols);
 	}
+
+	//objects
+	for (int y = 0; y < grid.size(); y++)
+	{
+		for (int x = 0; x < grid[y].size(); x++)
+		{
+			grid[y][x].bg.setSize(sf::Vector2f(width, height));
+			grid[y][x].bg.setFillColor(sf::Color::White);
+		}
+	}
+
+	//position
+	setPosition(position.x, position.y);
+
+	//menu size
+	globalWidth = ((width + horizontalSpacing) * n_cols) - horizontalSpacing;
+	globalHeight = ((height + verticalSpacing) * n_rows) - verticalSpacing;
+
+	//background
+	background.setPosition(sf::Vector2f(position.x, position.y));
+	background.setSize(sf::Vector2f(globalWidth, globalHeight));
 }
 
-//GET TEXT
-sf::Text& MenuList::getLine(int line)
+//SET POSITION
+void MenuList::setPosition(float x, float y)
 {
-	return lines[line].text;
-}
+	position.x = x;
+	position.y = y;
 
-//SET LINE HEIGHT
-void MenuList::setLineHeight(float _lineHeight)
-{
-	lineHeight = _lineHeight;
-}
+	//calculate new pos
+	for (int y = 0; y < grid.size(); y++)
+	{
+		for (int x = 0; x < grid[y].size(); x++)
+		{
+			grid[y][x].bg.setPosition(sf::Vector2f((width*x + (x*horizontalSpacing)) + position.x, (height*y + (y*verticalSpacing)) + position.y));
+		}
+	}
 
-//RECALULATE LINE
-void MenuList::recalculateLine()
-{
-	//calculate position and font size
-	int index = lines.size() - 1;
-	lines[index].linePosition.set((menuPosition.x() + leftPadding) , menuPosition.y() + topPadding + ((lines[index].lineHeight + topSpacing) * index));
-	lines[index].text.setPosition(lines[index].linePosition.get());
-	lines[index].text.setCharacterSize((unsigned int)fontSize);
+	background.setPosition(sf::Vector2f(position.x, position.y));
 }

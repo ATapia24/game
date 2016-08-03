@@ -57,22 +57,21 @@ void StageEditor::load()
 	background.setTextureRect(sf::IntRect(0, 0, 6000, 6000));
 
 	//menu
-	menu.setWindow(window);
-	menu.setPosition(0, 200);
-	menu.setMargins(3, -1, 1, 4);
-	menu.setFontSize(25);
-	menu.addStatic("Editor Menu");
-	menu.add(dragTypeString);
-	menu.add(modeString);
+	//	menu.setWindow(window);
+	//menu.setPosition(0, 200);
+	//menu.setMargins(3, -1, 1, 4);
+	//menu.setFontSize(25);
+	//menu.addStatic("Editor Menu");
+	//menu.add(dragTypeString);
+	//menu.add(modeString);
 
 	modeIndex = 0;
 	modeUpdate();
 
 	menu.add(textString);
-	textInput.setString("QQQQQ\nQQQQ");
 
 	//keys
-	modeKey.set(sf::Keyboard::Space, KeyType::SINGLE);
+	modeKey.set(sf::Keyboard::Tab, KeyType::SINGLE);
 	objectIndexUpKey.set(sf::Keyboard::Key::G, KeyType::SINGLE);
 	objectIndexDownKey.set(sf::Keyboard::Key::T, KeyType::SINGLE);
 	deleteKey.set(sf::Keyboard::Delete, KeyType::SINGLE);
@@ -89,11 +88,6 @@ void StageEditor::load()
 	keyMoveLeft.set(sf::Keyboard::A, KeyType::REPEATED);
 	keyMoveRight.set(sf::Keyboard::D, KeyType::REPEATED);
 
-
-	//tmp //float y = (((float)-sf::Mouse::getPosition(*window->getWindow()).y * zoomAmount) + (view->getSize().y / 2) - view->getCenter().y) / window->getScale().y;
-	//x = ((((float)sf::Mouse::getPosition(*window->getWindow()).x * zoomAmount) - (view->getSize().x / 2) + view->getCenter().x) / window->getScale().x) / 32.f;
-	//y = ((((float)-sf::Mouse::getPosition(*window->getWindow()).y * zoomAmount) + (view->getSize().y / 2) - view->getCenter().y) / window->getScale().y) / 32.f;
-
 	loadTextures();
 }
 
@@ -103,47 +97,68 @@ void StageEditor::loadTextures()
 	std::vector<std::string> files = misc::getFileNames("assets");
 	for (unsigned int i = 0; i < files.size(); i++)
 	{
-		std::cout << misc::getFileType(files[i]) << std::endl;
+		//std::cout << misc::getFileType(files[i]) << std::endl;
 	}
 }
 
 //UPDATE
 void StageEditor::update()
 {
-	textString = textInput.getString();
-	textInput.update();
 	menu.update();
 
-	//input();
+	generalInput();
 
-	if (dragging)
-		updateDrag();
-
-	//MISC
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Tab))
+	switch (mode)
 	{
-		stageManager->changeStage("Main Menu");
-	}
-
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::F1))
-	{
-		window->setResolution(1920, 1080, 1, 0);
-	}
-
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::F2))
-	{
-		window->setResolution(1280, 720, 1, 0);
+	case PLACE:
+		placeUpdate();
+		break;
+	case PAN:
+		panUpdate();
+		break;
+	case TRANSFORM:
+		transformUpdate();
+		break;
+	default:
+		break;
 	}
 }
 
-//UPDATE CAMERA
-void StageEditor::input()
+void StageEditor::placeUpdate()
 {
-	if (modeKey.getValue())
+
+	placeInput();
+
+	if (dragging)
+		updateDrag();
+}
+
+void StageEditor::placeInput()
+{
+	//left mouse click
+	if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && !dragging)
 	{
-		modeIndexUp();
+		startDrag();
+	}
+	else if (!sf::Mouse::isButtonPressed(sf::Mouse::Left) && dragging)
+	{
+		endDrag();
 	}
 
+	//drag left and right
+	if (dragLeftKey.getValue())
+		dragTypeLeft();
+	else if (dragRightKey.getValue())
+		dragTypeRight();
+}
+
+void StageEditor::panUpdate()
+{
+	panInput();
+}
+
+void StageEditor::panInput()
+{
 	float angle = view->getRotation();
 
 	//up and down
@@ -163,7 +178,7 @@ void StageEditor::input()
 		view->setRotation(window->getWorldView()->getRotation() - 1.f);
 	else if (keyRotateRight.getValue())
 		view->setRotation(window->getWorldView()->getRotation() + 1.f);
-	else if(keyRotateReset.getValue())
+	else if (keyRotateReset.getValue())
 		rotateReset();
 
 	//zoom out and in
@@ -173,21 +188,28 @@ void StageEditor::input()
 		zoomOut();
 	else if (keyZoomReset.getValue())
 		zoomReset();
+}
 
-	//left mouse click
-	if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && !dragging)
-	{
-		startDrag();
-	}else if(!sf::Mouse::isButtonPressed(sf::Mouse::Left) && dragging)
-	{
-		endDrag();
-	}
+void StageEditor::transformUpdate()
+{
+	transformInput();
+}
 
-	//drag left and right
-	if (dragLeftKey.getValue())
-		dragTypeLeft();
-	else if (dragRightKey.getValue())
-		dragTypeRight();	
+void StageEditor::transformInput()
+{
+	
+}
+
+//INPUT
+void StageEditor::generalInput()
+{
+	//change editor mode
+	if (modeKey.getValue())
+		modeIndexUp();
+
+	//back
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Tilde))
+		stageManager->changeStage("Main Menu");
 
 	//object index up and down
 	if (objectIndexUpKey.getValue())
@@ -198,6 +220,8 @@ void StageEditor::input()
 	//delete object
 	if (deleteKey.getValue())
 		deleteObject(objectIndex);
+
+	/*
 
 	int tmp = 3;
 	//tmp up and down
@@ -218,7 +242,7 @@ void StageEditor::input()
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
 	{
 		objects[objectIndex].rotateRight(tmp);
-	}
+	}*/
 }
 
 //MODE UPDATE

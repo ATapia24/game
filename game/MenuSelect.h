@@ -4,8 +4,6 @@
 class MenuSelect : public MenuList
 {
 private:
-	void indexUp();
-	void indexDown();
 	int input();
 	int currentIndex, lastIndex;
 	bool wrapIndex;

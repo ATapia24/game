@@ -20,15 +20,15 @@ void StageMainMenu::load()
 	{
 		background.load("Assets/image1.png", 270, 200, 134);
 		background.setWindow(*window);
-		menu.setPosition(200, 200);
-		menu.setWindow(window);
-		menu.addStatic("Start", 45);
-		menu.addStatic("Settings", 45);
-		menu.addStatic("Dev Mode", 45);
-		menu.addStatic("Editor", 45);
-		menu.load();
-		menu.setMargins(2, -1, 1, 4);
-		menu.setFontSize(35);
+		//menu.setPosition(200, 200);
+		//menu.setWindow(window);
+		//menu.addStatic("Start", 45);
+		//menu.addStatic("Settings", 45);
+		//menu.addStatic("Dev Mode", 45);
+		//menu.addStatic("Editor", 45);
+		//menu.load();
+		//menu.setMargins(2, -1, 1, 4);
+		//menu.setFontSize(35);
 		loaded = 1;
 	}
 }

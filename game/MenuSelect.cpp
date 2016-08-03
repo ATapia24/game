@@ -8,18 +8,12 @@ MenuSelect::~MenuSelect(){}
 void MenuSelect::load()
 {
 	//general
-	layer = 0;
 	font.loadFromFile("assets/font.ttf");
-	topPadding = 0;
-	leftPadding = 0;
-	topSpacing = 0;
-	leftSpacing = 0;
 	fontSize = 12;
 
 	//index based
 	wrapIndex = 1;
 	currentIndex = 0;
-	lines[currentIndex].text.setColor(sf::Color::Red);
 }
 
 //UPDATE
@@ -38,7 +32,7 @@ int MenuSelect::input()
 	//index up
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) && upIndexKeyReleased)
 	{
-		indexUp();
+		//indexUp();
 		upIndexKeyReleased = 0;
 	}
 	else if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
@@ -50,7 +44,7 @@ int MenuSelect::input()
 	//index down
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down) && downIndexKeyReleased)
 	{
-		indexDown();
+		//indexDown();
 		downIndexKeyReleased = 0;
 	}else if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
 	{
@@ -70,42 +64,4 @@ int MenuSelect::input()
 
 	//return no input
 	return -1;
-}
-
-//INDEX UP
-void MenuSelect::indexUp()
-{
-	//set last color
-	lines[currentIndex].text.setColor(sf::Color::White);
-
-	if (wrapIndex)
-	{
-		currentIndex == 0 ? currentIndex = lines.size() - 1 : currentIndex--;
-	}
-	else
-	{
-		currentIndex == 0 ? currentIndex = 0: currentIndex--;
-	}
-
-	//set current color
-	lines[currentIndex].text.setColor(sf::Color::Red);
-}
-
-//INDEX DOWN
-void MenuSelect::indexDown()
-{
-	//set last color
-	lines[currentIndex].text.setColor(sf::Color::White);
-
-	if (wrapIndex)
-	{
-		currentIndex == lines.size() - 1 ? currentIndex = 0 : currentIndex++;
-	}
-	else
-	{
-		currentIndex == lines.size() - 1 ? currentIndex = currentIndex : currentIndex++;
-	}
-
-	//set current color
-	lines[currentIndex].text.setColor(sf::Color::Red);
 }

@@ -28,15 +28,23 @@ void StageDev::load()
 	bg.setPosition(0, 0);
 	bg.setSize(sf::Vector2f(bgText.getSize().x, bgText.getSize().y));
 	bg.setTexture(&bgText);
+
+	menu.setWindow(window);
+	menu.load();
+	menu.setDimensions(5, 5, 200, 20);
+	menu.setPosition(10 , 10);
+	menu.addStatic("ONE");
+	menu.addStatic("TWO");
 }
 
 //UPDATE
 void StageDev::update()
 {
-	player.update();
-
+	/*
+	//player.update();
 	world->Step(1.0f / 65.f, 8, 3);
 	
+
 	//MISC
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Tab))
 	{
@@ -49,6 +57,7 @@ void StageDev::update()
 		window->setResolution(1280, 720, 1, 0);
 	}
 
+
 	float xRatio = window->getWindow()->getSize().x / globals::NATIVE_WIDTH;
 	float yRatio = window->getWindow()->getSize().y / globals::NATIVE_HEIGHT;
 
@@ -56,14 +65,15 @@ void StageDev::update()
 	{
 		player.getBody()->SetTransform(b2Vec2((sf::Mouse::getPosition(*window->getWindow()).x / 32.f) / xRatio, (-sf::Mouse::getPosition(*window->getWindow()).y / 32.f) / yRatio), 0.f);
 		player.getBody()->SetLinearVelocity(b2Vec2(0, 0));
-	}
+	}*/
 }
 
 //DRAW
 void StageDev::draw()
 {
-	window->addWorld(bg);
-	player.draw();
+	//window->addWorld(bg);
+	//player.draw();
+	menu.draw();
 }
 
 //UNLOAD

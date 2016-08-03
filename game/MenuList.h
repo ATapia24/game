@@ -7,33 +7,46 @@
 #include "NativePosition.h"
 #include "WindowMgr.h"
 
+enum MenuObjectType
+{
+	TEXT,
+	SPRITE,
+	COMBO
+};
+
+struct MenuObject
+{
+	MenuObjectType type;
+	bool active;
+	std::string *string;
+	sf::Text text;
+	sf::Sprite sprite;
+	sf::RectangleShape bg;
+};
+
 class MenuList
 {
 protected:
 	WindowMgr *window;
 
-	struct Line
-	{
-		std::string *string;
-		sf::Text text;
-		NativePosition linePosition;
-		float lineHeight;
-	};
-
-	std::vector<Line> lines;
+	std::vector< std::vector<MenuObject> > grid;
 	std::vector<std::string*> staticStrings;
 
-	unsigned int layer;
-	//pos/spacing
-	NativePosition menuPosition;
-	float lineHeight;
-	float xlineOffset, yLineOffset;
-	float leftPadding, topPadding;
-	float topSpacing, leftSpacing;
-
+	//general
+	sf::Vector2f position;
+	int globalWidth, globalHeight;
+	int width, height;
+	float verticalSpacing, horizontalSpacing;
+	int count;
+	std::string s;
+	sf::Text t;
 	//font
 	sf::Font font;
 	float fontSize;
+
+	//background
+	sf::RectangleShape background;
+	bool backgroundEnabled;
 
 public:
 	MenuList(WindowMgr* _window);
@@ -43,15 +56,8 @@ public:
 	virtual void load();
 	void draw();
 	void add(std::string& string);
-	void add(std::string & string, float _lineHeight);
 	void addStatic(std::string string);
-	void addStatic(std::string string, float _lineHeight);
-	void setLayer(int _layer);
-	void setPosition(float _x, float _y);
-	void setMargins(float _topPadding, float _leftPadding, float _topSpacing, float _leftSpacing);
-	void setFontSize(float _fontSize);
-	void setLineHeight(float _lineHeight);
-	void recalculateLine();
-	sf::Text& getLine(int line);
+	void setDimensions(int n_col, int n_row, int width, int height);
+	void setPosition(float x, float y);
 };
 
