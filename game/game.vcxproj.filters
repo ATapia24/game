@@ -240,6 +240,9 @@
     <ClInclude Include="KeyManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="TextInputManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="assets\bg.jpg">
@@ -484,6 +487,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="KeyManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TextInputManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

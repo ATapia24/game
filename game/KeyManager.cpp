@@ -5,6 +5,7 @@
 //CONSTRUCTOR
 Key::Key()
 {
+	cooldownTime = 120;
 }
 
 //DESTRUCTOR
@@ -48,8 +49,37 @@ bool Key::repeatedCheck()
 	return sf::Keyboard::isKeyPressed(key);
 }
 
+//SINGLE COOLDOWN CHECK
+bool Key::singleCooldownCheck()
+{
+	if (sf::Keyboard::isKeyPressed(key) && released)
+	{
+		released = 0;
+		cooldownTimer.start();
+		return true;
+	}
+	else if ((!sf::Keyboard::isKeyPressed(key) && !released) || cooldownTimer.getTimeInt() > cooldownTime)
+	{
+		released = 1;
+	}
+
+	return false;
+}
+
+//SET COOLDOWN TIME
+void Key::setCooldownTime(const int _cooldownTime)
+{
+	cooldownTime = _cooldownTime;
+}
+
+//GET COOLDOWN TIME
+const int Key::getCooldownTime()
+{
+	return cooldownTime;
+}
+
 //GET VALUE
-bool Key::getValue()
+const bool Key::getValue()
 {
 	switch (type)
 	{
@@ -58,6 +88,9 @@ bool Key::getValue()
 		break;
 	case REPEATED:
 		return repeatedCheck();
+		break;
+	case SINGLE_COOLDOWN:
+		return singleCooldownCheck();
 		break;
 	default:
 		return 0;

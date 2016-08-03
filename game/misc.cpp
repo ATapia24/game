@@ -54,3 +54,12 @@ std::string misc::getFileType(std::string filename)
 		return filename.substr(filename.length() - 3, 3);
 	}
 }
+
+//IS LETTER
+bool misc::isLetter(const char c)
+{
+	if ((c >= 65 && c <= 90) || (c >= 97 && c <= 122))
+		return true;
+	else
+		return false;
+}

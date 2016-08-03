@@ -13,6 +13,7 @@ namespace misc
 	std::string doubleToString(double num);
 	std::vector<std::string> getFileNames(std::string path);
 	std::string getFileType(std::string filename);
+	bool isLetter(const char c);
 }
 
 #endif

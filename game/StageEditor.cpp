@@ -68,6 +68,9 @@ void StageEditor::load()
 	modeIndex = 0;
 	modeUpdate();
 
+	menu.add(textString);
+	textInput.setString("QQQQQ\nQQQQ");
+
 	//keys
 	modeKey.set(sf::Keyboard::Space, KeyType::SINGLE);
 	objectIndexUpKey.set(sf::Keyboard::Key::G, KeyType::SINGLE);
@@ -107,10 +110,11 @@ void StageEditor::loadTextures()
 //UPDATE
 void StageEditor::update()
 {
-
+	textString = textInput.getString();
+	textInput.update();
 	menu.update();
 
-	input();
+	//input();
 
 	if (dragging)
 		updateDrag();

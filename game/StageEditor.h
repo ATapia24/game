@@ -20,6 +20,7 @@
 #include "EditorObject.h"
 #include "KeyManager.h"
 #include "Timer.h"
+#include "TextInputManager.h"
 
 struct Object
 {
@@ -78,7 +79,6 @@ private:
 
 	float viewSpeed, viewSpeedOffset;
 	float zoomSpeed, zoomAmount;
-	b2World* world;
 	sf::View* view;
 	void input();
 
@@ -101,6 +101,10 @@ private:
 	void startDrag();
 	void endDrag();
 	void updateDrag();
+
+	//tmp
+	TextInputManager textInput;
+	std::string textString;
 
 	void loadTextures();
 public:
