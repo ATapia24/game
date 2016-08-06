@@ -10,13 +10,18 @@ Player::Player()
 	moveable = 1;
 
 	//tmp
-	player_body.load(sprite, "assets/player.png", 8, 16, 32);
+	//player_body.load(sprite, "assets/head.png", 8, 16, 32);
 	
 	//weapon
 	weapon.setScale(3, 3);
-	texture.loadFromFile("assets/player.png");
+	texture.loadFromFile("assets/head.png");
 	texture.setSmooth(true);
 	hitbox.setFillColor(sf::Color::Magenta);
+	
+	//tmp
+	//hitbox.setTexture(&texture);
+	sprite.setTexture(texture);
+	sprite.setScale(sf::Vector2f(0.25f, 0.25f));
 	
 	//stats
 	walkSpeed = 8;
@@ -53,8 +58,8 @@ void Player::draw()
 {
 	if (spawned)
 	{
-		//window->addWorld(sprite);
 		window->addWorld(hitbox);
+		window->addWorld(sprite);
 	}
 }
 //UPDATE MOVEMENT

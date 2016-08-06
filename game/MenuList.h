@@ -4,14 +4,15 @@
 #include <string>
 #include <vector>
 #include <SFML/Graphics.hpp>
-#include "NativePosition.h"
 #include "WindowMgr.h"
+#include "misc.h"
 
 enum MenuObjectType
 {
 	TEXT,
 	SPRITE,
-	COMBO
+	COMBO,
+	EMPTY
 };
 
 struct MenuObject
@@ -31,22 +32,33 @@ protected:
 
 	std::vector< std::vector<MenuObject> > grid;
 	std::vector<std::string*> staticStrings;
+	std::vector<MenuObject*> objects;
+	std::vector<MenuObject*> updatables;
 
 	//general
 	sf::Vector2f position;
 	int globalWidth, globalHeight;
+	int n_cols, n_rows;
 	int width, height;
+	bool verticalFill;
 	float verticalSpacing, horizontalSpacing;
-	int count;
-	std::string s;
-	sf::Text t;
-	//font
+
+	//text
 	sf::Font font;
-	float fontSize;
+	unsigned int fontSize;
+	sf::Color defaultColor;
+	sf::Color selectedColor;
 
 	//background
 	sf::RectangleShape background;
-	bool backgroundEnabled;
+	bool menuBackgroundEnabled;
+	bool objectBackgroundEnabled;
+
+	//misc
+	sf::Vector2i calcNextIndex();
+
+	//select
+	int currentIndex, lastIndex;
 
 public:
 	MenuList(WindowMgr* _window);
@@ -55,9 +67,19 @@ public:
 	void setWindow(WindowMgr* _window);
 	virtual void load();
 	void draw();
+	void update();
 	void add(std::string& string);
 	void addStatic(std::string string);
 	void setDimensions(int n_col, int n_row, int width, int height);
 	void setPosition(float x, float y);
+	void setSpacing(float _verticalSpacing, float horizontalSpacing);
+	void setFontSize(unsigned int _fontSize);
+	void enableBackgrounds(bool _menuBackgroundEnabled, bool _objectBackgroundEnabled);
+	void indexUp();
+	void indexDown();
+	void updateSelected();
+	std::string getSelectedText();
+	unsigned int getSelectedIndex();
+	void clear();
 };
 

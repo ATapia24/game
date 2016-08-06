@@ -17,22 +17,21 @@ MenuList::MenuList()
 void MenuList::load()
 {
 	font.loadFromFile("assets/font.ttf");
-	fontSize = 12;
+	fontSize = 22;
 	position.x = 0;
 	position.y = 0;
-	horizontalSpacing = 10;
-	verticalSpacing = 10;
-	backgroundEnabled = 1;
-	count = 0;
+	horizontalSpacing = 0;
+	verticalSpacing = 0;
+	menuBackgroundEnabled = 0;
+	objectBackgroundEnabled = 0;
+	verticalFill = 1;
+	currentIndex = 0;
+	lastIndex = 0;
+	defaultColor = sf::Color::White;
+	selectedColor = sf::Color::Red;
 
 	//tmp
 	background.setFillColor(sf::Color(76, 88, 68, 255));
-	s = "HELLO";
-	t.setFont(font);
-	t.setColor(sf::Color::Red);
-	t.setCharacterSize(fontSize);
-	t.setPosition(sf::Vector2f(100, 100));
-	t.setString(s);
 }
 
 
@@ -45,18 +44,21 @@ MenuList::~MenuList()
 //DRAW
 void MenuList::draw()
 {
-	if (backgroundEnabled)
+	//menu background
+	if (menuBackgroundEnabled)
 		window->addGui(background);
 
-	for (int y = 0; y < grid.size(); y++)
+	for (unsigned int y = 0; y < grid.size(); y++)
 	{
-		for (int x = 0; x < grid[y].size(); x++)
+		for (unsigned int x = 0; x < grid[y].size(); x++)
 		{
 			MenuObject* obj = &grid[y][x];
 
-			if (backgroundEnabled)
+			//object background
+			if (objectBackgroundEnabled)
 				window->addGui(obj->bg);
 
+			//object
 			if (obj->type == MenuObjectType::TEXT)
 			{
 				window->addGui(obj->text);
@@ -73,11 +75,39 @@ void MenuList::draw()
 	}
 }
 
+//UPDATE
+void MenuList::update()
+{
+	for (unsigned int i = 0; i < updatables.size(); i++)
+	{
+		updatables[i]->text.setString(updatables[i]->string->c_str());
+	}
+}
+
 
 //ADD - Dynamic
 void MenuList::add(std::string& string)
 {
+	//determine next open spot
+	sf::Vector2i index = calcNextIndex();
 
+	//set object
+	MenuObject* obj = &grid[index.y][index.x];
+	updatables.push_back(obj);
+	objects.push_back(obj);
+	obj->type = MenuObjectType::TEXT;
+	obj->active = 1;
+	obj->string = &string;
+	obj->text.setFont(font);
+	obj->text.setCharacterSize(fontSize);
+	obj->text.setPosition(obj->bg.getPosition());
+	obj->text.setColor(defaultColor);
+	obj->text.setString(obj->string->c_str());
+
+	//calc pos
+	sf::Vector2f position = obj->bg.getPosition();
+	position.y -= obj->text.getGlobalBounds().height / 2;
+	obj->text.setPosition(position);
 }
 
 //ADD - Static
@@ -88,19 +118,24 @@ void MenuList::addStatic(std::string string)
 	*tmp = string;
 	staticStrings.push_back(tmp);
 
-	//store text
-	count++;
-	int i = count % grid.size();
-	MenuObject* obj = &grid[i - count][i];
+	//determine next open spot
+	sf::Vector2i index = calcNextIndex();
 
+	//set object
+	MenuObject* obj = &grid[index.y][index.x];
+	objects.push_back(obj);
 	obj->type = MenuObjectType::TEXT;
 	obj->active = 1;
 	obj->string = staticStrings[staticStrings.size() - 1];
 	obj->text.setFont(font);
 	obj->text.setCharacterSize(fontSize);
-	obj->text.setPosition(sf::Vector2f(position.x, position.y));
-	obj->text.setColor(sf::Color::Black);
+	obj->text.setColor(defaultColor);
 	obj->text.setString(obj->string->c_str());
+
+	//calc pos
+	sf::Vector2f position = obj->bg.getPosition();
+	position.y -= obj->text.getGlobalBounds().height / 2;
+	obj->text.setPosition(position);
 }
 
 //SET WINDOW
@@ -110,11 +145,13 @@ void MenuList::setWindow(WindowMgr* _window)
 }
 
 //SET DIMENSIONS
-void MenuList::setDimensions(int n_cols, int n_rows, int _width, int _height)
+void MenuList::setDimensions(int _n_cols, int _n_rows, int _width, int _height)
 {
 	//objects size
 	width = _width;
 	height = _height;
+	n_cols = _n_cols;
+	n_rows = _n_rows;
 
 	//resize gid
 	grid.resize(n_rows);
@@ -123,13 +160,14 @@ void MenuList::setDimensions(int n_cols, int n_rows, int _width, int _height)
 		grid[i].resize(n_cols);
 	}
 
-	//objects
-	for (int y = 0; y < grid.size(); y++)
+	//set sizes, color, and set to empty
+	for (unsigned int y = 0; y < grid.size(); y++)
 	{
-		for (int x = 0; x < grid[y].size(); x++)
+		for (unsigned int x = 0; x < grid[y].size(); x++)
 		{
+			grid[y][x].type = MenuObjectType::EMPTY;
 			grid[y][x].bg.setSize(sf::Vector2f(width, height));
-			grid[y][x].bg.setFillColor(sf::Color::White);
+			grid[y][x].bg.setFillColor(sf::Color::Black);
 		}
 	}
 
@@ -152,13 +190,96 @@ void MenuList::setPosition(float x, float y)
 	position.y = y;
 
 	//calculate new pos
-	for (int y = 0; y < grid.size(); y++)
+	for (unsigned int y = 0; y < grid.size(); y++)
 	{
-		for (int x = 0; x < grid[y].size(); x++)
+		for (unsigned int x = 0; x < grid[y].size(); x++)
 		{
-			grid[y][x].bg.setPosition(sf::Vector2f((width*x + (x*horizontalSpacing)) + position.x, (height*y + (y*verticalSpacing)) + position.y));
+			MenuObject* obj = &grid[y][x];
+			obj->bg.setPosition(sf::Vector2f((width*x + (x*horizontalSpacing)) + position.x, (height*y + (y*verticalSpacing)) + position.y));
 		}
 	}
 
 	background.setPosition(sf::Vector2f(position.x, position.y));
+}
+
+//SET SPACING
+void MenuList::setSpacing(float _horizontalSpacing, float _verticalSpacing)
+{
+	horizontalSpacing = _horizontalSpacing;
+	verticalSpacing = _verticalSpacing;
+	setDimensions(n_cols, n_rows, width, height);
+}
+
+//ENABLE BACKGROUND
+void MenuList::enableBackgrounds(bool _menuBackgroundEnabled, bool _objectBackgroundEnabled)
+{
+	menuBackgroundEnabled = _menuBackgroundEnabled;
+	objectBackgroundEnabled = _objectBackgroundEnabled;
+}
+
+//CALCULATE NEXT INDEX
+sf::Vector2i MenuList::calcNextIndex()
+{
+	sf::Vector2i index;
+	if (verticalFill)
+	{
+		index.x = (objects.size()) / n_rows;
+		index.y = (objects.size()) % n_rows;
+	}else
+	{
+		index.x = (objects.size()) % n_cols;
+		index.y = (objects.size()) / n_cols;
+	}
+
+	return index;
+}
+
+//INDEX UP
+void MenuList::indexUp()
+{
+	lastIndex = currentIndex;
+	currentIndex < objects.size()-1 ? currentIndex++ : currentIndex = 0;
+	updateSelected();
+}
+
+//INDEX DOWN
+void MenuList::indexDown()
+{
+	lastIndex = currentIndex;
+	currentIndex > 0 ? currentIndex-- : currentIndex = objects.size()-1;
+	updateSelected();
+}
+
+//UPDATE SELECTED
+void MenuList::updateSelected()
+{
+	objects[lastIndex]->text.setColor(defaultColor);
+	objects[currentIndex]->text.setColor(selectedColor);
+}
+
+//GET SELECTED TEXT
+std::string MenuList::getSelectedText()
+{
+	return *(objects[currentIndex]->string);
+}
+
+//GET SELECETD INDEX
+unsigned int MenuList::getSelectedIndex()
+{
+	return currentIndex;
+}
+
+//SET FONT SIZE
+void MenuList::setFontSize(unsigned int _fontSize)
+{
+	fontSize = _fontSize;
+}
+
+//CLEAR
+void MenuList::clear()
+{
+	grid.clear();
+	staticStrings.clear();
+	objects.clear();
+	updatables.clear();
 }

@@ -8,19 +8,21 @@
 #include "StageManager.h"
 #include "WindowMgr.h"
 #include "MenuList.h"
-#include "MenuSelect.h"
 #include "AnimatedBackground.h"
+#include "KeyManager.h"
 
 class StageMainMenu : public Stage
 {
 private:
-	MenuSelect menu;
+	MenuList menu;
+	Key up, down, select;
 	AnimatedBackground background;
 public:
 	StageMainMenu();
 	~StageMainMenu();
 	StageMainMenu(StageManager* stageManager, WindowMgr* _window);
 	void load();
+	void unload();
 	void update();
 	void draw();
 };

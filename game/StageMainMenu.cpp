@@ -15,29 +15,48 @@ StageMainMenu::StageMainMenu(StageManager* _stageManager, WindowMgr* _window)
 //LOAD
 void StageMainMenu::load()
 {
-	//menu setup
-	if (!loaded)
-	{
+		//bg
 		background.load("Assets/image1.png", 270, 200, 134);
 		background.setWindow(*window);
-		//menu.setPosition(200, 200);
-		//menu.setWindow(window);
-		//menu.addStatic("Start", 45);
-		//menu.addStatic("Settings", 45);
-		//menu.addStatic("Dev Mode", 45);
-		//menu.addStatic("Editor", 45);
-		//menu.load();
-		//menu.setMargins(2, -1, 1, 4);
-		//menu.setFontSize(35);
-		loaded = 1;
-	}
+		
+		//menu
+		menu.setWindow(window);
+		menu.load();
+		menu.setDimensions(1, 4, 200, 20);
+		menu.setPosition(200, 200);
+		menu.addStatic("Start");
+		menu.addStatic("Settings");
+		menu.addStatic("Dev Mode");
+		menu.addStatic("Editor");
+		menu.updateSelected();
+		
+		//input
+		up.set(sf::Keyboard::Up, KeyType::SINGLE);
+		down.set(sf::Keyboard::Down, KeyType::SINGLE);
+		select.set(sf::Keyboard::Return, KeyType::SINGLE);
+}
+
+//UNLOAD
+void StageMainMenu::unload()
+{
+	menu.clear();
 }
 
 //UPDATE
 void StageMainMenu::update()
 {
-	switch (menu.update())
+	if (up.getValue())
 	{
+		menu.indexDown();
+	}
+	else if (down.getValue())
+	{
+		menu.indexUp();
+	}
+	else if (select.getValue())
+	{
+		switch (menu.getSelectedIndex())
+		{
 		case 0:
 			stageManager->changeStage("Start");
 			break;
@@ -50,9 +69,11 @@ void StageMainMenu::update()
 		case 3:
 			stageManager->changeStage("Editor");
 			break;
+		}
 	}
 
 	background.update();
+	
 }
 
 //DRAW

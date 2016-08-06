@@ -54,9 +54,6 @@
     <ClInclude Include="misc.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MenuSelect.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="MenuList.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -272,6 +269,9 @@
     <Image Include="Assets\player.png">
       <Filter>Resource Files\assets</Filter>
     </Image>
+    <Image Include="Assets\head.png">
+      <Filter>Resource Files\assets</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Font Include="assets\font.ttf">
@@ -304,9 +304,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="misc.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MenuSelect.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="MenuList.cpp">

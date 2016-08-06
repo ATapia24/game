@@ -12,14 +12,13 @@
 
 #include "StageManager.h"
 #include "WindowMgr.h"
-#include "MenuList.h"
-#include "MenuSelect.h"
 #include "misc.h"
 #include "Player.h"
 #include "NativePosition.h"
 #include "Entity.h"
 #include "Floor.h"
 #include "Box2D\Box2D.h"
+#include "KeyManager.h"
 
 class StageDev : public Stage, public b2ContactListener
 {
@@ -31,7 +30,8 @@ private:
 	Player player;
 
 	b2World* world;
-	const float SCALE = 100;
+
+	Key menuUp, menuDown;
 public:
 	StageDev();
 	~StageDev();

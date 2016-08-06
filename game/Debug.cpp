@@ -13,19 +13,19 @@ Debug::~Debug(){}
 void Debug::load()
 {
 	//menu
-	/*debugMenu.setWindow(window);
-	debugMenu.setPosition(0, 0);
-	debugMenu.setMargins(3, -1, 1, 4);
-	debugMenu.setFontSize(25);
+	debugMenu.setWindow(window);
+	debugMenu.load();
+	debugMenu.setDimensions(1, 10, 200, 20);
+	debugMenu.setPosition(10, 10);
 
 	//add items
 	debugMenu.add(fpsString);
-	debugMenu.add(loopLatencyString);
+	//debugMenu.add(loopLatencyString);
 	debugMenu.add(mousePositionString);
-
-	//fast moving #'s update speed
+	
+		//fast moving #'s update speed
 	updateTimer.start();
-	updateSpeed = 60;*/
+	updateSpeed = 60;
 }
 
 void Debug::updateStrings()
@@ -47,12 +47,14 @@ void Debug::update()
 {
 	//items
 	fps();
-	loopLatency();
+	//loopLatency();
 	mousePosition();
 
 	//strings and draw
 	updateStrings();
-	//debugMenu.draw();
+	
+	debugMenu.update();
+	debugMenu.draw();
 }
 
 //FPS

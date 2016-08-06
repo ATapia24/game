@@ -6,6 +6,9 @@
 #include <vector>
 #include "dirent.h"
 
+#define PT2PIX 1.333333333333333f
+#define PIX2PT 0.75f
+
 namespace misc
 {
 	std::string floatToString(float num);

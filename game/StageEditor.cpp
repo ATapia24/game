@@ -26,8 +26,8 @@ void StageEditor::load()
 	view->setRotation(0);
 	view->setCenter(0, 0);
 
-	//gridTexture.loadFromFile("assets/grid_green.png", sf::IntRect(0, 0, 1920, 1080));
-	gridTexture.loadFromFile("assets/strike.jpg");
+	gridTexture.loadFromFile("assets/grid_green.png", sf::IntRect(0, 0, 1920, 1080));
+	//gridTexture.loadFromFile("assets/strike.jpg");
 	gridTexture.setRepeated(true);
 	background.setTexture(gridTexture);
 
@@ -57,18 +57,20 @@ void StageEditor::load()
 	background.setTextureRect(sf::IntRect(0, 0, 6000, 6000));
 
 	//menu
-	//	menu.setWindow(window);
-	//menu.setPosition(0, 200);
-	//menu.setMargins(3, -1, 1, 4);
-	//menu.setFontSize(25);
-	//menu.addStatic("Editor Menu");
-	//menu.add(dragTypeString);
-	//menu.add(modeString);
+	menu.setWindow(window);
+	menu.load();
+	menu.setFontSize(25);
+	menu.setPosition(10, 200);
+	menu.setDimensions(1, 5, 140, 30);
+	menu.setSpacing(10, 10);
+	menu.enableBackgrounds(1, 0);
+	menu.addStatic("Editor Menu");
+	modeString = "kek";
+	menu.add(modeString);
+	menu.add(dragTypeString);
 
 	modeIndex = 0;
 	modeUpdate();
-
-	menu.add(textString);
 
 	//keys
 	modeKey.set(sf::Keyboard::Tab, KeyType::SINGLE);
@@ -104,8 +106,6 @@ void StageEditor::loadTextures()
 //UPDATE
 void StageEditor::update()
 {
-	menu.update();
-
 	generalInput();
 
 	switch (mode)
@@ -264,6 +264,8 @@ void StageEditor::modeUpdate()
 		modeString = "Transform";
 		break;
 	}
+
+	menu.update();
 }
 
 //MODE INDEX UP
@@ -552,4 +554,5 @@ void StageEditor::unload()
 {
 	zoomReset();
 	rotateReset();
+	menu.clear();
 }

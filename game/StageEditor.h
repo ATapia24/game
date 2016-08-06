@@ -14,7 +14,6 @@
 #include "StageManager.h"
 #include "WindowMgr.h"
 #include "MenuList.h"
-#include "MenuSelect.h"
 #include "misc.h"
 #include "dirent.h"
 #include "EditorObject.h"
@@ -53,7 +52,7 @@ private:
 	void deleteObject(int index);
 	Key deleteKey;
 
-	MenuSelect menu;
+	MenuList menu;
 
 	//mode
 	Mode mode;

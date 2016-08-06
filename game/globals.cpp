@@ -4,5 +4,4 @@
 namespace globals
 {
 	Debug debug;
-	std::string textBuffer = "";
 }

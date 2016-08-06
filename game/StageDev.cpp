@@ -26,24 +26,49 @@ void StageDev::load()
 
 	bgText.loadFromFile("assets/strike.jpg");
 	bg.setPosition(0, 0);
-	bg.setSize(sf::Vector2f(bgText.getSize().x, bgText.getSize().y));
+	bg.setSize(sf::Vector2f((float)bgText.getSize().x, (float)bgText.getSize().y));
 	bg.setTexture(&bgText);
 
 	menu.setWindow(window);
 	menu.load();
-	menu.setDimensions(5, 5, 200, 20);
-	menu.setPosition(10 , 10);
+	menu.setDimensions(2, 5, 200, 20);
+	menu.enableBackgrounds(1, 1);
+	menu.setSpacing(10, 10);
+	menu.setPosition(500 , 500);
 	menu.addStatic("ONE");
 	menu.addStatic("TWO");
+	menu.addStatic("THREE");
+	menu.addStatic("FOUR");
+	menu.addStatic("FIVE");
+	menu.addStatic("SIX");
+	menu.updateSelected();
+	menuUp.set(sf::Keyboard::Up, KeyType::SINGLE);
+	menuDown.set(sf::Keyboard::Down, KeyType::SINGLE);
+}
+
+//UNLOAD
+void StageDev::unload()
+{
+	delete world;
+	menu.clear();
 }
 
 //UPDATE
 void StageDev::update()
 {
-	/*
-	//player.update();
-	world->Step(1.0f / 65.f, 8, 3);
 	
+	player.update();
+	world->Step(1.0f / 65.f, 8, 3);
+
+	if (menuUp.getValue())
+	{
+		menu.indexDown();
+	}else if(menuDown.getValue())
+	{
+		menu.indexUp();
+	}
+
+	std::cout << menu.getSelectedText() << std::endl;
 
 	//MISC
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Tab))
@@ -63,23 +88,17 @@ void StageDev::update()
 
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
 	{
-		player.getBody()->SetTransform(b2Vec2((sf::Mouse::getPosition(*window->getWindow()).x / 32.f) / xRatio, (-sf::Mouse::getPosition(*window->getWindow()).y / 32.f) / yRatio), 0.f);
-		player.getBody()->SetLinearVelocity(b2Vec2(0, 0));
-	}*/
+		//player.getBody()->SetTransform(b2Vec2((sf::Mouse::getPosition(*window->getWindow()).x / 32.f) / xRatio, (-sf::Mouse::getPosition(*window->getWindow()).y / 32.f) / yRatio), 0.f);
+		//player.getBody()->SetLinearVelocity(b2Vec2(0, 0));
+	}
 }
 
 //DRAW
 void StageDev::draw()
 {
-	//window->addWorld(bg);
-	//player.draw();
+	window->addWorld(bg);
+	player.draw();
 	menu.draw();
-}
-
-//UNLOAD
-void StageDev::unload()
-{
-	delete world;
 }
 
 //BEGIN CONTACT

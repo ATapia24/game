@@ -210,7 +210,6 @@
     <ClInclude Include="Holdable.h" />
     <ClInclude Include="KeyManager.h" />
     <ClInclude Include="MenuList.h" />
-    <ClInclude Include="MenuSelect.h" />
     <ClInclude Include="misc.h" />
     <ClInclude Include="NativePosition.h" />
     <ClInclude Include="Player.h" />
@@ -228,6 +227,7 @@
   <ItemGroup>
     <Image Include="assets\bg.jpg" />
     <Image Include="Assets\bullet_bmg.png" />
+    <Image Include="Assets\head.png" />
     <Image Include="Assets\image1.png" />
     <Image Include="Assets\intro-or8.png" />
     <Image Include="Assets\intro.png" />
@@ -298,7 +298,6 @@
     <ClCompile Include="Holdable.cpp" />
     <ClCompile Include="KeyManager.cpp" />
     <ClCompile Include="MenuList.cpp" />
-    <ClCompile Include="MenuSelect.cpp" />
     <ClCompile Include="misc.cpp" />
     <ClCompile Include="NativePosition.cpp" />
     <ClCompile Include="Player.cpp" />
