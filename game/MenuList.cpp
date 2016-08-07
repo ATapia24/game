@@ -76,7 +76,11 @@ void MenuList::update()
 		if (updatables[i]->type == MenuObjectType::TEXT)
 			updatables[i]->text.setString(updatables[i]->string->c_str());
 		else if (updatables[i]->type == MenuObjectType::SPRITE)
+		{
+
 			updatables[i]->sprite.setTexture(*updatables[i]->texture);
+			std::cout << updatables[i]->texture->getSize().x << '\n';
+		}
 	}
 }
 

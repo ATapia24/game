@@ -20,6 +20,7 @@
 #include "KeyManager.h"
 #include "Timer.h"
 #include "TextInputManager.h"
+#include "TextureManager.h"
 
 struct Object
 {
@@ -81,9 +82,6 @@ private:
 	void drawObjects();
 	Key dragLeftKey;
 	Key dragRightKey;
-	Key textureLeftKey;
-	Key textureRightKey;
-	std::vector<sf::Texture*> textures;
 
 	float viewSpeed, viewSpeedOffset;
 	float zoomSpeed, zoomAmount;
@@ -111,10 +109,12 @@ private:
 	void updateDrag();
 
 	//tmp
-	TextInputManager textInput;
-	std::string textString;
+	int textureIndex;
+	Key textureLeftKey;
+	Key textureRightKey;
 	sf::Texture texture;
-	sf::Texture red, green;
+	TextureManager textureMgr;
+	std::vector<Texture*> textureList;
 
 	void loadTextures();
 public:

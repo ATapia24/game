@@ -238,6 +238,22 @@
     <Image Include="Assets\player.png" />
     <Image Include="assets\player_texture.png" />
     <Image Include="Assets\player_walking_left.png" />
+    <Image Include="Assets\test\bush_green.png" />
+    <Image Include="Assets\test\bush_red.png" />
+    <Image Include="Assets\test\Lava_1.png" />
+    <Image Include="Assets\test\lava_circle.png" />
+    <Image Include="Assets\test\Lava_E.png" />
+    <Image Include="Assets\test\Lava_N.png" />
+    <Image Include="Assets\test\Lava_NE.png" />
+    <Image Include="Assets\test\Lava_NW.png" />
+    <Image Include="Assets\test\Lava_S.png" />
+    <Image Include="Assets\test\Lava_SE.png" />
+    <Image Include="Assets\test\Lava_SW.png" />
+    <Image Include="Assets\test\Lava_U_NE.png" />
+    <Image Include="Assets\test\Lava_U_NW.png" />
+    <Image Include="Assets\test\Lava_U_SE.png" />
+    <Image Include="Assets\test\lava_U_SW.png" />
+    <Image Include="Assets\test\Lava_W.png" />
   </ItemGroup>
   <ItemGroup>
     <Font Include="assets\font.ttf" />

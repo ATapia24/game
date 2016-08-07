@@ -281,6 +281,54 @@
     <Image Include="Assets\bush_green.png">
       <Filter>Resource Files\assets</Filter>
     </Image>
+    <Image Include="Assets\test\bush_green.png">
+      <Filter>Resource Files\assets</Filter>
+    </Image>
+    <Image Include="Assets\test\bush_red.png">
+      <Filter>Resource Files\assets</Filter>
+    </Image>
+    <Image Include="Assets\test\Lava_1.png">
+      <Filter>Resource Files\assets</Filter>
+    </Image>
+    <Image Include="Assets\test\lava_circle.png">
+      <Filter>Resource Files\assets</Filter>
+    </Image>
+    <Image Include="Assets\test\Lava_E.png">
+      <Filter>Resource Files\assets</Filter>
+    </Image>
+    <Image Include="Assets\test\Lava_N.png">
+      <Filter>Resource Files\assets</Filter>
+    </Image>
+    <Image Include="Assets\test\Lava_NE.png">
+      <Filter>Resource Files\assets</Filter>
+    </Image>
+    <Image Include="Assets\test\Lava_NW.png">
+      <Filter>Resource Files\assets</Filter>
+    </Image>
+    <Image Include="Assets\test\Lava_S.png">
+      <Filter>Resource Files\assets</Filter>
+    </Image>
+    <Image Include="Assets\test\Lava_SE.png">
+      <Filter>Resource Files\assets</Filter>
+    </Image>
+    <Image Include="Assets\test\Lava_SW.png">
+      <Filter>Resource Files\assets</Filter>
+    </Image>
+    <Image Include="Assets\test\Lava_U_NE.png">
+      <Filter>Resource Files\assets</Filter>
+    </Image>
+    <Image Include="Assets\test\Lava_U_NW.png">
+      <Filter>Resource Files\assets</Filter>
+    </Image>
+    <Image Include="Assets\test\Lava_U_SE.png">
+      <Filter>Resource Files\assets</Filter>
+    </Image>
+    <Image Include="Assets\test\lava_U_SW.png">
+      <Filter>Resource Files\assets</Filter>
+    </Image>
+    <Image Include="Assets\test\Lava_W.png">
+      <Filter>Resource Files\assets</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Font Include="assets\font.ttf">

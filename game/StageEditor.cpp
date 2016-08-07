@@ -56,13 +56,11 @@ void StageEditor::load()
 	background.setPosition(0, 0);
 	background.setTextureRect(sf::IntRect(0, 0, 6000, 6000));
 
-	//textures
-	red.loadFromFile("Assets/bush_red.png");
-	green.loadFromFile("Assets/bush_green.png");
-	texture = red;
-	textures.push_back(&red);
-	textures.push_back(&green);
-
+	loadTextures();
+	textureIndex = 0;
+	std::cout << textureList.size();
+	texture = textureList[textureIndex]->texture;
+	
 	//menu
 	menu.setWindow(window);
 	menu.load();
@@ -96,20 +94,17 @@ void StageEditor::load()
 	keyMoveDown.set(sf::Keyboard::S, KeyType::REPEATED);
 	keyMoveLeft.set(sf::Keyboard::A, KeyType::REPEATED);
 	keyMoveRight.set(sf::Keyboard::D, KeyType::REPEATED);
-	textureLeftKey.set(sf::Keyboard::Left, KeyType::REPEATED);
-	textureRightKey.set(sf::Keyboard::Right, KeyType::REPEATED);
-
-	loadTextures();
+	textureLeftKey.set(sf::Keyboard::Left, KeyType::SINGLE);
+	textureRightKey.set(sf::Keyboard::Right, KeyType::SINGLE);
 }
 
 //LOAD TEXTURES
 void StageEditor::loadTextures()
 {
-	std::vector<std::string> files = misc::getFileNames("assets");
-	for (unsigned int i = 0; i < files.size(); i++)
-	{
-		//std::cout << misc::getFileType(files[i]) << std::endl;
-	}
+	textureMgr.addFolder("test");
+	textureMgr.loadTextures();
+	std::cout << textureMgr.getTextures().size() << std::endl;
+	textureList = textureMgr.getTextures();
 }
 
 //UPDATE
@@ -143,12 +138,14 @@ void StageEditor::placeUpdate()
 
 	if (textureLeftKey.getValue())
 	{
-		texture = red;
+		textureIndex > 0 ? textureIndex-- : textureIndex = textureList.size() - 1;
+		texture = textureList[textureIndex]->texture;
 		menu.update();
 	}
 	else if (textureRightKey.getValue())
 	{
-		texture = green;
+		textureIndex < textureList.size()-1 ? textureIndex++ : textureIndex = 0;
+		texture = textureList[textureIndex]->texture;
 		menu.update();
 	}
 }
