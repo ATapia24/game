@@ -22,6 +22,7 @@ struct MenuObject
 	std::string *string;
 	sf::Text text;
 	sf::Sprite sprite;
+	sf::Texture *texture;
 	sf::RectangleShape bg;
 };
 
@@ -69,6 +70,7 @@ public:
 	void draw();
 	void update();
 	void add(std::string& string);
+	void add(sf::Texture& texture);
 	void addStatic(std::string string);
 	void setDimensions(int n_col, int n_row, int width, int height);
 	void setPosition(float x, float y);

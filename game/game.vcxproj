@@ -221,12 +221,15 @@
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="TextInputManager.h" />
+    <ClInclude Include="TextureManager.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="WindowMgr.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="assets\bg.jpg" />
     <Image Include="Assets\bullet_bmg.png" />
+    <Image Include="Assets\bush_green.png" />
+    <Image Include="Assets\bush_red.png" />
     <Image Include="Assets\head.png" />
     <Image Include="Assets\image1.png" />
     <Image Include="Assets\intro-or8.png" />
@@ -308,6 +311,7 @@
     <ClCompile Include="StageManager.cpp" />
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="TextInputManager.cpp" />
+    <ClCompile Include="TextureManager.cpp" />
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="WindowMgr.cpp" />
   </ItemGroup>

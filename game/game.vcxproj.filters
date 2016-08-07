@@ -240,6 +240,9 @@
     <ClInclude Include="TextInputManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="TextureManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="assets\bg.jpg">
@@ -270,6 +273,12 @@
       <Filter>Resource Files\assets</Filter>
     </Image>
     <Image Include="Assets\head.png">
+      <Filter>Resource Files\assets</Filter>
+    </Image>
+    <Image Include="Assets\bush_red.png">
+      <Filter>Resource Files\assets</Filter>
+    </Image>
+    <Image Include="Assets\bush_green.png">
       <Filter>Resource Files\assets</Filter>
     </Image>
   </ItemGroup>
@@ -487,6 +496,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TextInputManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

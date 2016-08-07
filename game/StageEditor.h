@@ -81,6 +81,9 @@ private:
 	void drawObjects();
 	Key dragLeftKey;
 	Key dragRightKey;
+	Key textureLeftKey;
+	Key textureRightKey;
+	std::vector<sf::Texture*> textures;
 
 	float viewSpeed, viewSpeedOffset;
 	float zoomSpeed, zoomAmount;
@@ -110,6 +113,8 @@ private:
 	//tmp
 	TextInputManager textInput;
 	std::string textString;
+	sf::Texture texture;
+	sf::Texture red, green;
 
 	void loadTextures();
 public:

@@ -56,6 +56,13 @@ void StageEditor::load()
 	background.setPosition(0, 0);
 	background.setTextureRect(sf::IntRect(0, 0, 6000, 6000));
 
+	//textures
+	red.loadFromFile("Assets/bush_red.png");
+	green.loadFromFile("Assets/bush_green.png");
+	texture = red;
+	textures.push_back(&red);
+	textures.push_back(&green);
+
 	//menu
 	menu.setWindow(window);
 	menu.load();
@@ -65,9 +72,9 @@ void StageEditor::load()
 	menu.setSpacing(10, 10);
 	menu.enableBackgrounds(1, 0);
 	menu.addStatic("Editor Menu");
-	modeString = "kek";
 	menu.add(modeString);
 	menu.add(dragTypeString);
+	menu.add(texture);
 
 	modeIndex = 0;
 	modeUpdate();
@@ -89,6 +96,8 @@ void StageEditor::load()
 	keyMoveDown.set(sf::Keyboard::S, KeyType::REPEATED);
 	keyMoveLeft.set(sf::Keyboard::A, KeyType::REPEATED);
 	keyMoveRight.set(sf::Keyboard::D, KeyType::REPEATED);
+	textureLeftKey.set(sf::Keyboard::Left, KeyType::REPEATED);
+	textureRightKey.set(sf::Keyboard::Right, KeyType::REPEATED);
 
 	loadTextures();
 }
@@ -131,6 +140,17 @@ void StageEditor::placeUpdate()
 
 	if (dragging)
 		updateDrag();
+
+	if (textureLeftKey.getValue())
+	{
+		texture = red;
+		menu.update();
+	}
+	else if (textureRightKey.getValue())
+	{
+		texture = green;
+		menu.update();
+	}
 }
 
 void StageEditor::placeInput()

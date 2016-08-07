@@ -60,17 +60,10 @@ void MenuList::draw()
 
 			//object
 			if (obj->type == MenuObjectType::TEXT)
-			{
 				window->addGui(obj->text);
-			}
 			else if (obj->type == MenuObjectType::SPRITE)
-			{
-
-			}
-			else if (obj->type == MenuObjectType::COMBO)
-			{
-
-			}
+				window->addGui(obj->sprite);
+			//else if (obj->type == MenuObjectType::COMBO)
 		}
 	}
 }
@@ -80,7 +73,10 @@ void MenuList::update()
 {
 	for (unsigned int i = 0; i < updatables.size(); i++)
 	{
-		updatables[i]->text.setString(updatables[i]->string->c_str());
+		if (updatables[i]->type == MenuObjectType::TEXT)
+			updatables[i]->text.setString(updatables[i]->string->c_str());
+		else if (updatables[i]->type == MenuObjectType::SPRITE)
+			updatables[i]->sprite.setTexture(*updatables[i]->texture);
 	}
 }
 
@@ -105,9 +101,9 @@ void MenuList::add(std::string& string)
 	obj->text.setString(obj->string->c_str());
 
 	//calc pos
-	sf::Vector2f position = obj->bg.getPosition();
+	sf::Vector2f pos = obj->bg.getPosition();
 	position.y -= obj->text.getGlobalBounds().height / 2;
-	obj->text.setPosition(position);
+	obj->text.setPosition(pos);
 }
 
 //ADD - Static
@@ -133,9 +129,27 @@ void MenuList::addStatic(std::string string)
 	obj->text.setString(obj->string->c_str());
 
 	//calc pos
-	sf::Vector2f position = obj->bg.getPosition();
+	sf::Vector2f pos = obj->bg.getPosition();
 	position.y -= obj->text.getGlobalBounds().height / 2;
-	obj->text.setPosition(position);
+	obj->text.setPosition(pos);
+}
+
+//ADD SPRITE
+void MenuList::add(sf::Texture& texture)
+{
+	//set object
+	sf::Vector2i index = calcNextIndex();
+	MenuObject* obj = &grid[index.y][index.x];
+	objects.push_back(obj);
+	updatables.push_back(obj);
+	obj->type = MenuObjectType::SPRITE;
+	obj->active = 1;
+	obj->texture = &texture;
+	obj->sprite.setTexture(*obj->texture);
+
+	sf::Vector2f pos = obj->bg.getPosition();
+	//osition.y -= obj->icon.getGlobalBounds().height / 2;
+	obj->sprite.setPosition(pos);
 }
 
 //SET WINDOW
