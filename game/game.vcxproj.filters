@@ -329,6 +329,9 @@
     <Image Include="Assets\test\Lava_W.png">
       <Filter>Resource Files\assets</Filter>
     </Image>
+    <Image Include="Assets\null_texture.png">
+      <Filter>Resource Files\assets</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Font Include="assets\font.ttf">

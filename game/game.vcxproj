@@ -235,6 +235,7 @@
     <Image Include="Assets\intro-or8.png" />
     <Image Include="Assets\intro.png" />
     <Image Include="Assets\intro2.png" />
+    <Image Include="Assets\null_texture.png" />
     <Image Include="Assets\player.png" />
     <Image Include="assets\player_texture.png" />
     <Image Include="Assets\player_walking_left.png" />

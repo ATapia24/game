@@ -79,7 +79,7 @@ void MenuList::update()
 		{
 
 			updatables[i]->sprite.setTexture(*updatables[i]->texture);
-			std::cout << updatables[i]->texture->getSize().x << '\n';
+			updatables[i]->sprite.setTextureRect(sf::IntRect(0, 0, updatables[i]->texture->getSize().x, updatables[i]->texture->getSize().y));
 		}
 	}
 }

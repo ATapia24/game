@@ -58,7 +58,6 @@ void StageEditor::load()
 
 	loadTextures();
 	textureIndex = 0;
-	std::cout << textureList.size();
 	texture = textureList[textureIndex]->texture;
 	
 	//menu
@@ -154,13 +153,9 @@ void StageEditor::placeInput()
 {
 	//left mouse click
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && !dragging)
-	{
 		startDrag();
-	}
 	else if (!sf::Mouse::isButtonPressed(sf::Mouse::Left) && dragging)
-	{
 		endDrag();
-	}
 
 	//drag left and right
 	if (dragLeftKey.getValue())
