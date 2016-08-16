@@ -63,3 +63,62 @@ bool misc::isLetter(const char c)
 	else
 		return false;
 }
+
+//EXTRACT BETWEEN
+std::string misc::extractBetween(std::string string, char token)
+{
+	int start, end;
+	bool found = 0;
+
+	for (int i = 0; i < string.size(); i++)
+	{
+		if (string[i] == token)
+		{
+			if (found)
+			{
+				end = i;
+				return string.substr(start+1, end - start - 1);
+			}
+			else
+			{
+				start = i;
+				found = 1;
+			}
+		}
+	}
+
+	if(found)
+	return string.substr(start + 1, string.size() - start - 1);
+
+	return "";
+}
+
+//EXTRACT BETWEEN REPLACE
+std::string misc::extractBetween(std::string& string, char token, char replace)
+{
+	int start, end;
+	bool found = 0;
+
+	for (int i = 0; i < string.size(); i++)
+	{
+		if (string[i] == token)
+		{
+			if (found)
+			{
+				end = i;
+				return string.substr(start + 1, end - start - 1);
+			}
+			else
+			{
+				start = i;
+				found = 1;
+				string[i] = replace;
+			}
+		}
+	}
+
+	if (found)
+		return string.substr(start + 1, string.size() - start - 1);
+
+	return "";
+}

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SFML\Graphics.hpp>
+#include <string>
 
 enum ObjType
 {
@@ -21,6 +22,7 @@ public:
 	sf::Sprite sprite;
 	sf::RectangleShape rectangle;
 	sf::CircleShape circle;
+	std::string textureName;
 	
 	//transform object
 	void moveUp(float speed);

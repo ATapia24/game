@@ -24,6 +24,8 @@ struct MenuObject
 	sf::Sprite sprite;
 	sf::Texture *texture;
 	sf::RectangleShape bg;
+	float width;
+	float height;
 };
 
 class MenuList
@@ -71,9 +73,11 @@ public:
 	void update();
 	void add(std::string& string);
 	void add(sf::Texture& texture);
+	void add(sf::Texture& texture, unsigned int _width, unsigned int _height);
 	void addStatic(std::string string);
 	void setDimensions(int n_col, int n_row, int width, int height);
 	void setPosition(float x, float y);
+	void calculatePosition();
 	void setSpacing(float _verticalSpacing, float horizontalSpacing);
 	void setFontSize(unsigned int _fontSize);
 	void enableBackgrounds(bool _menuBackgroundEnabled, bool _objectBackgroundEnabled);

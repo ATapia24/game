@@ -44,6 +44,10 @@ void StageDev::load()
 	menu.updateSelected();
 	menuUp.set(sf::Keyboard::Up, KeyType::SINGLE);
 	menuDown.set(sf::Keyboard::Down, KeyType::SINGLE);
+
+	textures.addFolder("test");
+	textures.loadTextures();
+	objects = map.loadFile("editor.txt", textures.getTextures());
 }
 
 //UNLOAD
@@ -68,19 +72,13 @@ void StageDev::update()
 		menu.indexUp();
 	}
 
-	std::cout << menu.getSelectedText() << std::endl;
-
 	//MISC
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Tab))
-	{
 		stageManager->changeStage("Main Menu");
-	}else if (sf::Keyboard::isKeyPressed(sf::Keyboard::F1))
-	{
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::F1))
 		window->setResolution(1920, 1080, 1, 0);
-	}else if (sf::Keyboard::isKeyPressed(sf::Keyboard::F2))
-	{
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::F2))
 		window->setResolution(1280, 720, 1, 0);
-	}
 
 
 	float xRatio = window->getWindow()->getSize().x / globals::NATIVE_WIDTH;
@@ -99,6 +97,9 @@ void StageDev::draw()
 	window->addWorld(bg);
 	player.draw();
 	menu.draw();
+
+	for (int i = 0; i < objects.size(); i++)
+		window->addWorld(objects[i]->rectangle);
 }
 
 //BEGIN CONTACT

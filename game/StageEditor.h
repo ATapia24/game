@@ -21,6 +21,8 @@
 #include "Timer.h"
 #include "TextInputManager.h"
 #include "TextureManager.h"
+#include "Index.h"
+#include "Map.h"
 
 struct Object
 {
@@ -40,29 +42,29 @@ enum Mode
 class StageEditor : public Stage
 {
 private:
+	Map map;
 	sf::Sprite background;
 	sf::Texture gridTexture;
 	EditorObject* objects;
-	int MAX_OBJECTS;
-	int objectIndex, n_objects;
+	const int MAX_OBJECTS = 10000;
+	int n_objects;
+	Index objectIndex;
 	Key objectIndexUpKey;
 	Key objectIndexDownKey;
-	void objectIndexUp();
-	void objectIndexDown();
 	void objectIndexUpdate(int lastIndex);
 	void deleteObject(int index);
 	Key deleteKey;
+	Key keyControl;
+	Key keySave;
 
 	MenuList menu;
 
 	//mode
 	Mode mode;
-	short int modeIndex;
+	Index modeIndex;
 	std::string modeString;
 	Key modeKey;
-	void modeIndexUp();
 	void modeUpdate();
-	bool modeRel;
 	void placeUpdate();
 	void panUpdate();
 	void transformUpdate();
@@ -72,13 +74,9 @@ private:
 
 	//drag
 	Object dragType;
-	short int dragTypeIndex;
+	Index dragTypeIndex;
 	std::string dragTypeString;
 	void updateDragType();
-	void dragTypeLeft();
-	void dragTypeRight();
-	bool dragTypeLeftRel;
-	bool dragTypeRightRel;
 	void drawObjects();
 	Key dragLeftKey;
 	Key dragRightKey;
@@ -108,13 +106,20 @@ private:
 	void endDrag();
 	void updateDrag();
 
-	//tmp
-	int textureIndex;
+	//texture
+	Index textureIndex;
 	Key textureLeftKey;
 	Key textureRightKey;
 	sf::Texture texture;
 	TextureManager textureMgr;
 	std::vector<Texture*> textureList;
+
+	//transform
+	Key keyShift;
+	Key keyUp;
+	Key keyDown;
+	Key keyLeft;
+	Key keyRight;
 
 	void loadTextures();
 public:

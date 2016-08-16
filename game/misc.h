@@ -16,6 +16,8 @@ namespace misc
 	std::string doubleToString(double num);
 	std::vector<std::string> getFileNames(std::string path);
 	std::string getFileType(std::string filename);
+	std::string extractBetween(std::string string, char token);
+	std::string extractBetween(std::string& string, char token, char replace);
 	bool isLetter(const char c);
 }
 

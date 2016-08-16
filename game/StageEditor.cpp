@@ -37,19 +37,19 @@ void StageEditor::load()
 	viewSpeedOffset = view->getSize().x / window->getWindow()->getSize().x * viewSpeed;
 
 	//tmp
-	dragTypeIndex = 0;
+	dragTypeIndex.set(0, ObjType::N_TYPES-1, 1);
 	updateDragType();
 
-	MAX_OBJECTS = 10000;
 	objects = new EditorObject[MAX_OBJECTS];
 	for (int i = 0; i < MAX_OBJECTS; i++)
 	{
 		objects[i].rectangle.setFillColor(sf::Color::White);
 		objects[i].rectangle.setPosition(0, 0);
 		objects[i].rectangle.setSize(sf::Vector2f(0, 0));
+		objects[i].textureName = "none";
 	}
 
-	objectIndex = 0;
+	objectIndex.set(0, MAX_OBJECTS-1, 1);
 	n_objects = 0;
 
 
@@ -57,23 +57,24 @@ void StageEditor::load()
 	background.setTextureRect(sf::IntRect(0, 0, 6000, 6000));
 
 	loadTextures();
-	textureIndex = 0;
-	texture = textureList[textureIndex]->texture;
+	textureIndex.set(0, textureList.size()-1, 1);
+	texture = textureList[textureIndex.getIndex()]->texture;
 	
 	//menu
 	menu.setWindow(window);
 	menu.load();
 	menu.setFontSize(25);
 	menu.setPosition(10, 200);
-	menu.setDimensions(1, 5, 140, 30);
+	menu.setDimensions(1, 5, 150, 100);
 	menu.setSpacing(10, 10);
 	menu.enableBackgrounds(1, 0);
 	menu.addStatic("Editor Menu");
 	menu.add(modeString);
-	menu.add(dragTypeString);
 	menu.add(texture);
+	menu.add(dragTypeString);
+	menu.calculatePosition();
 
-	modeIndex = 0;
+	modeIndex.set(0, 2, 1);
 	modeUpdate();
 
 	//keys
@@ -95,6 +96,14 @@ void StageEditor::load()
 	keyMoveRight.set(sf::Keyboard::D, KeyType::REPEATED);
 	textureLeftKey.set(sf::Keyboard::Left, KeyType::SINGLE);
 	textureRightKey.set(sf::Keyboard::Right, KeyType::SINGLE);
+	keyShift.set(sf::Keyboard::LShift, KeyType::REPEATED);
+	keyLeft.set(sf::Keyboard::Left, KeyType::REPEATED);
+	keyRight.set(sf::Keyboard::Right, KeyType::REPEATED);
+	keyDown.set(sf::Keyboard::Down, KeyType::REPEATED);
+	keyUp.set(sf::Keyboard::Up, KeyType::REPEATED);
+	keyControl.set(sf::Keyboard::LControl, KeyType::REPEATED);
+	keySave.set(sf::Keyboard::S, KeyType::REPEATED);
+
 }
 
 //LOAD TEXTURES
@@ -102,7 +111,6 @@ void StageEditor::loadTextures()
 {
 	textureMgr.addFolder("test");
 	textureMgr.loadTextures();
-	std::cout << textureMgr.getTextures().size() << std::endl;
 	textureList = textureMgr.getTextures();
 }
 
@@ -137,14 +145,14 @@ void StageEditor::placeUpdate()
 
 	if (textureLeftKey.getValue())
 	{
-		textureIndex > 0 ? textureIndex-- : textureIndex = textureList.size() - 1;
-		texture = textureList[textureIndex]->texture;
+		textureIndex.down();
+		texture = textureList[textureIndex.getIndex()]->texture;
 		menu.update();
 	}
 	else if (textureRightKey.getValue())
 	{
-		textureIndex < textureList.size()-1 ? textureIndex++ : textureIndex = 0;
-		texture = textureList[textureIndex]->texture;
+		textureIndex.up();
+		texture = textureList[textureIndex.getIndex()]->texture;
 		menu.update();
 	}
 }
@@ -159,9 +167,15 @@ void StageEditor::placeInput()
 
 	//drag left and right
 	if (dragLeftKey.getValue())
-		dragTypeLeft();
+	{
+		dragTypeIndex.down();
+		updateDragType();
+	}
 	else if (dragRightKey.getValue())
-		dragTypeRight();
+	{
+		dragTypeIndex.up();
+		updateDragType();
+	}
 }
 
 void StageEditor::panUpdate()
@@ -209,58 +223,98 @@ void StageEditor::transformUpdate()
 
 void StageEditor::transformInput()
 {
+	float transformSpeed = 3;
+	//shrink
+	if (keyShift.getValue())
+	{
+		if(keyMoveDown.getValue())
+			objects[objectIndex.getIndex()].shrinkBottom(transformSpeed);
 	
+		if (keyMoveUp.getValue())
+			objects[objectIndex.getIndex()].shrinkTop(transformSpeed);
+
+		if (keyMoveRight.getValue())
+			objects[objectIndex.getIndex()].shrinkRight(transformSpeed);
+
+		if (keyMoveLeft.getValue())
+			objects[objectIndex.getIndex()].shrinkLeft(transformSpeed);
+
+		//rotate
+		if (keyRotateLeft.getValue())
+			objects[objectIndex.getIndex()].rotateLeft(transformSpeed);
+		else if (keyRotateRight.getValue())
+			objects[objectIndex.getIndex()].rotateRight(transformSpeed);
+	}
+	//grow
+	else
+	{
+		if (keyMoveDown.getValue())
+			objects[objectIndex.getIndex()].growBottom(transformSpeed);
+
+		if (keyMoveUp.getValue())
+			objects[objectIndex.getIndex()].growTop(transformSpeed);
+
+		if (keyMoveLeft.getValue())
+			objects[objectIndex.getIndex()].growLeft(transformSpeed);
+
+		if (keyMoveRight.getValue())
+			objects[objectIndex.getIndex()].growRight(transformSpeed);
+	}
+
+	//move
+	if (keyLeft.getValue())
+		objects[objectIndex.getIndex()].moveLeft(transformSpeed);
+	else if (keyRight.getValue())
+		objects[objectIndex.getIndex()].moveRight(transformSpeed);
+
+	if (keyUp.getValue())
+		objects[objectIndex.getIndex()].moveUp(transformSpeed);
+	else if (keyDown.getValue())
+		objects[objectIndex.getIndex()].moveDown(transformSpeed);
+
 }
 
-//INPUT
+//GENERAL INPUT
 void StageEditor::generalInput()
 {
 	//change editor mode
 	if (modeKey.getValue())
-		modeIndexUp();
+	{
+		modeIndex.up();
+		modeUpdate();
+	}
 
-	//back
+	//save
+	if (keyControl.getValue() && keySave.getValue())
+		map.generateFile("editor.txt", objects, n_objects);
+
+	//quit editor
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Tilde))
 		stageManager->changeStage("Main Menu");
 
 	//object index up and down
 	if (objectIndexUpKey.getValue())
-		objectIndexUp();
+	{
+		int lastIndex = objectIndex.getIndex();
+		objectIndex.up();
+		objectIndexUpdate(lastIndex);
+	}
 	else if (objectIndexDownKey.getValue())
-		objectIndexDown();
+	{
+		int lastIndex = objectIndex.getIndex();
+		objectIndex.down();
+		objectIndexUpdate(lastIndex);
+	}
 
 	//delete object
 	if (deleteKey.getValue())
-		deleteObject(objectIndex);
-
-	/*
-
-	int tmp = 3;
-	//tmp up and down
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
-	{
-		objects[objectIndex].shrinkTop(tmp);
-	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
-	{
-		objects[objectIndex].shrinkBottom(tmp);
-	}
-
-	//tmp object left or right
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-	{
-		objects[objectIndex].rotateLeft(tmp);
-	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-	{
-		objects[objectIndex].rotateRight(tmp);
-	}*/
+		deleteObject(objectIndex.getIndex());
 }
 
 //MODE UPDATE
 void StageEditor::modeUpdate()
 {
-	switch(modeIndex)
+	switch(modeIndex.getIndex())
 	{
 	case Mode::PAN:
 		mode = Mode::PAN;
@@ -272,7 +326,7 @@ void StageEditor::modeUpdate()
 		modeString = "Place";
 		break;
 	case Mode::TRANSFORM:
-		mode = Mode::PLACE;
+		mode = Mode::TRANSFORM;
 		modeString = "Transform";
 		break;
 	}
@@ -280,33 +334,10 @@ void StageEditor::modeUpdate()
 	menu.update();
 }
 
-//MODE INDEX UP
-void StageEditor::modeIndexUp()
-{
-	modeIndex < 2 ? modeIndex++ : modeIndex = 0;
-	modeUpdate();
-}
-
-//DRAG TYPE LEFT
-void StageEditor::dragTypeLeft()
-{
-	dragTypeIndex--;
-	dragTypeIndex < 0 ? dragTypeIndex = ObjType::N_TYPES-1 : dragTypeIndex;
-	updateDragType();
-}
-
-//DRAG TYPE RIGHT
-void StageEditor::dragTypeRight()
-{
-	dragTypeIndex++;
-	dragTypeIndex == ObjType::N_TYPES ? dragTypeIndex = 0 : dragTypeIndex;
-	updateDragType();
-}
-
 //UPDATE DRAG TYPE
 void StageEditor::updateDragType()
 {
-	switch (dragTypeIndex)
+	switch (dragTypeIndex.getIndex())
 	{
 	case ObjType::RECTANGLE:
 		dragTypeString = "Rectangle";
@@ -321,6 +352,8 @@ void StageEditor::updateDragType()
 		dragTypeString = "Dynamic Object";
 		break;
 	}
+
+	menu.update();
 }
 
 //ZOOM IN
@@ -354,17 +387,64 @@ void StageEditor::rotateReset()
 	view->setRotation(0.f);
 }
 
+//START DRAG
+void StageEditor::startDrag()
+{
+	//set object position to mouse pos
+	float x, y;
+	int last = objectIndex.getIndex();
+	if (n_objects > 0)
+		objectIndex.setIndex(n_objects);
+
+	switch (dragTypeIndex.getIndex())
+	{
+	case ObjType::RECTANGLE:
+		objects[objectIndex.getIndex()].type = ObjType::RECTANGLE;
+		x = (((float)sf::Mouse::getPosition(*window->getWindow()).x * zoomAmount) - (view->getSize().x / 2) + view->getCenter().x) / window->getScale().x;
+		y = (((float)sf::Mouse::getPosition(*window->getWindow()).y * zoomAmount) - (view->getSize().y / 2) + view->getCenter().y) / window->getScale().y;
+		objects[objectIndex.getIndex()].rectangle.setPosition(x, y);
+		break;
+
+	case ObjType::CIRCLE:
+		//objects[objectIndex.getIndex()].type = ObjType::CIRCLE;
+		//x = ((float)sf::Mouse::getPosition(*window->getWindow()).x * zoomAmount) - (view->getSize().x / 2) + view->getCenter().x / window->getScale().x;
+		//y = ((float)sf::Mouse::getPosition(*window->getWindow()).y * zoomAmount) - (view->getSize().y / 2) + view->getCenter().y / window->getScale().y;
+		//objects[objectIndex.getIndex()].circle.setPosition(x, y);
+		break;
+
+	case ObjType::STATIC_OBJ:
+		objects[objectIndex.getIndex()].type = ObjType::STATIC_OBJ;
+		objects[objectIndex.getIndex()].rectangle.setSize(sf::Vector2f(textureList[textureIndex.getIndex()]->texture.getSize().x, textureList[textureIndex.getIndex()]->texture.getSize().y));
+		objects[objectIndex.getIndex()].rectangle.setTexture(&textureList[textureIndex.getIndex()]->texture);
+		objects[objectIndex.getIndex()].textureName = textureList[textureIndex.getIndex()]->name;
+		x = (((float)sf::Mouse::getPosition(*window->getWindow()).x * zoomAmount) - (view->getSize().x / 2) + view->getCenter().x - (objects[objectIndex.getIndex()].rectangle.getSize().x / 2)) / window->getScale().x;
+		y = (((float)sf::Mouse::getPosition(*window->getWindow()).y * zoomAmount) - (view->getSize().y / 2) + view->getCenter().y) / window->getScale().y;
+		objects[objectIndex.getIndex()].rectangle.setPosition(x, y);
+		break;
+
+	case ObjType::DYNAMIC_OBJ:
+		break;
+	}
+
+	objectIndexUpdate(last);
+	objectIndex.setMax(n_objects);
+	n_objects++;
+
+	dragging = 1;
+}
+
 //UPDATE DRAG
 void StageEditor::updateDrag()
 {
 	//calculate size based on rect and mouse position
 	float x, y;
-	switch (dragTypeIndex)
+	switch (dragTypeIndex.getIndex())
 	{
 	case ObjType::RECTANGLE:
-		x = (((float)sf::Mouse::getPosition(*window->getWindow()).x * zoomAmount) - (view->getSize().x / 2) + view->getCenter().x) / window->getScale().x - objects[objectIndex].rectangle.getPosition().x;
-		y = (((float)sf::Mouse::getPosition(*window->getWindow()).y * zoomAmount) - (view->getSize().y / 2) + view->getCenter().y) / window->getScale().y - objects[objectIndex].rectangle.getPosition().y;
-		objects[objectIndex].rectangle.setSize(sf::Vector2f(x, y));
+		objects[objectIndex.getIndex()].type = ObjType::RECTANGLE;
+		x = (((float)sf::Mouse::getPosition(*window->getWindow()).x * zoomAmount) - (view->getSize().x / 2) + view->getCenter().x) / window->getScale().x;
+		y = (((float)sf::Mouse::getPosition(*window->getWindow()).y * zoomAmount) - (view->getSize().y / 2) + view->getCenter().y) / window->getScale().y;
+		objects[objectIndex.getIndex()].rectangle.setSize(sf::Vector2f(x, y));
 		break;
 
 	case ObjType::CIRCLE:
@@ -376,69 +456,13 @@ void StageEditor::updateDrag()
 		std::cout << radius << std::endl;
 		objects[objectIndex].circle.setRadius(radius);*/
 		break;
-	}
-}
 
-//START DRAG
-void StageEditor::startDrag()
-{
-	//set object position to mouse pos
-	float x, y;
-	int last = objectIndex;
-	if (n_objects > 0)
-	{
-		objectIndex = n_objects;
-	}
-
-	switch (dragTypeIndex)
-	{
-	case ObjType::RECTANGLE:
-		objects[objectIndex].type = ObjType::RECTANGLE;
-		x = (((float)sf::Mouse::getPosition(*window->getWindow()).x * zoomAmount) - (view->getSize().x / 2) + view->getCenter().x) / window->getScale().x;
-		y = (((float)sf::Mouse::getPosition(*window->getWindow()).y * zoomAmount) - (view->getSize().y / 2) + view->getCenter().y) / window->getScale().y;
-		objects[objectIndex].rectangle.setPosition(x, y);
-		break;
-
-	case ObjType::CIRCLE:
-		objects[objectIndex].type = ObjType::CIRCLE;
-		x = ((float)sf::Mouse::getPosition(*window->getWindow()).x * zoomAmount) - (view->getSize().x / 2) + view->getCenter().x / window->getScale().x;
-		y = ((float)sf::Mouse::getPosition(*window->getWindow()).y * zoomAmount) - (view->getSize().y / 2) + view->getCenter().y / window->getScale().y;
-		objects[objectIndex].circle.setPosition(x, y);
-		break;
-	
 	case ObjType::STATIC_OBJ:
-		objects[objectIndex].type = ObjType::RECTANGLE;
 		x = (((float)sf::Mouse::getPosition(*window->getWindow()).x * zoomAmount) - (view->getSize().x / 2) + view->getCenter().x) / window->getScale().x;
 		y = (((float)sf::Mouse::getPosition(*window->getWindow()).y * zoomAmount) - (view->getSize().y / 2) + view->getCenter().y) / window->getScale().y;
-		objects[objectIndex].rectangle.setPosition(x, y);
-		break;
-
-	case ObjType::DYNAMIC_OBJ:
+		objects[objectIndex.getIndex()].rectangle.setPosition(x, y);
 		break;
 	}
-	
-	objectIndexUpdate(last);
-	n_objects++;
-
-	dragging = 1;
-}
-
-//OBJECT INDEX UP
-void StageEditor::objectIndexUp()
-{
-	int lastIndex = objectIndex;
-	objectIndex++;
-	objectIndex == n_objects ? objectIndex = 0 : objectIndex;
-	objectIndexUpdate(lastIndex);
-}
-
-//OBJECT INDEX DOWN
-void StageEditor::objectIndexDown()
-{
-	int lastIndex = objectIndex;
-	objectIndex--;
-	objectIndex < 0 ? objectIndex = n_objects - 1 : objectIndex;
-	objectIndexUpdate(lastIndex);
 }
 
 //DELETE OBJECT
@@ -454,7 +478,8 @@ void StageEditor::deleteObject(int index)
 		}
 
 		n_objects--;
-		objectIndex > 0 ? objectIndex-- : objectIndex;
+		objectIndex.down();
+		objectIndex.setMax(n_objects - 1);
 		objectIndexUpdate(-1);
 	}
 }
@@ -487,18 +512,18 @@ void StageEditor::objectIndexUpdate(int lastIndex)
 	}
 
 	//update current
-	switch (objects[objectIndex].type)
+	switch (objects[objectIndex.getIndex()].type)
 	{
 	case ObjType::RECTANGLE:
-		objects[objectIndex].rectangle.setFillColor(selectedColor);
+		objects[objectIndex.getIndex()].rectangle.setFillColor(selectedColor);
 		break;
 
 	case ObjType::CIRCLE:
-		objects[objectIndex].circle.setFillColor(selectedColor);
+		objects[objectIndex.getIndex()].circle.setFillColor(selectedColor);
 		break;
 
 	case ObjType::STATIC_OBJ:
-		objects[objectIndex].rectangle.setFillColor(selectedColor);
+		objects[objectIndex.getIndex()].rectangle.setFillColor(selectedColor);
 		break;
 
 	case ObjType::DYNAMIC_OBJ:
@@ -510,10 +535,10 @@ void StageEditor::objectIndexUpdate(int lastIndex)
 //END DRAG
 void StageEditor::endDrag()
 {
-	switch (dragTypeIndex)
+	switch (dragTypeIndex.getIndex())
 	{
 	case ObjType::RECTANGLE:
-		sf::RectangleShape* rect = &objects[objectIndex].rectangle;
+		sf::RectangleShape* rect = &objects[objectIndex.getIndex()].rectangle;
 
 		//adjust for negative size
 		if (rect->getSize().x < 0)
@@ -553,7 +578,9 @@ void StageEditor::drawObjects()
 		case ObjType::RECTANGLE:
 			window->addWorld(objects[i].rectangle);
 			break;
-
+		case ObjType::STATIC_OBJ:
+			window->addWorld(objects[i].rectangle);
+			break;
 		case ObjType::CIRCLE:
 			window->addWorld(objects[i].circle);
 			break;

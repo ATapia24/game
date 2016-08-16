@@ -31,7 +31,7 @@ void TextureManager::loadTextures()
 				//load and set name
 				raw_texture.loadFromFile(ROOT_FOLDER + subfolders[i] + '/' + files[j]);
 				texture->texture = raw_texture;
-				texture->name = files[i];
+				texture->name = files[j];
 
 				textureList.push_back(texture);
 			}
@@ -48,7 +48,6 @@ void TextureManager::addFolder(std::string folder)
 //VALID FILE TYPE
 bool TextureManager::validFileType(std::string filename)
 {
-	std::cout << misc::getFileType(filename) << std::endl;
 	if (misc::getFileType(filename) == "png")
 		return 1;
 	

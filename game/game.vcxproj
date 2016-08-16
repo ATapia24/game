@@ -208,7 +208,9 @@
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="globals.h" />
     <ClInclude Include="Holdable.h" />
+    <ClInclude Include="Index.h" />
     <ClInclude Include="KeyManager.h" />
+    <ClInclude Include="Map.h" />
     <ClInclude Include="MenuList.h" />
     <ClInclude Include="misc.h" />
     <ClInclude Include="NativePosition.h" />
@@ -316,7 +318,9 @@
     <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="globals.cpp" />
     <ClCompile Include="Holdable.cpp" />
+    <ClCompile Include="Index.cpp" />
     <ClCompile Include="KeyManager.cpp" />
+    <ClCompile Include="Map.cpp" />
     <ClCompile Include="MenuList.cpp" />
     <ClCompile Include="misc.cpp" />
     <ClCompile Include="NativePosition.cpp" />

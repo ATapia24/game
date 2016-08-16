@@ -103,6 +103,8 @@ void MenuList::add(std::string& string)
 	obj->text.setPosition(obj->bg.getPosition());
 	obj->text.setColor(defaultColor);
 	obj->text.setString(obj->string->c_str());
+	//obj->width = width;
+	//obj->height = height;
 
 	//calc pos
 	sf::Vector2f pos = obj->bg.getPosition();
@@ -131,6 +133,8 @@ void MenuList::addStatic(std::string string)
 	obj->text.setCharacterSize(fontSize);
 	obj->text.setColor(defaultColor);
 	obj->text.setString(obj->string->c_str());
+	obj->width = width;
+	obj->height = height;
 
 	//calc pos
 	sf::Vector2f pos = obj->bg.getPosition();
@@ -150,10 +154,27 @@ void MenuList::add(sf::Texture& texture)
 	obj->active = 1;
 	obj->texture = &texture;
 	obj->sprite.setTexture(*obj->texture);
+	obj->width = width;
+	obj->height = height;
+	obj->sprite.setPosition(obj->bg.getPosition());
+}
 
-	sf::Vector2f pos = obj->bg.getPosition();
-	//osition.y -= obj->icon.getGlobalBounds().height / 2;
-	obj->sprite.setPosition(pos);
+//ADD SPRITE W/ SIZE
+void MenuList::add(sf::Texture& texture, unsigned int _width, unsigned int _height)
+{
+	//set object
+	sf::Vector2i index = calcNextIndex();
+	MenuObject* obj = &grid[index.y][index.x];
+	objects.push_back(obj);
+	updatables.push_back(obj);
+	obj->type = MenuObjectType::SPRITE;
+	obj->active = 1;
+	obj->texture = &texture;
+	obj->sprite.setTexture(*obj->texture);
+	obj->bg.setSize(sf::Vector2f((float)_width, (float)_height));
+	obj->width = _width;
+	obj->height = _height;
+	obj->sprite.setPosition(obj->bg.getPosition());
 }
 
 //SET WINDOW
@@ -183,9 +204,11 @@ void MenuList::setDimensions(int _n_cols, int _n_rows, int _width, int _height)
 	{
 		for (unsigned int x = 0; x < grid[y].size(); x++)
 		{
+			grid[y][x].width = _width;
+			grid[y][x].height = _height;
 			grid[y][x].type = MenuObjectType::EMPTY;
 			grid[y][x].bg.setSize(sf::Vector2f(width, height));
-			grid[y][x].bg.setFillColor(sf::Color::Black);
+			grid[y][x].bg.setFillColor(sf::Color::Green);
 		}
 	}
 
@@ -206,15 +229,23 @@ void MenuList::setPosition(float x, float y)
 {
 	position.x = x;
 	position.y = y;
+	calculatePosition();
+}
 
-	//calculate new pos
+//CALCULATE POSITIONS
+void MenuList::calculatePosition()
+{
+	unsigned int widthOffset = 0, heightOffset = 0;
+
 	for (unsigned int y = 0; y < grid.size(); y++)
 	{
 		for (unsigned int x = 0; x < grid[y].size(); x++)
 		{
 			MenuObject* obj = &grid[y][x];
+
 			obj->bg.setPosition(sf::Vector2f((width*x + (x*horizontalSpacing)) + position.x, (height*y + (y*verticalSpacing)) + position.y));
 		}
+
 	}
 
 	background.setPosition(sf::Vector2f(position.x, position.y));

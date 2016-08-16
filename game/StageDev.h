@@ -16,9 +16,12 @@
 #include "Player.h"
 #include "NativePosition.h"
 #include "Entity.h"
+#include "TextureManager.h"
 #include "Floor.h"
 #include "Box2D\Box2D.h"
 #include "KeyManager.h"
+#include "Map.h"
+#include "EditorObject.h"
 
 class StageDev : public Stage, public b2ContactListener
 {
@@ -26,12 +29,16 @@ private:
 	sf::Texture bgText;
 	sf::RectangleShape bg;
 	MenuList menu;
+	TextureManager textures;
+	std::vector<EditorObject*> objects;
 
 	Player player;
 
 	b2World* world;
 
 	Key menuUp, menuDown;
+	
+	Map map;
 public:
 	StageDev();
 	~StageDev();
