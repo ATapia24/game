@@ -19,6 +19,7 @@ namespace globals
 	//math
 	const float PI = 3.14159265359f;
 	const float PI2 = 6.28318530718f;
+	const float PIh = 1.57079632679f;
 	const float RAD2DEG = 57.2957795131f;
 	const float DEG2RAD = 0.01745329251f;
 }

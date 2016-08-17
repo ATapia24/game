@@ -1,6 +1,7 @@
 #pragma once
 #include "Entity.h"
 #include "Animation.h"
+#include "KeyManager.h"
 #include <cmath>
 #include "globals.h"
 
@@ -21,13 +22,15 @@ private:
 
 	float walkSpeed;
 	float jumpStrength;
-	bool onFloor;
+	bool moved;
 	//tmp
-	bool rel;
+	Key_M reset;
 	
 	//input
-	bool q_rel, a_rel, d_rel, b_c, q_rel2, a_rel2, d_rel2, b_c2;
-
+	Key keyForward, keyBackward;
+	Key keyLeft, keyRight;
+	bool m_forward, m_backward, m_left, m_right;
+	b2Vec2 forwardVel, backwardVel, leftVel, rightVel;
 	//animations
 	void updateAnimations();
 	Animation walk_right, walk_left, stand_right, stand_left;
@@ -48,6 +51,8 @@ public:
 	void input();
 	void walkForward();
 	void stopWalkForward();
+	void walkBackward();
+	void stopWalkBackwards();
 	void walkRight();
 	void walkLeft();
 	void stopWalkRight();

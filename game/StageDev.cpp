@@ -48,6 +48,7 @@ void StageDev::load()
 	textures.addFolder("test");
 	textures.loadTextures();
 	objects = map.loadFile("editor.txt", textures.getTextures());
+
 }
 
 //UNLOAD
@@ -96,9 +97,9 @@ void StageDev::draw()
 {
 	window->addWorld(bg);
 	player.draw();
-	menu.draw();
+	//menu.draw();
 
-	for (int i = 0; i < objects.size(); i++)
+	for (unsigned int i = 0; i < objects.size(); i++)
 		window->addWorld(objects[i]->rectangle);
 }
 

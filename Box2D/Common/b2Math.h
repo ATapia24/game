@@ -21,6 +21,7 @@
 
 #include <Box2D/Common/b2Settings.h>
 #include <math.h>
+#include <cmath>
 
 /// This function is used to ensure that a floating point number is not a NaN or infinity.
 inline bool b2IsValid(float32 x)
@@ -96,6 +97,14 @@ struct b2Vec2
 	{
 		x *= a; y *= a;
 	}
+
+	/// Divide this vectore by a scalar.
+	void operator /= (float32 a)
+	{
+		x /= a; y /= a;
+	}
+
+	/// Divied operator
 
 	/// Get the length of this vector (the norm).
 	float32 Length() const

@@ -8,17 +8,7 @@ Player::Player()
 	spawnPointY = 0;
 	spawned = 0;
 	moveable = 1;
-
-	//tmp
-	//player_body.load(sprite, "assets/head.png", 8, 16, 32);
 	
-	//weapon
-	weapon.setScale(3, 3);
-	texture.loadFromFile("assets/head.png");
-	texture.setSmooth(true);
-	hitbox.setFillColor(sf::Color::Magenta);
-	
-	//tmp
 	//hitbox.setTexture(&texture);
 	sprite.setTexture(texture);
 	sprite.setScale(sf::Vector2f(0.25f, 0.25f));
@@ -26,13 +16,28 @@ Player::Player()
 	//stats
 	walkSpeed = 8;
 	jumpStrength = 4;
-	direction = Direction::RIGHT;
+
+	//input
+	keyForward.set(sf::Keyboard::W, KeyType::REPEATED);
+	keyBackward.set(sf::Keyboard::S, KeyType::REPEATED);
+	keyLeft.set(sf::Keyboard::A, KeyType::REPEATED);
+	keyRight.set(sf::Keyboard::D, KeyType::REPEATED);
+	reset.set(sf::Mouse::Button::Left, KeyType::REPEATED);
 
 	sprite.setOrigin(sf::Vector2f(hitbox.getSize().x / 2, hitbox.getSize().y / 2));
 	viewOffsetY = 400;
 	
 	//tmp
 	hitbox.setRotation(0);
+	m_forward = 0;
+	m_backward = 0;
+	m_left = 0;
+	m_right = 0;
+
+	forwardVel.SetZero();
+	backwardVel.SetZero();
+	leftVel.SetZero();
+	rightVel.SetZero();
 }
 
 
@@ -65,6 +70,17 @@ void Player::draw()
 //UPDATE MOVEMENT
 void Player::updateMovement()
 {
+	//tmp reset pos
+	if (reset.getValue())
+		body->SetTransform(b2Vec2(0, 0), 0);
+
+	if (m_forward && m_left)
+	{
+	}
+
+	body->SetLinearVelocity(forwardVel + backwardVel + leftVel + rightVel);
+	std::cout << body->GetLinearVelocity().Length() << ' ' << body->GetLinearVelocity().x << ' ' << body->GetLinearVelocity().y << '\n';
+
 	//mouse rotation - reset on full rotation (radians)
 	float rotation = body->GetAngle() + ((600 - (float)sf::Mouse::getPosition().x) * -0.001f);
 	sf::Mouse::setPosition(sf::Vector2i(600, 500));
@@ -87,72 +103,76 @@ void Player::updateCamera()
 	window->getWorldView()->setRotation(body->GetAngle() * globals::RAD2DEG);
 }
 
-//START CONTACT
-void Player::startContact(Entity* entity)
-{
-	onFloor = 1;
-	entity->getSprite().setColor(sf::Color::Red);
-}
-
-//END CONTACT
-void Player::endContact(Entity* entity)
-{
-	onFloor = 0;
-	entity->getSprite().setColor(sf::Color::White);
-}
-
 //WALK FORWARD
 void Player::walkForward()
 {
+	m_forward = 1;
 	float angle = body->GetAngle();
 	b2Vec2 vector = walkSpeed * b2Vec2(sin(angle), cos(angle));
-	body->SetLinearVelocity(vector);
+	forwardVel = vector;
+	//body->SetLinearVelocity(vector);
 }
 
 //STOP WALK FORWARD
 void Player::stopWalkForward()
 {
-	float angle = body->GetAngle();
-	b2Vec2 vector = -walkSpeed * b2Vec2(sin(angle), cos(angle));
-	body->SetLinearVelocity(vector);
+	m_forward = 0;
+	//body->SetLinearVelocity(body->GetLinearVelocity() - forwardVel);
+	forwardVel.SetZero();
+}
+
+//WALK BACKWARDS
+void Player::walkBackward()
+{
+	m_backward = 1;
+	float angle = body->GetAngle() + globals::PI;
+	b2Vec2 vector = walkSpeed * b2Vec2(sin(angle), cos(angle));
+	backwardVel = vector;
+	//body->SetLinearVelocity(vector);
+}
+
+//STOP WALK BACKWARDS
+void Player::stopWalkBackwards()
+{
+	m_backward = 0;
+	//body->SetLinearVelocity(body->GetLinearVelocity() - backwardVel);
+	backwardVel.SetZero();
 }
 
 //WALK RIGHT
 void Player::walkRight()
 {
-	float velChange = walkSpeed - body->GetLinearVelocity().x;
-	float impulse = body->GetMass() * velChange;
-	body->ApplyLinearImpulse(b2Vec2(impulse, 0), body->GetWorldCenter(), 1);
-	direction = Direction::RIGHT;
-	state = PlayerState::walking_right;
+	m_right = 1;
+	float angle = body->GetAngle() + globals::PIh;
+	b2Vec2 vector = walkSpeed * b2Vec2(sin(angle), cos(angle));
+	rightVel = vector;
+	//body->SetLinearVelocity(vector);
 }
 
 //STOP WALK RIGHT
 void Player::stopWalkRight()
 {
-	float velChange = -body->GetLinearVelocity().x;
-	float impulse = body->GetMass() * velChange;
-	body->ApplyLinearImpulse(b2Vec2(impulse, 0), body->GetWorldCenter(), 1);
-	state = PlayerState::standing_right;
+	m_right = 0;
+	//body->SetLinearVelocity(body->GetLinearVelocity() - rightVel);
+	rightVel.SetZero();
 }
 
 //WALK LEFT
 void Player::walkLeft()
 {
-	float velChange = -walkSpeed - body->GetLinearVelocity().x;
-	float impulse = body->GetMass() * velChange;
-	body->ApplyLinearImpulse(b2Vec2(impulse, 0), body->GetWorldCenter(), 1);
-	direction = Direction::LEFT;
-	state = PlayerState::walking_left;
+	m_left = 1;
+	float angle = body->GetAngle() - globals::PIh;
+	b2Vec2 vector = walkSpeed * b2Vec2(sin(angle), cos(angle));
+	leftVel = vector;
+	//body->SetLinearVelocity(vector);
 }
 
 //STOP WALK LEFT
 void Player::stopWalkLeft()
 {
-	float velChange = -body->GetLinearVelocity().x;
-	float impulse = body->GetMass() * velChange;
-	body->ApplyLinearImpulse(b2Vec2(impulse, 0), body->GetWorldCenter(), 1);
-	state = PlayerState::standng_left;
+	m_left = 0;
+	//body->SetLinearVelocity(body->GetLinearVelocity() - leftVel);
+	leftVel.SetZero();
 }
 
 //JUMP
@@ -165,43 +185,28 @@ void Player::jump()
 void Player::input()
 {
 	//forward
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
-	{
+	if (keyForward.getValue())
 		walkForward();
-		rel = 0;
-	}if (!sf::Keyboard::isKeyPressed(sf::Keyboard::W) && !rel)
-	{
+	else if (m_forward && !keyForward.getValue())
 		stopWalkForward();
-		rel = 1;
-	}
 
-	/*
+	//backward
+	if (keyBackward.getValue())
+		walkBackward();
+	else if (m_backward && !keyBackward.getValue())
+		stopWalkBackwards();
+
 	//left
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
-	{
+	if (keyLeft.getValue())
 		walkLeft();
-	}
-	else if (!sf::Keyboard::isKeyPressed(sf::Keyboard::A) && direction == Direction::LEFT)
-	{
+	else if (m_left && !keyLeft.getValue())
 		stopWalkLeft();
-	}
 
 	//right
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
-	{
+	if (keyRight.getValue())
 		walkRight();
-	}
-	else if (!sf::Keyboard::isKeyPressed(sf::Keyboard::D) && direction == Direction::RIGHT)
-	{
+	else if (m_right && !keyRight.getValue())
 		stopWalkRight();
-	}
-
-	//jump
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && onFloor)
-	{
-		jump();
-	}
-	*/
 }
 
 
@@ -265,4 +270,16 @@ void Player::updateAnimations()
 		player_body.update(sprite, 8, 8);
 		break;
 	}
+}
+
+//START CONTACT
+void Player::startContact(Entity* entity)
+{
+	entity->getSprite().setColor(sf::Color::Red);
+}
+
+//END CONTACT
+void Player::endContact(Entity* entity)
+{
+	entity->getSprite().setColor(sf::Color::White);
 }
