@@ -15,7 +15,7 @@ private:
 	sf::View worldView;
 	float NATIVE_WIDTH, NATIVE_HEIGHT;
 	float widthScale, heightScale;
-	bool fullscreen;
+	bool fullscreen, mouseVisible;
 	
 	struct queueType
 	{
@@ -51,4 +51,6 @@ public:
 	sf::View* getGuiView() { return &guiView; };
 	sf::Vector2f getScale() { return sf::Vector2f(widthScale, heightScale); };
 	bool isFullscreen() { return fullscreen; };
+	void setMouseVisible(bool _mouseVisible);
+	bool isMouseVisible();
 };

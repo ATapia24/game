@@ -2,6 +2,7 @@
 #include "Entity.h"
 #include "Animation.h"
 #include "KeyManager.h"
+#include "Holdable.h"
 #include <cmath>
 #include "globals.h"
 
@@ -19,12 +20,13 @@ class Player : public Entity
 private:
 	PlayerState state;
 	sf::Sprite weapon;
+	Holdable gun;
 
 	float walkSpeed;
 	float sprintSpeed;
 
 	//tmp
-	Key_M reset;
+	Key_M fire;
 	
 	//input
 	Key keySprint;

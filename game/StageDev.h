@@ -22,6 +22,7 @@
 #include "KeyManager.h"
 #include "Map.h"
 #include "EditorObject.h"
+#include "Solid.h"
 
 class StageDev : public Stage, public b2ContactListener
 {
@@ -33,6 +34,7 @@ private:
 	std::vector<EditorObject*> objects;
 
 	Player player;
+	Solid wall;
 
 	b2World* world;
 

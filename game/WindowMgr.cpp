@@ -32,7 +32,7 @@ void WindowMgr::draw()
 		{
 			case 1:
 				windowPtr->draw(*worldQueue[i].sprite);
-				delete worldQueue[i].sprite;
+				//delete worldQueue[i].sprite;
 				break;
 			case 2:
 				windowPtr->draw(*worldQueue[i].text);
@@ -107,6 +107,9 @@ void WindowMgr::setResolution(int width, int height, bool _fullscreen, bool bord
 	windowPtr->setPosition(sf::Vector2i(0, 0));
 	windowPtr->setFramerateLimit(65);
 	fullscreen = _fullscreen;
+
+	//mouse
+	windowPtr->setMouseCursorVisible(mouseVisible);
 
 	guiView.reset((sf::FloatRect(0, 0, (float)width, (float)height)));
 	worldView.reset((sf::FloatRect(0, 0, (float)width, (float)height)));
@@ -211,4 +214,17 @@ void WindowMgr::addWorld(sf::ConvexShape& convex)
 	worldQueue[worldSize].convex->setScale(widthScale, heightScale);
 	worldQueue[worldSize].convex->setPosition(widthScale * worldQueue[worldSize].convex->getPosition().x, heightScale* worldQueue[worldSize].convex->getPosition().y);
 	worldSize++;
+}
+
+//SET MOUSE VISIBLE
+void WindowMgr::setMouseVisible(bool _mouseVisible)
+{
+	mouseVisible = _mouseVisible;
+	windowPtr->setMouseCursorVisible(_mouseVisible);
+}
+
+//IS MOUSE VISIBLE
+bool WindowMgr::isMouseVisible()
+{
+	return mouseVisible;
 }

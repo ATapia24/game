@@ -23,7 +23,7 @@ Player::Player()
 	keyLeft.set(sf::Keyboard::A, KeyType::REPEATED);
 	keyRight.set(sf::Keyboard::D, KeyType::REPEATED);
 	keySprint.set(sf::Keyboard::LShift, KeyType::REPEATED);
-	reset.set(sf::Mouse::Button::Left, KeyType::REPEATED);
+	fire.set(sf::Mouse::Button::Left, KeyType::SINGLE);
 
 	sprite.setOrigin(sf::Vector2f(hitbox.getSize().x / 2, hitbox.getSize().y / 2));
 	viewOffsetY = 400;
@@ -54,6 +54,7 @@ void Player::update()
 	{
 		input();
 		updateMovement();
+		gun.update();
 		//updateAnimations();
 		updateCamera();
 	}
@@ -66,15 +67,15 @@ void Player::draw()
 	{
 		window->addWorld(hitbox);
 		window->addWorld(sprite);
+		gun.draw();
 	}
 }
 //UPDATE MOVEMENT
 void Player::updateMovement()
 {
 	//tmp reset pos
-	if (reset.getValue())
-		body->SetTransform(b2Vec2(0, 0), 0);
-
+	if (fire.getValue())
+		gun.fire(body->GetAngle(), body->GetPosition());
 
 
 	//movement
@@ -82,17 +83,20 @@ void Player::updateMovement()
 	body->SetLinearVelocity(forwardVel + backwardVel + leftVel + rightVel);
 
 	//mouse rotation - reset on full rotation (radians)
-	float rotation = body->GetAngle() + ((600 - (float)sf::Mouse::getPosition().x) * -0.001f);
+	float rotation = body->GetAngle() + ((600 - (float)sf::Mouse::getPosition().x) * -0.0005f);
 	sf::Mouse::setPosition(sf::Vector2i(600, 500));
 	rotation > globals::PI2 ? rotation = 0: rotation;
 	rotation < 0 ? rotation = globals::PI2 : rotation;
 	
 	//update pos/rot
+	body->SetFixedRotation(0);
 	body->SetTransform(body->GetPosition(), rotation); 
+	body->SetFixedRotation(1);
 	hitbox.setPosition(body->GetPosition().x * 32, -body->GetPosition().y * 32);
 	sprite.setPosition(hitbox.getPosition());
 	hitbox.setRotation(body->GetAngle() * globals::RAD2DEG);
 	sprite.setRotation(hitbox.getRotation());
+
 }
 
 //UPDATE CAMERA
@@ -255,7 +259,6 @@ void Player::initialize(WindowMgr* _window, b2World* _world, float density, floa
 
 	//size and origin setup
 	sprite.setTexture(texture);
-	//sprite.setTextureRect(sf::IntRect(0, 0, (int)(hitbox.getSize().x / sprite.getScale().x, hitbox.getSize().y / sprite.getScale().y));
 	originOffsetX = hitbox.getSize().x / 2;
 	originOffsetY = hitbox.getSize().y / 2;
 	hitbox.setOrigin(originOffsetX, originOffsetY);
@@ -263,7 +266,6 @@ void Player::initialize(WindowMgr* _window, b2World* _world, float density, floa
 
 	//def
 	bodyDef = new b2BodyDef();
-	//bodyDef->fixedRotation = true;
 	bodyDef->type = b2_dynamicBody;
 	spawnPointX = x;
 	spawnPointY = y;
@@ -277,12 +279,16 @@ void Player::initialize(WindowMgr* _window, b2World* _world, float density, floa
 
 	//fixture
 	fixtureDef = new b2FixtureDef();
-	fixtureDef->shape = this->shape;
+	fixtureDef->shape = shape;
+	fixtureDef->filter.categoryBits = EntityType::PLAYER;
+	fixtureDef->filter.maskBits = 0x0000;
 
 	//properties
 	fixtureDef->density = density;
 	fixtureDef->friction = friction;
-	body->CreateFixture(this->fixtureDef);
+	body->CreateFixture(fixtureDef);
+
+	gun.load(window, world);
 }
 
 //UPDATE ANIMATIONS

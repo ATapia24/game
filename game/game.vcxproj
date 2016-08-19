@@ -218,6 +218,8 @@
     <ClInclude Include="misc.h" />
     <ClInclude Include="NativePosition.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="Projectile.h" />
+    <ClInclude Include="Solid.h" />
     <ClInclude Include="Stage.h" />
     <ClInclude Include="StageDev.h" />
     <ClInclude Include="StageEditor.h" />
@@ -328,6 +330,8 @@
     <ClCompile Include="misc.cpp" />
     <ClCompile Include="NativePosition.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Projectile.cpp" />
+    <ClCompile Include="Solid.cpp" />
     <ClCompile Include="Stage.cpp" />
     <ClCompile Include="StageDev.cpp" />
     <ClCompile Include="StageEditor.cpp" />

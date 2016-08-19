@@ -5,20 +5,16 @@
 #include <SFML\Graphics.hpp>
 #include "Box2D\Box2D.h"
 #include "WindowMgr.h"
-#include "NativePosition.h"
+#include "globals.h"
 #include "Timer.h"
 #include <string>
 
 enum EntityType
 {
-	PLAYER,
-	FLOOR
-};
-
-enum Direction
-{
-	RIGHT,
-	LEFT
+	PLAYER = 0x0001,
+	FLOOR = 0x0002,
+	SOLID = 0x0004,
+	PROJECTILE = 0x0008
 };
 
 struct Point
@@ -41,6 +37,7 @@ protected:
 
 	//spawn
 	bool spawned;
+	bool killed;
 	float spawnPointX, spawnPointY;
 
 	b2Body* body;
@@ -49,7 +46,6 @@ protected:
 	b2FixtureDef* fixtureDef;
 	
 	//move
-	Direction direction;
 	bool moveable;
 
 	//animations
@@ -88,6 +84,7 @@ public:
 	//spawn/kill
 	virtual void spawn();
 	virtual void kill();
+	virtual bool wasKilled();
 	virtual bool isAlive();
 
 	//collision

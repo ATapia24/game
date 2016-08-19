@@ -15,12 +15,13 @@ StageDev::StageDev(StageManager* _stageManager, WindowMgr* _window)
 //LOAD
 void StageDev::load()
 {
-	world = new b2World(b2Vec2(0, -0));
+	window->getWindow()->setMouseCursorVisible(FALSE);
+	world = new b2World(b2Vec2(0, 0));
 	world->SetContactListener(this);
 	player.setName("player");
 	player.getSprite().setScale(3, 3);
 	player.getHitbox().setSize(sf::Vector2f(25, 25));
-	player.initialize(window, world, 1.f, 0.3f, 30.f, -31.875f);
+	player.initialize(window, world, 1.f, 0.3f, 10.f, -31.875f);
 	player.spawn();
 	bgText.loadFromFile("assets/strike.jpg");
 	bg.setPosition(0, 0);
@@ -44,6 +45,13 @@ void StageDev::load()
 	textures.addFolder("test");
 	textures.loadTextures();
 	objects = map.loadFile("editor.txt", textures.getTextures());
+
+	wall.getHitbox().setSize(sf::Vector2f(20, 1400));
+	wall.initialize(window, world, 1, 1, 1000, 400);
+	wall.spawn();
+
+	std::cout << wall.getBody()->GetPosition().x << ' ' << wall.getBody()->GetPosition().y << std::endl;
+
 }
 
 //UNLOAD
@@ -76,15 +84,6 @@ void StageDev::update()
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::F2))
 		window->setResolution(1280, 720, 1, 0);
 
-
-	float xRatio = window->getWindow()->getSize().x / globals::NATIVE_WIDTH;
-	float yRatio = window->getWindow()->getSize().y / globals::NATIVE_HEIGHT;
-
-	if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
-	{
-		//player.getBody()->SetTransform(b2Vec2((sf::Mouse::getPosition(*window->getWindow()).x / 32.f) / xRatio, (-sf::Mouse::getPosition(*window->getWindow()).y / 32.f) / yRatio), 0.f);
-		//player.getBody()->SetLinearVelocity(b2Vec2(0, 0));
-	}
 }
 
 //DRAW
@@ -95,6 +94,8 @@ void StageDev::draw()
 
 	for (unsigned int i = 0; i < objects.size(); i++)
 		window->addWorld(objects[i]->rectangle);
+
+	wall.draw();
 
 	player.draw();
 }

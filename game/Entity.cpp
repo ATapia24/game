@@ -9,6 +9,7 @@ Entity::Entity()
 	spawnPointY = 0;
 	spawned = 0;
 	moveable = 1;
+	killed = 0;
 }
 
 
@@ -35,8 +36,7 @@ void Entity::initialize(WindowMgr* _window, b2World* _world, float density, floa
 	originOffsetY = hitbox.getSize().y / 2;
 	hitbox.setOrigin(originOffsetX, originOffsetY);
 	sprite.setOrigin(originOffsetX / sprite.getScale().x, originOffsetY / sprite.getScale().y);
-
-	this->bodyDef = new b2BodyDef();
+	bodyDef = new b2BodyDef();
 	
 	//dynamic or tsatic
 	if (moveable)
@@ -48,31 +48,36 @@ void Entity::initialize(WindowMgr* _window, b2World* _world, float density, floa
 		this->bodyDef->type = b2_staticBody;
 	}
 
-	//def
+	//pos
 	spawnPointX = x;
 	spawnPointY = y;
-	this->bodyDef->position.Set(spawnPointX, spawnPointY);
-	this->body = this->world->CreateBody(this->bodyDef);
+	hitbox.setPosition(x, y);
+	sprite.setPosition(x, y);
+
+	//def
+	std::cout << world->GetGravity().x << std::endl;
+	bodyDef->position.Set(x / 32, y / -32);
+	body = world->CreateBody(bodyDef);
 	body->SetUserData(this);
 
 	//shape
-	this->shape = new b2PolygonShape();
-	this->shape->SetAsBox(originOffsetX / 32, originOffsetY / 32);
+	shape = new b2PolygonShape();
+	shape->SetAsBox(originOffsetX / 32, originOffsetY / 32);
 
 	//fixture
-	this->fixtureDef = new b2FixtureDef();
-	this->fixtureDef->shape = this->shape;
+	fixtureDef = new b2FixtureDef();
+	fixtureDef->shape = shape;
 
 	//properties
 	if (moveable)
 	{
-		this->fixtureDef->density = density;
-		this->fixtureDef->friction = friction;
-		this->body->CreateFixture(this->fixtureDef);
+		fixtureDef->density = density;
+		fixtureDef->friction = friction;
+		body->CreateFixture(fixtureDef);
 	}
 	else
 	{
-		this->body->CreateFixture(this->shape, 0);
+		body->CreateFixture(shape, 0);
 	}
 
 }
@@ -172,6 +177,13 @@ void Entity::spawn()
 void Entity::kill()
 {
 	spawned = 0;
+	killed = 1;
+}
+
+//WAS KILLED
+bool Entity::wasKilled()
+{
+	return killed;
 }
 
 //IS ALIVE

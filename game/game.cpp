@@ -17,8 +17,7 @@ int main()
 
 	//window
 	sf::RenderWindow screen(sf::VideoMode(1280, 720), "Game");
-	screen.setFramerateLimit(65);
-	screen.setVerticalSyncEnabled(1);
+	screen.setFramerateLimit(2500);
 	WindowMgr window(screen, NATIVE_WIDTH, NATIVE_HEIGHT);
 
 	debug.setWindowMgr(window);

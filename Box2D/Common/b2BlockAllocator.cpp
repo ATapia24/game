@@ -94,6 +94,8 @@ b2BlockAllocator::~b2BlockAllocator()
 	b2Free(m_chunks);
 }
 
+#include <iostream>
+
 void* b2BlockAllocator::Allocate(int32 size)
 {
 	if (size == 0)

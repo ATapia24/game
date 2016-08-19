@@ -26,11 +26,9 @@ void TextureManager::loadTextures()
 			if (validFileType(files[j]))
 			{
 				Texture* texture = new Texture;
-				sf::Texture raw_texture;
 
 				//load and set name
-				raw_texture.loadFromFile(ROOT_FOLDER + subfolders[i] + '/' + files[j]);
-				texture->texture = raw_texture;
+				texture->texture.loadFromFile(ROOT_FOLDER + subfolders[i] + '/' + files[j]);
 				texture->name = files[j];
 
 				textureList.push_back(texture);
