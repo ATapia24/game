@@ -10,6 +10,7 @@ using namespace globals;
 
 int main()
 {
+
 	//console
 	HWND consoleWindow = GetConsoleWindow();
 	SetWindowPos(consoleWindow, 0, 1283, 0, 640, 1080, 0);
@@ -17,12 +18,14 @@ int main()
 	//window
 	sf::RenderWindow screen(sf::VideoMode(1280, 720), "Game");
 	screen.setFramerateLimit(65);
-	WindowMgr window(screen, globals::NATIVE_WIDTH, globals::NATIVE_HEIGHT);
+	screen.setVerticalSyncEnabled(1);
+	WindowMgr window(screen, NATIVE_WIDTH, NATIVE_HEIGHT);
+
 	debug.setWindowMgr(window);
-
+	
 	GameManager gameManager(window);
-
 	sf::Event event;
+
 
 	while (screen.isOpen())
 	{

@@ -77,8 +77,8 @@ void MenuList::update()
 			updatables[i]->text.setString(updatables[i]->string->c_str());
 		else if (updatables[i]->type == MenuObjectType::SPRITE)
 		{
-
 			updatables[i]->sprite.setTexture(*updatables[i]->texture);
+			updatables[i]->sprite.setScale(sf::Vector2f(0.2f, 0.2f));
 			updatables[i]->sprite.setTextureRect(sf::IntRect(0, 0, updatables[i]->texture->getSize().x, updatables[i]->texture->getSize().y));
 		}
 	}
@@ -101,7 +101,7 @@ void MenuList::add(std::string& string)
 	obj->text.setFont(font);
 	obj->text.setCharacterSize(fontSize);
 	obj->text.setPosition(obj->bg.getPosition());
-	obj->text.setColor(defaultColor);
+	obj->text.setFillColor(defaultColor);
 	obj->text.setString(obj->string->c_str());
 	//obj->width = width;
 	//obj->height = height;
@@ -131,7 +131,7 @@ void MenuList::addStatic(std::string string)
 	obj->string = staticStrings[staticStrings.size() - 1];
 	obj->text.setFont(font);
 	obj->text.setCharacterSize(fontSize);
-	obj->text.setColor(defaultColor);
+	obj->text.setFillColor(defaultColor);
 	obj->text.setString(obj->string->c_str());
 	obj->width = width;
 	obj->height = height;
@@ -302,8 +302,8 @@ void MenuList::indexDown()
 //UPDATE SELECTED
 void MenuList::updateSelected()
 {
-	objects[lastIndex]->text.setColor(defaultColor);
-	objects[currentIndex]->text.setColor(selectedColor);
+	objects[lastIndex]->text.setFillColor(defaultColor);
+	objects[currentIndex]->text.setFillColor(selectedColor);
 }
 
 //GET SELECTED TEXT

@@ -21,16 +21,18 @@ private:
 	sf::Sprite weapon;
 
 	float walkSpeed;
-	float jumpStrength;
-	bool moved;
+	float sprintSpeed;
+
 	//tmp
 	Key_M reset;
 	
 	//input
+	Key keySprint;
 	Key keyForward, keyBackward;
 	Key keyLeft, keyRight;
 	bool m_forward, m_backward, m_left, m_right;
 	b2Vec2 forwardVel, backwardVel, leftVel, rightVel;
+
 	//animations
 	void updateAnimations();
 	Animation walk_right, walk_left, stand_right, stand_left;
@@ -57,6 +59,8 @@ public:
 	void walkLeft();
 	void stopWalkRight();
 	void stopWalkLeft();
+	void diagonalAdjust();
+	void sprintAdjust(b2Vec2& vect);
 	void jump();
 
 	//state

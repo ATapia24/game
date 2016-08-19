@@ -27,6 +27,7 @@ void EditorObject::moveUp(float speed)
 		break;
 
 	case ObjType::STATIC_OBJ:
+		rectangle.move(sf::Vector2f(0, speed));
 		break;
 
 	case ObjType::DYNAMIC_OBJ:
@@ -48,6 +49,7 @@ void EditorObject::moveDown(float speed)
 		break;
 
 	case ObjType::STATIC_OBJ:
+		rectangle.move(sf::Vector2f(0, speed));
 		break;
 
 	case ObjType::DYNAMIC_OBJ:
@@ -71,6 +73,7 @@ void EditorObject::moveLeft(float speed)
 		break;
 
 	case ObjType::STATIC_OBJ:
+		rectangle.move(sf::Vector2f(speed, 0));
 		break;
 
 	case ObjType::DYNAMIC_OBJ:
@@ -92,6 +95,7 @@ void EditorObject::moveRight(float speed)
 		break;
 
 	case ObjType::STATIC_OBJ:
+		rectangle.move(sf::Vector2f(speed, 0));
 		break;
 
 	case ObjType::DYNAMIC_OBJ:
@@ -103,10 +107,10 @@ void EditorObject::moveRight(float speed)
 //ROTATE LEFT
 void EditorObject::rotateLeft(float speed)
 {
+	speed *= -1;
 	switch (type)
 	{
 	case ObjType::RECTANGLE:
-		//rectangle.setOrigin(sf::Vector2f((rectangle.getSize().x/2), (rectangle.getSize().y / 2)));
 		rectangle.rotate(speed);
 		break;
 
@@ -115,6 +119,7 @@ void EditorObject::rotateLeft(float speed)
 		break;
 
 	case ObjType::STATIC_OBJ:
+		rectangle.rotate(speed);
 		break;
 
 	case ObjType::DYNAMIC_OBJ:
@@ -125,11 +130,9 @@ void EditorObject::rotateLeft(float speed)
 //ROTATE RIGHT
 void EditorObject::rotateRight(float speed)
 {
-	speed *= -1;
 	switch (type)
 	{
 	case ObjType::RECTANGLE:
-		//rectangle.setOrigin(sf::Vector2f((rectangle.getSize().x / 2), (rectangle.getSize().y / 2)));
 		rectangle.rotate(speed);
 		break;
 
@@ -138,6 +141,7 @@ void EditorObject::rotateRight(float speed)
 		break;
 
 	case ObjType::STATIC_OBJ:
+		rectangle.rotate(speed);
 		break;
 
 	case ObjType::DYNAMIC_OBJ:
@@ -244,6 +248,7 @@ void EditorObject::shrinkLeft(float size)
 		break;
 
 	case ObjType::STATIC_OBJ:
+
 		break;
 
 	case ObjType::DYNAMIC_OBJ:
@@ -267,6 +272,7 @@ void EditorObject::shrinkRight(float size)
 		break;
 
 	case ObjType::STATIC_OBJ:
+
 		break;
 
 	case ObjType::DYNAMIC_OBJ:
@@ -291,6 +297,7 @@ void EditorObject::shrinkTop(float size)
 		break;
 
 	case ObjType::STATIC_OBJ:
+
 		break;
 
 	case ObjType::DYNAMIC_OBJ:

@@ -14,14 +14,15 @@ Player::Player()
 	sprite.setScale(sf::Vector2f(0.25f, 0.25f));
 	
 	//stats
-	walkSpeed = 8;
-	jumpStrength = 4;
+	walkSpeed = 12;
+	sprintSpeed = 1.5;
 
 	//input
 	keyForward.set(sf::Keyboard::W, KeyType::REPEATED);
 	keyBackward.set(sf::Keyboard::S, KeyType::REPEATED);
 	keyLeft.set(sf::Keyboard::A, KeyType::REPEATED);
 	keyRight.set(sf::Keyboard::D, KeyType::REPEATED);
+	keySprint.set(sf::Keyboard::LShift, KeyType::REPEATED);
 	reset.set(sf::Mouse::Button::Left, KeyType::REPEATED);
 
 	sprite.setOrigin(sf::Vector2f(hitbox.getSize().x / 2, hitbox.getSize().y / 2));
@@ -74,12 +75,11 @@ void Player::updateMovement()
 	if (reset.getValue())
 		body->SetTransform(b2Vec2(0, 0), 0);
 
-	if (m_forward && m_left)
-	{
-	}
 
+
+	//movement
+	diagonalAdjust();
 	body->SetLinearVelocity(forwardVel + backwardVel + leftVel + rightVel);
-	std::cout << body->GetLinearVelocity().Length() << ' ' << body->GetLinearVelocity().x << ' ' << body->GetLinearVelocity().y << '\n';
 
 	//mouse rotation - reset on full rotation (radians)
 	float rotation = body->GetAngle() + ((600 - (float)sf::Mouse::getPosition().x) * -0.001f);
@@ -108,16 +108,15 @@ void Player::walkForward()
 {
 	m_forward = 1;
 	float angle = body->GetAngle();
-	b2Vec2 vector = walkSpeed * b2Vec2(sin(angle), cos(angle));
-	forwardVel = vector;
-	//body->SetLinearVelocity(vector);
+	forwardVel = walkSpeed * b2Vec2(sin(angle), cos(angle));
+	if (keySprint.getValue())
+		sprintAdjust(forwardVel);
 }
 
 //STOP WALK FORWARD
 void Player::stopWalkForward()
 {
 	m_forward = 0;
-	//body->SetLinearVelocity(body->GetLinearVelocity() - forwardVel);
 	forwardVel.SetZero();
 }
 
@@ -126,16 +125,13 @@ void Player::walkBackward()
 {
 	m_backward = 1;
 	float angle = body->GetAngle() + globals::PI;
-	b2Vec2 vector = walkSpeed * b2Vec2(sin(angle), cos(angle));
-	backwardVel = vector;
-	//body->SetLinearVelocity(vector);
+	backwardVel = walkSpeed * b2Vec2(sin(angle), cos(angle));
 }
 
 //STOP WALK BACKWARDS
 void Player::stopWalkBackwards()
 {
 	m_backward = 0;
-	//body->SetLinearVelocity(body->GetLinearVelocity() - backwardVel);
 	backwardVel.SetZero();
 }
 
@@ -146,14 +142,12 @@ void Player::walkRight()
 	float angle = body->GetAngle() + globals::PIh;
 	b2Vec2 vector = walkSpeed * b2Vec2(sin(angle), cos(angle));
 	rightVel = vector;
-	//body->SetLinearVelocity(vector);
 }
 
 //STOP WALK RIGHT
 void Player::stopWalkRight()
 {
 	m_right = 0;
-	//body->SetLinearVelocity(body->GetLinearVelocity() - rightVel);
 	rightVel.SetZero();
 }
 
@@ -162,17 +156,59 @@ void Player::walkLeft()
 {
 	m_left = 1;
 	float angle = body->GetAngle() - globals::PIh;
-	b2Vec2 vector = walkSpeed * b2Vec2(sin(angle), cos(angle));
-	leftVel = vector;
-	//body->SetLinearVelocity(vector);
+	leftVel = walkSpeed * b2Vec2(sin(angle), cos(angle));
 }
 
 //STOP WALK LEFT
 void Player::stopWalkLeft()
 {
 	m_left = 0;
-	//body->SetLinearVelocity(body->GetLinearVelocity() - leftVel);
 	leftVel.SetZero();
+}
+
+//DIAGONAL ADJUST
+void Player::diagonalAdjust()
+{
+	if (m_forward)
+	{
+		if (m_left)
+		{
+			leftVel.SetZero();
+			float angle = body->GetAngle() + globals::PI7d4;
+			forwardVel = walkSpeed * b2Vec2(sin(angle), cos(angle));
+			if (keySprint.getValue())
+				sprintAdjust(forwardVel);
+		}
+		else if ( m_right)
+		{
+			rightVel.SetZero();
+			float angle = body->GetAngle() + globals::PId4;
+			forwardVel = walkSpeed * b2Vec2(sin(angle), cos(angle));
+			if (keySprint.getValue())
+				sprintAdjust(forwardVel);
+		}
+	}
+	else if (m_backward)
+	{
+		if (m_left)
+		{
+			leftVel.SetZero();
+			float angle = body->GetAngle() + globals::PI5d4;
+			backwardVel = walkSpeed * b2Vec2(sin(angle), cos(angle));
+		}
+		else if (m_right)
+		{
+			rightVel.SetZero();
+			float angle = body->GetAngle() + globals::PI3d4;
+			backwardVel = walkSpeed * b2Vec2(sin(angle), cos(angle));
+		}
+	}
+}
+
+//SPRINT ADJUST
+void Player::sprintAdjust(b2Vec2& vect)
+{
+	vect *= sprintSpeed;
 }
 
 //JUMP

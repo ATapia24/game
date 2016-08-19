@@ -123,6 +123,7 @@ void StageEditor::update()
 	{
 	case PLACE:
 		placeUpdate();
+		panUpdate();
 		break;
 	case PAN:
 		panUpdate();
@@ -417,6 +418,7 @@ void StageEditor::startDrag()
 		objects[objectIndex.getIndex()].rectangle.setSize(sf::Vector2f(textureList[textureIndex.getIndex()]->texture.getSize().x, textureList[textureIndex.getIndex()]->texture.getSize().y));
 		objects[objectIndex.getIndex()].rectangle.setTexture(&textureList[textureIndex.getIndex()]->texture);
 		objects[objectIndex.getIndex()].textureName = textureList[textureIndex.getIndex()]->name;
+		objects[objectIndex.getIndex()].rectangle.setOrigin(sf::Vector2f((objects[objectIndex.getIndex()].rectangle.getSize().x / 2), (objects[objectIndex.getIndex()].rectangle.getSize().y / 2)));
 		x = (((float)sf::Mouse::getPosition(*window->getWindow()).x * zoomAmount) - (view->getSize().x / 2) + view->getCenter().x - (objects[objectIndex.getIndex()].rectangle.getSize().x / 2)) / window->getScale().x;
 		y = (((float)sf::Mouse::getPosition(*window->getWindow()).y * zoomAmount) - (view->getSize().y / 2) + view->getCenter().y) / window->getScale().y;
 		objects[objectIndex.getIndex()].rectangle.setPosition(x, y);

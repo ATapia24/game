@@ -109,5 +109,7 @@ void Map::generateFile(std::string filename, EditorObject* objects, unsigned int
 		f << '\n';
 	}
 
+	f.close();
+
 	std::cout << "saved\n";
 }

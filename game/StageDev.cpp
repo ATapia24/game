@@ -17,18 +17,15 @@ void StageDev::load()
 {
 	world = new b2World(b2Vec2(0, -0));
 	world->SetContactListener(this);
-	
 	player.setName("player");
 	player.getSprite().setScale(3, 3);
 	player.getHitbox().setSize(sf::Vector2f(25, 25));
 	player.initialize(window, world, 1.f, 0.3f, 30.f, -31.875f);
 	player.spawn();
-
 	bgText.loadFromFile("assets/strike.jpg");
 	bg.setPosition(0, 0);
-	bg.setSize(sf::Vector2f((float)bgText.getSize().x, (float)bgText.getSize().y));
+	bg.setSize(sf::Vector2f((float)bgText.getSize().x * 10, (float)bgText.getSize().y* 10));
 	bg.setTexture(&bgText);
-
 	menu.setWindow(window);
 	menu.load();
 	menu.setDimensions(2, 5, 200, 20);
@@ -44,11 +41,9 @@ void StageDev::load()
 	menu.updateSelected();
 	menuUp.set(sf::Keyboard::Up, KeyType::SINGLE);
 	menuDown.set(sf::Keyboard::Down, KeyType::SINGLE);
-
 	textures.addFolder("test");
 	textures.loadTextures();
 	objects = map.loadFile("editor.txt", textures.getTextures());
-
 }
 
 //UNLOAD
@@ -96,11 +91,12 @@ void StageDev::update()
 void StageDev::draw()
 {
 	window->addWorld(bg);
-	player.draw();
 	//menu.draw();
 
 	for (unsigned int i = 0; i < objects.size(); i++)
 		window->addWorld(objects[i]->rectangle);
+
+	player.draw();
 }
 
 //BEGIN CONTACT
