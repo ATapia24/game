@@ -23,6 +23,7 @@
 #include "Map.h"
 #include "EditorObject.h"
 #include "Solid.h"
+#include "ViewBlocker.h"
 
 class StageDev : public Stage, public b2ContactListener
 {
@@ -35,6 +36,10 @@ private:
 
 	Player player;
 	Solid wall;
+	ViewBlocker vb;
+
+	Solid* walls;
+	int n_walls;
 
 	b2World* world;
 

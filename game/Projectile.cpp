@@ -4,8 +4,8 @@
 
 Projectile::Projectile()
 {
-	speed = 100;
-	lifetime = 1500;
+	speed = 50;
+	lifetime = 3000;
 	hitbox.setSize(sf::Vector2f(5, 5));
 	hitbox.setFillColor(sf::Color::Red);
 	moveable = 1;

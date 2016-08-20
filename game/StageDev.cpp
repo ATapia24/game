@@ -29,7 +29,7 @@ void StageDev::load()
 	bg.setTexture(&bgText);
 	menu.setWindow(window);
 	menu.load();
-	menu.setDimensions(2, 5, 200, 20);
+	menu.setDimensions(2, 5, 20, 20);
 	menu.enableBackgrounds(1, 1);
 	menu.setSpacing(10, 10);
 	menu.setPosition(500 , 500);
@@ -46,11 +46,24 @@ void StageDev::load()
 	textures.loadTextures();
 	objects = map.loadFile("editor.txt", textures.getTextures());
 
-	wall.getHitbox().setSize(sf::Vector2f(20, 1400));
+	wall.getHitbox().setSize(sf::Vector2f(200, 200));
 	wall.initialize(window, world, 1, 1, 1000, 400);
 	wall.spawn();
 
-	std::cout << wall.getBody()->GetPosition().x << ' ' << wall.getBody()->GetPosition().y << std::endl;
+	//VB
+	vb.set(player, window, world);
+	vb.addObject(wall);
+
+	n_walls = 50;
+	walls = new Solid[n_walls];
+
+	for (int i = 0; i < n_walls; i++)
+	{
+		walls[i].getHitbox().setSize(sf::Vector2f(misc::random(10, 10), misc::random(10, 10)));
+		walls[i].initialize(window, world, 1, 1, misc::random(0, 1000), misc::random(0, 1000));
+		walls[i].spawn();
+		vb.addObject(walls[i]);
+	}
 
 }
 
@@ -66,6 +79,7 @@ void StageDev::update()
 {
 	
 	player.update();
+	vb.update();
 	world->Step(1.0f / 65.f, 8, 3);
 
 	if (menuUp.getValue())
@@ -97,7 +111,12 @@ void StageDev::draw()
 
 	wall.draw();
 
+	for (int i = 0; i < n_walls; i++)
+		walls[i].draw();
+
 	player.draw();
+
+	vb.draw();
 }
 
 //BEGIN CONTACT

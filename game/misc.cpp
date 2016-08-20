@@ -122,3 +122,35 @@ std::string misc::extractBetween(std::string& string, char token, char replace)
 
 	return "";
 }
+
+//DISTANCE
+float misc::distance(const sf::Vector2f a, const sf::Vector2f b)
+{
+	return sqrt(pow((b.x - a.x), 2) + pow((b.y - a.y), 2));
+}
+
+//MIDPOINT
+sf::Vector2f misc::midpoint(const sf::Vector2f a, const sf::Vector2f b)
+{
+	return sf::Vector2f( ((a.x + b.x) / 2), ((a.y + b.y) / 2));
+}
+
+//INTERSECTS
+bool misc::intersects(const sf::Vector2f a, const sf::Vector2f b, const sf::Vector2f c, const sf::Vector2f d)
+{
+	float den = ((d.y - c.y)*(b.x - a.x) - (d.x - c.x)*(b.y - a.y));
+	float num1 = ((d.x - c.x)*(a.y - c.y) - (d.y - c.y)*(a.x - c.x));
+	float num2 = ((b.x - a.x)*(a.y - c.y) - (b.y - a.y)*(a.x - c.x));
+	float u1 = num1 / den;
+	float u2 = num2 / den;
+
+	if (u1 <0 || u1 > 1 || u2 < 0 || u2 > 1)
+		return 0;
+	return 1;
+}
+
+//RANDOM
+int misc::random(int min, int max)
+{
+	return rand() % max + min;
+}

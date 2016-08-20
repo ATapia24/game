@@ -230,6 +230,7 @@
     <ClInclude Include="TextInputManager.h" />
     <ClInclude Include="TextureManager.h" />
     <ClInclude Include="Timer.h" />
+    <ClInclude Include="ViewBlocker.h" />
     <ClInclude Include="WindowMgr.h" />
   </ItemGroup>
   <ItemGroup>
@@ -341,6 +342,7 @@
     <ClCompile Include="TextInputManager.cpp" />
     <ClCompile Include="TextureManager.cpp" />
     <ClCompile Include="Timer.cpp" />
+    <ClCompile Include="ViewBlocker.cpp" />
     <ClCompile Include="WindowMgr.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
