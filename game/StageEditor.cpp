@@ -190,15 +190,15 @@ void StageEditor::panInput()
 
 	//up and down
 	if (keyMoveUp.getValue())
-		view->move(sf::Vector2f(sin(angle * globals::DEG2RAD) * viewSpeedOffset, -cos(angle * globals::DEG2RAD) * viewSpeedOffset));
+		view->move(sf::Vector2f(sin(angle *DEG2RAD) * viewSpeedOffset, -cos(angle * DEG2RAD) * viewSpeedOffset));
 	else if (keyMoveDown.getValue())
-		view->move(sf::Vector2f(-sin(angle * globals::DEG2RAD) * viewSpeedOffset, cos(angle * globals::DEG2RAD) * viewSpeedOffset));
+		view->move(sf::Vector2f(-sin(angle * DEG2RAD) * viewSpeedOffset, cos(angle * DEG2RAD) * viewSpeedOffset));
 
 	//left and right
 	if (keyMoveLeft.getValue())
-		view->move(sf::Vector2f(-cos(angle * globals::DEG2RAD) * viewSpeedOffset, -sin(angle * globals::DEG2RAD) * viewSpeedOffset));
+		view->move(sf::Vector2f(-cos(angle * DEG2RAD) * viewSpeedOffset, -sin(angle * DEG2RAD) * viewSpeedOffset));
 	else if (keyMoveRight.getValue())
-		view->move(sf::Vector2f(cos(angle * globals::DEG2RAD) * viewSpeedOffset, sin(angle * globals::DEG2RAD) * viewSpeedOffset));
+		view->move(sf::Vector2f(cos(angle * DEG2RAD) * viewSpeedOffset, sin(angle * DEG2RAD) * viewSpeedOffset));
 
 	//rotate
 	if (keyRotateLeft.getValue())

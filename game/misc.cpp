@@ -154,3 +154,15 @@ int misc::random(int min, int max)
 {
 	return rand() % max + min;
 }
+
+//GET LINE ANGLE
+float misc::lineAngle(const sf::Vector2f centerpoint, const sf::Vector2f endpoint)
+{
+	return ((atan2f((-centerpoint.y + endpoint.y), (centerpoint.x - endpoint.x)))) + 3.14159265359f;
+}
+
+//POINT LOCATION
+sf::Vector2f misc::pointLocation(const sf::Vector2f point, const float angle, const float distance)
+{
+	return sf::Vector2f(point.x + distance * cos(angle), point.y + -distance * sin(angle));
+}

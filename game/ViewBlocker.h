@@ -2,18 +2,15 @@
 
 #include "SFML\Graphics.hpp"
 #include "Box2D\Box2D.h"
-#include <vector>
 #include "WindowMgr.h"
 #include "Entity.h"
 #include "globals.h"
 #include <cmath>
-
+#include <thread>
 struct  Blocker
 {
 	sf::ConvexShape shape;
 	Entity* entity;
-
-	sf::RectangleShape line;
 };
 
 class ViewBlocker
@@ -22,8 +19,14 @@ class ViewBlocker
 	b2World* world;
 	Entity* player;
 	sf::Vector2f center;
-	std::vector<Blocker*> blockers;
-	void calculateBlocker(Blocker* blocker);
+	Blocker* blockers;
+
+	//tmp
+	std::thread* threads;
+	int cores;
+	int n_blockers;
+	int max_blockers = 1000;
+	void calculateBlocker(Blocker& blocker);
 public:
 	ViewBlocker();
 	~ViewBlocker();

@@ -8,6 +8,7 @@
 #include "WindowMgr.h"
 #include "Debug.h"
 #include "Stage.h"
+#include "misc.h"
 
 class Stage;
 
@@ -16,7 +17,7 @@ class StageManager
 
 private:
 	WindowMgr* window;
-	Stage* stages[globals::N_STAGES], *currentStage;
+	Stage* stages[N_STAGES], *currentStage;
 	int stagesSize;
 	std::string currentStageString;
 	void load();

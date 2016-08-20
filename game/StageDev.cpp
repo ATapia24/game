@@ -54,7 +54,7 @@ void StageDev::load()
 	vb.set(player, window, world);
 	vb.addObject(wall);
 
-	n_walls = 50;
+	n_walls = 100;
 	walls = new Solid[n_walls];
 
 	for (int i = 0; i < n_walls; i++)
@@ -109,14 +109,14 @@ void StageDev::draw()
 	for (unsigned int i = 0; i < objects.size(); i++)
 		window->addWorld(objects[i]->rectangle);
 
+	vb.draw();
+
 	wall.draw();
 
 	for (int i = 0; i < n_walls; i++)
 		walls[i].draw();
 
 	player.draw();
-
-	vb.draw();
 }
 
 //BEGIN CONTACT

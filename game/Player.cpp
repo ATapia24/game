@@ -85,8 +85,8 @@ void Player::updateMovement()
 	//mouse rotation - reset on full rotation (radians)
 	float rotation = body->GetAngle() + ((600 - (float)sf::Mouse::getPosition().x) * -0.0005f);
 	sf::Mouse::setPosition(sf::Vector2i(600, 500));
-	rotation > globals::PI2 ? rotation = 0: rotation;
-	rotation < 0 ? rotation = globals::PI2 : rotation;
+	rotation > PI2 ? rotation = 0: rotation;
+	rotation < 0 ? rotation = PI2 : rotation;
 	
 	//update pos/rot
 	body->SetFixedRotation(0);
@@ -94,7 +94,7 @@ void Player::updateMovement()
 	body->SetFixedRotation(1);
 	hitbox.setPosition(body->GetPosition().x * 32, -body->GetPosition().y * 32);
 	sprite.setPosition(hitbox.getPosition());
-	hitbox.setRotation(body->GetAngle() * globals::RAD2DEG);
+	hitbox.setRotation(body->GetAngle() * RAD2DEG);
 	sprite.setRotation(hitbox.getRotation());
 
 }
@@ -103,8 +103,8 @@ void Player::updateMovement()
 void Player::updateCamera()
 {
 	//calculate pos: x = offset * sin(rotation), y = offset * cos(rotation)
-	window->getWorldView()->setCenter(sf::Vector2f((hitbox.getPosition().x  + (viewOffsetY * sin(hitbox.getRotation() * globals::DEG2RAD)))* window->getScale().x, ((hitbox.getPosition().y) - (viewOffsetY * cos(hitbox.getRotation() * globals::DEG2RAD))) * window->getScale().y));
-	window->getWorldView()->setRotation(body->GetAngle() * globals::RAD2DEG);
+	window->getWorldView()->setCenter(sf::Vector2f((hitbox.getPosition().x  + (viewOffsetY * sin(hitbox.getRotation() * DEG2RAD)))* window->getScale().x, ((hitbox.getPosition().y) - (viewOffsetY * cos(hitbox.getRotation() * DEG2RAD))) * window->getScale().y));
+	window->getWorldView()->setRotation(body->GetAngle() * RAD2DEG);
 }
 
 //WALK FORWARD
@@ -128,7 +128,7 @@ void Player::stopWalkForward()
 void Player::walkBackward()
 {
 	m_backward = 1;
-	float angle = body->GetAngle() + globals::PI;
+	float angle = body->GetAngle() + PI;
 	backwardVel = walkSpeed * b2Vec2(sin(angle), cos(angle));
 }
 
@@ -143,7 +143,7 @@ void Player::stopWalkBackwards()
 void Player::walkRight()
 {
 	m_right = 1;
-	float angle = body->GetAngle() + globals::PIh;
+	float angle = body->GetAngle() + PIh;
 	b2Vec2 vector = walkSpeed * b2Vec2(sin(angle), cos(angle));
 	rightVel = vector;
 }
@@ -159,7 +159,7 @@ void Player::stopWalkRight()
 void Player::walkLeft()
 {
 	m_left = 1;
-	float angle = body->GetAngle() - globals::PIh;
+	float angle = body->GetAngle() - PIh;
 	leftVel = walkSpeed * b2Vec2(sin(angle), cos(angle));
 }
 
@@ -178,7 +178,7 @@ void Player::diagonalAdjust()
 		if (m_left)
 		{
 			leftVel.SetZero();
-			float angle = body->GetAngle() + globals::PI7d4;
+			float angle = body->GetAngle() + PI7d4;
 			forwardVel = walkSpeed * b2Vec2(sin(angle), cos(angle));
 			if (keySprint.getValue())
 				sprintAdjust(forwardVel);
@@ -186,7 +186,7 @@ void Player::diagonalAdjust()
 		else if ( m_right)
 		{
 			rightVel.SetZero();
-			float angle = body->GetAngle() + globals::PId4;
+			float angle = body->GetAngle() + PId4;
 			forwardVel = walkSpeed * b2Vec2(sin(angle), cos(angle));
 			if (keySprint.getValue())
 				sprintAdjust(forwardVel);
@@ -197,13 +197,13 @@ void Player::diagonalAdjust()
 		if (m_left)
 		{
 			leftVel.SetZero();
-			float angle = body->GetAngle() + globals::PI5d4;
+			float angle = body->GetAngle() + PI5d4;
 			backwardVel = walkSpeed * b2Vec2(sin(angle), cos(angle));
 		}
 		else if (m_right)
 		{
 			rightVel.SetZero();
-			float angle = body->GetAngle() + globals::PI3d4;
+			float angle = body->GetAngle() + PI3d4;
 			backwardVel = walkSpeed * b2Vec2(sin(angle), cos(angle));
 		}
 	}

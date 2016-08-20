@@ -35,7 +35,7 @@ void StageManager::changeStage(std::string stageName)
 {
 	bool found=0;
 
-	for (int i = 0; i < globals::N_STAGES; i++)
+	for (int i = 0; i < N_STAGES; i++)
 	{
 		if (stages[i] != NULL && (stages[i]->getStageName() == stageName))
 		{
@@ -44,7 +44,7 @@ void StageManager::changeStage(std::string stageName)
 			currentStage->load();
 			currentStageString = "Stage: " + currentStage->getStageName();
 			std::cout << "Loading stage \"" << currentStage->getStageName() << "\"\n";
-			i = globals::N_STAGES;
+			i = N_STAGES;
 			found = 1;
 		}
 	}

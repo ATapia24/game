@@ -6,7 +6,7 @@ Projectile::Projectile()
 {
 	speed = 50;
 	lifetime = 3000;
-	hitbox.setSize(sf::Vector2f(5, 5));
+	hitbox.setSize(sf::Vector2f(15, 15));
 	hitbox.setFillColor(sf::Color::Red);
 	moveable = 1;
 }
@@ -24,7 +24,7 @@ void Projectile::update()
 	else if (spawned)
 	{
 		hitbox.setPosition(sf::Vector2f(body->GetPosition().x * 32, body->GetPosition().y * -32));
-		hitbox.setRotation(body->GetAngle() * globals::RAD2DEG);
+		hitbox.setRotation(body->GetAngle() * RAD2DEG);
 	}
 }
 
