@@ -4,7 +4,6 @@
 #include "KeyManager.h"
 #include "Holdable.h"
 #include <cmath>
-#include "globals.h"
 
 enum PlayerState
 {
@@ -42,6 +41,14 @@ private:
 	Animation player_body;
 	float viewOffsetY;
 
+	//sensors
+	b2Body* screenBody;
+	b2BodyDef* screenBodyDef;
+	b2PolygonShape* screenShape;
+	b2FixtureDef* screenFixture;
+
+
+	sf::Vector2f screenCenter;
 public:
 	Player();
 	~Player();

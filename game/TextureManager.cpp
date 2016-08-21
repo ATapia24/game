@@ -28,10 +28,17 @@ void TextureManager::loadTextures()
 				Texture* texture = new Texture;
 
 				//load and set name
-				texture->texture.loadFromFile(ROOT_FOLDER + subfolders[i] + '/' + files[j]);
-				texture->name = files[j];
+				if (texture->texture.loadFromFile(ROOT_FOLDER + subfolders[i] + '/' + files[j]))
+				{
+					texture->name = files[j];
+					textureList.push_back(texture);
+				}
+				else
+				{
+					std::cout << "Failed to load " << ROOT_FOLDER + subfolders[i] + '/' + files[j] << '\n';
+					delete texture;
+				}
 
-				textureList.push_back(texture);
 			}
 		}
 	}

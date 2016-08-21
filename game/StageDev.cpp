@@ -15,7 +15,7 @@ StageDev::StageDev(StageManager* _stageManager, WindowMgr* _window)
 //LOAD
 void StageDev::load()
 {
-	window->getWindow()->setMouseCursorVisible(FALSE);
+	window->getWindow()->setMouseCursorVisible(1);
 	world = new b2World(b2Vec2(0, 0));
 	world->SetContactListener(this);
 	player.setName("player");
@@ -27,51 +27,39 @@ void StageDev::load()
 	bg.setPosition(0, 0);
 	bg.setSize(sf::Vector2f((float)bgText.getSize().x * 10, (float)bgText.getSize().y* 10));
 	bg.setTexture(&bgText);
-	menu.setWindow(window);
-	menu.load();
-	menu.setDimensions(2, 5, 20, 20);
-	menu.enableBackgrounds(1, 1);
-	menu.setSpacing(10, 10);
-	menu.setPosition(500 , 500);
-	menu.addStatic("ONE");
-	menu.addStatic("TWO");
-	menu.addStatic("THREE");
-	menu.addStatic("FOUR");
-	menu.addStatic("FIVE");
-	menu.addStatic("SIX");
-	menu.updateSelected();
-	menuUp.set(sf::Keyboard::Up, KeyType::SINGLE);
-	menuDown.set(sf::Keyboard::Down, KeyType::SINGLE);
+
 	textures.addFolder("test");
 	textures.loadTextures();
-	objects = map.loadFile("editor.txt", textures.getTextures());
+	objects = map.loadFile("Assets/editor.txt", textures.getTextures());
 
-	wall.getHitbox().setSize(sf::Vector2f(200, 200));
-	wall.initialize(window, world, 1, 1, 1000, 400);
-	wall.spawn();
 
 	//VB
-	vb.set(player, window, world);
-	vb.addObject(wall);
+	vb = new ViewBlocker;
+	vb->set(player, window, world);
 
-	n_walls = 100;
+	n_walls = 2000;
 	walls = new Solid[n_walls];
 
 	for (int i = 0; i < n_walls; i++)
 	{
-		walls[i].getHitbox().setSize(sf::Vector2f(misc::random(10, 10), misc::random(10, 10)));
-		walls[i].initialize(window, world, 1, 1, misc::random(0, 1000), misc::random(0, 1000));
+		walls[i].getHitbox().setSize(sf::Vector2f(misc::random(1, 500), misc::random(1, 500)));
+		walls[i].initialize(window, world, 1, 1, misc::random(0, 100000), misc::random(0, 100000));
 		walls[i].spawn();
-		vb.addObject(walls[i]);
+		vb->addObject(walls[i]);
 	}
 
+
+	area.setFillColor(sf::Color(200, 200, 200, 100));
+	area.setPosition(0, 0);
+	area.setSize(sf::Vector2f(1000, 1000));
+	//area.setRotation(70);
 }
 
 //UNLOAD
 void StageDev::unload()
 {
 	delete world;
-	menu.clear();
+	delete vb;
 }
 
 //UPDATE
@@ -79,16 +67,8 @@ void StageDev::update()
 {
 	
 	player.update();
-	vb.update();
 	world->Step(1.0f / 65.f, 8, 3);
-
-	if (menuUp.getValue())
-	{
-		menu.indexDown();
-	}else if(menuDown.getValue())
-	{
-		menu.indexUp();
-	}
+	vb->update();
 
 	//MISC
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Tab))
@@ -97,7 +77,6 @@ void StageDev::update()
 		window->setResolution(1920, 1080, 1, 0);
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::F2))
 		window->setResolution(1280, 720, 1, 0);
-
 }
 
 //DRAW
@@ -109,14 +88,13 @@ void StageDev::draw()
 	for (unsigned int i = 0; i < objects.size(); i++)
 		window->addWorld(objects[i]->rectangle);
 
-	vb.draw();
+	
+	player.draw();
 
-	wall.draw();
+	vb->draw();
 
 	for (int i = 0; i < n_walls; i++)
 		walls[i].draw();
-
-	player.draw();
 }
 
 //BEGIN CONTACT
@@ -125,6 +103,10 @@ void StageDev::BeginContact(b2Contact* contact)
 	Entity* a = static_cast<Entity*>(contact->GetFixtureA()->GetBody()->GetUserData());
 	Entity* b = static_cast<Entity*>(contact->GetFixtureB()->GetBody()->GetUserData());
 
+	//check for screen sensor
+	void* fixtureUserData = contact->GetFixtureA()->GetUserData();
+	if ((int)fixtureUserData == 3)
+		b->setOnScreen(true);
 
 	//a collisions
 	switch (a->getType())
@@ -133,8 +115,16 @@ void StageDev::BeginContact(b2Contact* contact)
 		static_cast<Player*>(a)->startContact(b);
 		break;
 	
-	case EntityType::FLOOR:
-		static_cast<Floor*>(a)->startContact(b);
+	case EntityType::SOLID:
+		static_cast<Solid*>(a)->startContact(b);
+		break;
+	
+	case EntityType::PROJECTILE:
+		static_cast<Projectile*>(a)->startContact(b);
+		break;
+
+	case EntityType::SCREEN:
+		std::cout << "screen\n";
 		break;
 	
 	default:
@@ -148,8 +138,12 @@ void StageDev::BeginContact(b2Contact* contact)
 		static_cast<Player*>(b)->startContact(a);
 		break;
 
-	case EntityType::FLOOR:
-		static_cast<Floor*>(b)->startContact(a);
+	case EntityType::SOLID:
+		static_cast<Solid*>(a)->startContact(b);
+		break;
+
+	case EntityType::PROJECTILE:
+		static_cast<Projectile*>(a)->startContact(b);
 		break;
 
 	default:
@@ -164,16 +158,16 @@ void StageDev::EndContact(b2Contact* contact)
 	Entity* a = static_cast<Entity*>(contact->GetFixtureA()->GetBody()->GetUserData());
 	Entity* b = static_cast<Entity*>(contact->GetFixtureB()->GetBody()->GetUserData());
 
+	//check for screen sensor
+	void* fixtureUserData = contact->GetFixtureA()->GetUserData();
+	if ((int)fixtureUserData == 3)
+		b->setOnScreen(false);
 
 	//a collisions
 	switch (a->getType())
 	{
 	case EntityType::PLAYER:
 		static_cast<Player*>(a)->endContact(b);
-		break;
-
-	case EntityType::FLOOR:
-		static_cast<Floor*>(a)->endContact(b);
 		break;
 
 	default:
@@ -185,10 +179,6 @@ void StageDev::EndContact(b2Contact* contact)
 	{
 	case EntityType::PLAYER:
 		static_cast<Player*>(b)->endContact(a);
-		break;
-
-	case EntityType::FLOOR:
-		static_cast<Floor*>(b)->endContact(a);
 		break;
 
 	default:

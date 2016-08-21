@@ -35,8 +35,7 @@ void StageManager::changeStage(std::string stageName)
 {
 	bool found=0;
 
-	for (int i = 0; i < N_STAGES; i++)
-	{
+	for (unsigned int i = 0; i < 10; i++)
 		if (stages[i] != NULL && (stages[i]->getStageName() == stageName))
 		{
 			currentStage->unload();
@@ -47,7 +46,6 @@ void StageManager::changeStage(std::string stageName)
 			i = N_STAGES;
 			found = 1;
 		}
-	}
 
 	if (!found)
 		std::cout << "Stage \"" << stageName << "\" not found.\n";

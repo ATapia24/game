@@ -1,17 +1,17 @@
 #include "stdafx.h"
 #include "WindowMgr.h"
 
-
 WindowMgr::WindowMgr(sf::RenderWindow& window, const float _NATIVE_WIDTH, const float _NATIVE_HEIGHT)
 {
 	//window
 	windowPtr = &window;
-	NATIVE_WIDTH = _NATIVE_WIDTH;
-	NATIVE_HEIGHT = _NATIVE_HEIGHT;
-	widthScale = window.getSize().x / _NATIVE_WIDTH;
-	heightScale = window.getSize().y / _NATIVE_HEIGHT;
+	nativeWidth = _NATIVE_WIDTH;
+	nativeHeight = _NATIVE_HEIGHT;
+	widthScale = window.getSize().x / nativeWidth;
+	heightScale = window.getSize().y / nativeHeight;
 	setResolution(1280, 720, 0, 1);
 	fullscreen = 0;
+	
 	//queues setup
 	guiQueue = new queueType[MAX_DRAW_SIZE];
 	worldQueue = new queueType[MAX_DRAW_SIZE];
@@ -30,26 +30,26 @@ void WindowMgr::draw()
 	{
 		switch (worldQueue[i].type)
 		{
-			case 1:
-				windowPtr->draw(*worldQueue[i].sprite);
-				//delete worldQueue[i].sprite;
-				break;
-			case 2:
-				windowPtr->draw(*worldQueue[i].text);
-				delete worldQueue[i].text;
-				break;
-			case 3:
-				windowPtr->draw(*worldQueue[i].rectangle);
-				delete worldQueue[i].rectangle;
-				break;
-			case 4:
-				windowPtr->draw(*worldQueue[i].circle);
-				delete worldQueue[i].circle;
-				break;
-			case 5:
-				windowPtr->draw(*worldQueue[i].convex);
-				delete worldQueue[i].convex;
-				break;
+		case 1:
+			windowPtr->draw(*worldQueue[i].sprite);
+			delete worldQueue[i].sprite;
+			break;
+		case 2:
+			windowPtr->draw(*worldQueue[i].text);
+			delete worldQueue[i].text;
+			break;
+		case 3:
+			windowPtr->draw(*worldQueue[i].rectangle);
+			delete worldQueue[i].rectangle;
+			break;
+		case 4:
+			windowPtr->draw(*worldQueue[i].circle);
+			delete worldQueue[i].circle;
+			break;
+		case 5:
+			windowPtr->draw(*worldQueue[i].convex);
+			delete worldQueue[i].convex;
+			break;
 		}
 	}
 
@@ -99,8 +99,8 @@ sf::RenderWindow* WindowMgr::getWindow()
 void WindowMgr::setResolution(int width, int height, bool _fullscreen, bool border)
 {
 	//calculate new scales
-	widthScale = width / NATIVE_WIDTH;
-	heightScale = height / NATIVE_HEIGHT;
+	widthScale = width / nativeWidth;
+	heightScale = height / nativeHeight;
 
 	//set resolution
 	windowPtr->create(sf::VideoMode(width, height), "Game", (_fullscreen ? sf::Style::Fullscreen : (border ? sf::Style::Titlebar : sf::Style::None)));
@@ -227,4 +227,13 @@ void WindowMgr::setMouseVisible(bool _mouseVisible)
 bool WindowMgr::isMouseVisible()
 {
 	return mouseVisible;
+}
+
+
+//World - ADD VERTEX ARRAY
+void WindowMgr::addWorld(sf::VertexArray& vertexArray)
+{
+	worldQueue[worldSize].type = 6;
+	//worldQueue[worldSize].vertexArray = &vertexArray;
+	//worldSize++;
 }

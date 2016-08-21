@@ -4,12 +4,12 @@
 
 Entity::Entity()
 {
-	
 	spawnPointX = 0;
 	spawnPointY = 0;
 	spawned = 0;
 	moveable = 1;
 	killed = 0;
+	onScreen = 0;
 }
 
 
@@ -51,12 +51,10 @@ void Entity::initialize(WindowMgr* _window, b2World* _world, float density, floa
 	//pos
 	spawnPointX = x;
 	spawnPointY = y;
-	hitbox.setPosition(x, y);
-	sprite.setPosition(x, y);
+	bodyDef->position.Set(spawnPointX, spawnPointY);
 
 	//def
-	std::cout << world->GetGravity().x << std::endl;
-	bodyDef->position.Set(x / 32, y / -32);
+	bodyDef->position.Set(x / 32, y / 32);
 	body = world->CreateBody(bodyDef);
 	body->SetUserData(this);
 
@@ -73,13 +71,9 @@ void Entity::initialize(WindowMgr* _window, b2World* _world, float density, floa
 	{
 		fixtureDef->density = density;
 		fixtureDef->friction = friction;
-		body->CreateFixture(fixtureDef);
-	}
-	else
-	{
-		body->CreateFixture(shape, 0);
 	}
 
+	body->CreateFixture(fixtureDef);
 }
 
 //UPDATE
@@ -89,9 +83,9 @@ void Entity::update()
 	{
 		input();
 
-		hitbox.setPosition(body->GetPosition().x * 32, -body->GetPosition().y * 32);
+		hitbox.setPosition(body->GetPosition().x * PHYS_SCALE, -body->GetPosition().y * PHYS_SCALE);
 		sprite.setPosition(hitbox.getPosition());
-		hitbox.setRotation(body->GetAngle() * -57.29578f);
+		hitbox.setRotation(body->GetAngle() * RAD2DEG);
 		sprite.setRotation(hitbox.getRotation());
 	}
 }
@@ -117,7 +111,8 @@ void Entity::updateAnimations()
 //DRAW
 void Entity::draw()
 {
-	if (spawned)
+
+	if (spawned && onScreen)
 	{
 		window->addWorld(hitbox);
 		window->addWorld(sprite);

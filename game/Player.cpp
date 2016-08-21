@@ -23,13 +23,12 @@ Player::Player()
 	keyLeft.set(sf::Keyboard::A, KeyType::REPEATED);
 	keyRight.set(sf::Keyboard::D, KeyType::REPEATED);
 	keySprint.set(sf::Keyboard::LShift, KeyType::REPEATED);
-	fire.set(sf::Mouse::Button::Left, KeyType::SINGLE);
+	fire.set(sf::Mouse::Button::Left, KeyType::REPEATED);
 
 	sprite.setOrigin(sf::Vector2f(hitbox.getSize().x / 2, hitbox.getSize().y / 2));
 	viewOffsetY = 400;
-	
-	//tmp
-	hitbox.setRotation(0);
+	onScreen = true;
+
 	m_forward = 0;
 	m_backward = 0;
 	m_left = 0;
@@ -88,23 +87,31 @@ void Player::updateMovement()
 	rotation > PI2 ? rotation = 0: rotation;
 	rotation < 0 ? rotation = PI2 : rotation;
 	
-	//update pos/rot
+	//body
 	body->SetFixedRotation(0);
 	body->SetTransform(body->GetPosition(), rotation); 
 	body->SetFixedRotation(1);
-	hitbox.setPosition(body->GetPosition().x * 32, -body->GetPosition().y * 32);
+	
+	//hitbox and sprite
+	hitbox.setPosition(body->GetPosition().x * PHYS_SCALE, -body->GetPosition().y * PHYS_SCALE);
 	sprite.setPosition(hitbox.getPosition());
 	hitbox.setRotation(body->GetAngle() * RAD2DEG);
 	sprite.setRotation(hitbox.getRotation());
 
+	//calc new center
+	screenCenter = misc::pointLocation(hitbox.getPosition(), -body->GetAngle() + PIh, viewOffsetY);
+
+	//screen body
+	screenBody->SetTransform(b2Vec2(screenCenter.x / PHYS_SCALE, -screenCenter.y / PHYS_SCALE), -rotation);
+	screenBody->SetLinearVelocity(body->GetLinearVelocity());
+	screenBody->SetAngularVelocity(rotation);
 }
 
 //UPDATE CAMERA
 void Player::updateCamera()
 {
-	//calculate pos: x = offset * sin(rotation), y = offset * cos(rotation)
-	window->getWorldView()->setCenter(sf::Vector2f((hitbox.getPosition().x  + (viewOffsetY * sin(hitbox.getRotation() * DEG2RAD)))* window->getScale().x, ((hitbox.getPosition().y) - (viewOffsetY * cos(hitbox.getRotation() * DEG2RAD))) * window->getScale().y));
-	window->getWorldView()->setRotation(body->GetAngle() * RAD2DEG);
+	window->getWorldView()->setCenter(sf::Vector2f(screenCenter.x * window->getScale().x, screenCenter.y * window->getScale().y));
+	window->getWorldView()->setRotation(hitbox.getRotation());
 }
 
 //WALK FORWARD
@@ -281,12 +288,28 @@ void Player::initialize(WindowMgr* _window, b2World* _world, float density, floa
 	fixtureDef = new b2FixtureDef();
 	fixtureDef->shape = shape;
 	fixtureDef->filter.categoryBits = EntityType::PLAYER;
-	fixtureDef->filter.maskBits = 0x0000;
+	fixtureDef->filter.maskBits = EntityType::SOLID;
 
 	//properties
 	fixtureDef->density = density;
 	fixtureDef->friction = friction;
 	body->CreateFixture(fixtureDef);
+
+	//screen
+	screenBodyDef = new b2BodyDef();
+	screenBodyDef->type = b2_dynamicBody;
+	screenBodyDef->position.Set(x, y);
+	screenBody = world->CreateBody(screenBodyDef);
+	screenBody->SetUserData(this);
+	screenShape = new b2PolygonShape();
+	screenShape->SetAsBox((NATIVE_WIDTH / 2) / PHYS_SCALE, (NATIVE_HEIGHT / 2) / PHYS_SCALE, b2Vec2(0, 0), 0);
+	screenFixture = new b2FixtureDef();
+	screenFixture->shape = screenShape;
+	screenFixture->isSensor = 1;
+	screenFixture->filter.categoryBits = EntityType::SCREEN;
+	screenFixture->filter.maskBits = EntityType::SOLID | EntityType::PROJECTILE;
+	b2Fixture* screenFix = screenBody->CreateFixture(screenFixture);
+	screenFix->SetUserData((void*)3);
 
 	gun.load(window, world);
 }
@@ -317,11 +340,10 @@ void Player::updateAnimations()
 //START CONTACT
 void Player::startContact(Entity* entity)
 {
-	entity->getSprite().setColor(sf::Color::Red);
+	std::cout << "col\n";
 }
 
 //END CONTACT
 void Player::endContact(Entity* entity)
 {
-	entity->getSprite().setColor(sf::Color::White);
 }

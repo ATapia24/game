@@ -6,7 +6,7 @@ Projectile::Projectile()
 {
 	speed = 50;
 	lifetime = 3000;
-	hitbox.setSize(sf::Vector2f(15, 15));
+	hitbox.setSize(sf::Vector2f(5, 5));
 	hitbox.setFillColor(sf::Color::Red);
 	moveable = 1;
 }
@@ -28,16 +28,26 @@ void Projectile::update()
 	}
 }
 
+//START CONTACT
+void Projectile::startContact(Entity* entity)
+{
+	std::cout << "col\n";
+	entity->getHitbox().setFillColor(sf::Color::Green);
+}
+
+//END CONTACT
+void Projectile::endContact(Entity* entity)
+{
+	entity->getHitbox().setFillColor(sf::Color::White);
+}
+
 //SPAWN
 void Projectile::spawn(float angle, b2Vec2 pos)
 {
 	spawned = 1;
 	body->SetTransform(pos, angle);
 	body->SetLinearVelocity(speed * b2Vec2(sin(angle), cos(angle)));
-
-	//tmp
 	time.start();
-	fixtureDef->filter.maskBits = 0x0000;
 }
 
 //INITIALIZE
@@ -62,6 +72,7 @@ void Projectile::initialize(WindowMgr* _window, b2World* _world, float density, 
 	bodyDef->position.Set(spawnPointX, spawnPointY);
 	body = world->CreateBody(bodyDef);
 	body->SetUserData(this);
+	body->SetBullet(1);
 
 	//shape
 	shape = new b2PolygonShape();
@@ -70,8 +81,8 @@ void Projectile::initialize(WindowMgr* _window, b2World* _world, float density, 
 	//fixture
 	fixtureDef = new b2FixtureDef();
 	fixtureDef->shape = shape;
-
-	//properties
+	fixtureDef->filter.categoryBits = EntityType::PROJECTILE;
+	fixtureDef->filter.maskBits = EntityType::SCREEN | EntityType::SOLID | EntityType::PROJECTILE;
 	fixtureDef->density = density;
 	fixtureDef->friction = 5;
 	body->CreateFixture(fixtureDef);

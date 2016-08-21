@@ -16,5 +16,7 @@ public:
 	void initialize(WindowMgr* _window, b2World* _world, float density, float friction, float x, float y);
 	void spawn(float angle, b2Vec2 pos);
 	void update();
+	void startContact(Entity* entity);
+	void endContact(Entity* entity);
 };
 

@@ -19,14 +19,14 @@ class ViewBlocker
 	b2World* world;
 	Entity* player;
 	sf::Vector2f center;
+	sf::Vector2f lastCenter;
+	float lastRotation;
+	bool containsMovables;
 	Blocker* blockers;
-
-	//tmp
-	std::thread* threads;
-	int cores;
 	int n_blockers;
-	int max_blockers = 1000;
-	void calculateBlocker(Blocker& blocker);
+	int max_blockers = 10000;
+	void calculateBlocker(Blocker& blockerd);
+	unsigned int d;
 public:
 	ViewBlocker();
 	~ViewBlocker();

@@ -1,35 +1,43 @@
 #include "stdafx.h"
 #include "ViewBlocker.h"
 
-
 ViewBlocker::ViewBlocker()
 {
 	blockers = new Blocker[max_blockers];
 	n_blockers = 0;
-	cores = std::thread::hardware_concurrency();
-	threads = new std::thread[cores];
+	d = 9000;
+	containsMovables = 0;
 }
 
 
 ViewBlocker::~ViewBlocker()
 {
+	delete [] blockers;
 }
 
 //UPDATE
 void ViewBlocker::update()
 {
-	center = player->getHitbox().getPosition();
+	center = misc::pointLocation(player->getHitbox().getPosition(), PIh, player->getHitbox().getSize().y / 2);
 
-	for (unsigned int i = 0; i < n_blockers; i++)
-		calculateBlocker(blockers[i]);
+	//check for new center or roatation or movables
+	if (center != lastCenter || player->getHitbox().getRotation() != lastRotation || containsMovables)
+		for (unsigned int i = 0; i < n_blockers; i++)
+			if(blockers[i].entity->isOneScreen())
+				calculateBlocker(blockers[i]);
+
+	//set last
+	lastCenter = center;
+	lastRotation = player->getHitbox().getRotation();
 }
 
 //DRAW
 void ViewBlocker::draw()
 {
+	//draw if on screen
 	for (unsigned int i = 0; i <n_blockers; i++)
-		window->addWorld(blockers[i].shape);
-
+		if (blockers[i].entity->isOneScreen())
+			window->addWorld(blockers[i].shape);
 }
 
 //CALCULATE BLOCKER
@@ -65,7 +73,6 @@ void ViewBlocker::calculateBlocker(Blocker& blocker)
 
 	//set point
 	blocker.shape.setPoint(0, p[1]);
-	int d = 1920;
 
 	//set endpoint
 	float angle = misc::lineAngle(center, p[1]);
@@ -100,7 +107,7 @@ void ViewBlocker::addObject(Entity& entity)
 {
 
 	blockers[n_blockers].entity = &entity;
-	blockers[n_blockers].shape.setFillColor(sf::Color::Black);
+	blockers[n_blockers].shape.setFillColor(sf::Color(0, 0, 0, 100));
 	blockers[n_blockers].shape.setPointCount(4);
 	blockers[n_blockers].shape.setPosition(sf::Vector2f(0, 0));
 	n_blockers++;

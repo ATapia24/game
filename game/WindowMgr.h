@@ -2,10 +2,21 @@
 
 #include <SFML\Graphics.hpp>
 #include <iostream>
+#include "misc.h"
 #include <SFML\System\Thread.hpp>
 #include <thread>
 
 //WINDOW MGR CLASS
+/*enum QueuTypes
+{
+	SPRITE,
+	TEXT,
+	RECTANGLE,
+	CIRCLE,
+	CONVEX,
+	VERTEXARRAY
+};*/
+
 class WindowMgr
 {
 
@@ -13,7 +24,7 @@ private:
 	sf::RenderWindow *windowPtr;
 	sf::View guiView;
 	sf::View worldView;
-	float NATIVE_WIDTH, NATIVE_HEIGHT;
+	float nativeWidth, nativeHeight;
 	float widthScale, heightScale;
 	bool fullscreen, mouseVisible;
 	
@@ -25,6 +36,7 @@ private:
 		sf::RectangleShape* rectangle;
 		sf::CircleShape* circle;
 		sf::ConvexShape* convex;
+		sf::VertexArray* vertexArray;
 	};
 
 	const long int MAX_DRAW_SIZE = 1000000;
@@ -45,6 +57,7 @@ public:
 	void addWorld(sf::RectangleShape& rectangle);
 	void addWorld(sf::CircleShape& circle);
 	void addWorld(sf::ConvexShape& convex);
+	void addWorld(sf::VertexArray& vertexArray);
 	void draw();
 	sf::RenderWindow* getWindow();
 	sf::View* getWorldView() { return &worldView; };

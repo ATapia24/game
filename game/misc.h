@@ -7,10 +7,11 @@
 #include "SFML\Graphics.hpp"
 #include "dirent.h"
 #include <cmath>
+#include <iostream>
 
 //RESOLUTION
-#define NATIVE_WIDTH = 1920;
-#define NATIVE_HEIGHT = 1080;
+#define NATIVE_WIDTH 1920
+#define NATIVE_HEIGHT 1080
 
 //STAGES
 #define N_STAGES 10
@@ -27,7 +28,7 @@
 #define DEG2RAD 0.01745329251f
 #define PT2PIX 1.333333333333333f
 #define PIX2PT 0.75f
-#define PHYS_SCALE = 32
+#define PHYS_SCALE 32.f
 
 namespace misc
 {
@@ -45,6 +46,7 @@ namespace misc
 	sf::Vector2f pointLocation(const sf::Vector2f point, const float angle, const float distance);
 	bool intersects(const sf::Vector2f p1, const sf::Vector2f p2, const sf::Vector2f p3, const sf::Vector2f p4);
 	int random(int min, int max);
+	bool inPolygon(sf::Vector2f point, sf::Vector2f poly[], const int n_points);
 }
 
 #endif

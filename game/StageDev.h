@@ -17,7 +17,6 @@
 #include "NativePosition.h"
 #include "Entity.h"
 #include "TextureManager.h"
-#include "Floor.h"
 #include "Box2D\Box2D.h"
 #include "KeyManager.h"
 #include "Map.h"
@@ -30,22 +29,20 @@ class StageDev : public Stage, public b2ContactListener
 private:
 	sf::Texture bgText;
 	sf::RectangleShape bg;
-	MenuList menu;
 	TextureManager textures;
 	std::vector<EditorObject*> objects;
-
 	Player player;
-	Solid wall;
-	ViewBlocker vb;
-
+	
+	ViewBlocker* vb;
 	Solid* walls;
 	int n_walls;
 
 	b2World* world;
-
-	Key menuUp, menuDown;
-	
 	Map map;
+
+	sf::VertexArray* va;
+	sf::RectangleShape area;
+	Timer t1, t2;
 public:
 	StageDev();
 	~StageDev();

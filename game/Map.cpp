@@ -19,59 +19,69 @@ std::vector<EditorObject*> Map::loadFile(std::string _filename, std::vector<Text
 	std::string line;
 	char t = ',';
 
-	while (!f.eof())
+	if (f.is_open())
 	{
-		EditorObject* obj = new EditorObject;
-		std::getline(f, line);
-		//static
-		if (line[0] == 's')
+
+		objects.clear();
+
+		while (!f.eof())
 		{
-			//parse
-			float posX = std::stof(misc::extractBetween(line, t, '#'));
-			float posY = std::stof(misc::extractBetween(line, t, '#'));
-			float rot = std::stof(misc::extractBetween(line, t, '#'));
-			float sizeX = std::stof(misc::extractBetween(line, t, '#'));
-			float sizeY = std::stof(misc::extractBetween(line, t, '#'));
-			std::string textureName = misc::extractBetween(line, t, '#');
-
-			//set
-			obj->rectangle.setPosition(sf::Vector2f(posX, posY));
-			obj->rectangle.setRotation(rot);
-			obj->rectangle.setSize(sf::Vector2f(sizeX, sizeY));
-			obj->textureName = textureName;
-
-			//texture
-			bool t_found = 0;
-			for (int i = 0; i < textures.size() && !t_found; i++)
+			EditorObject* obj = new EditorObject;
+			std::getline(f, line);
+			//static
+			if (line[0] == 's')
 			{
-				if (textures[i]->name == obj->textureName)
+				//parse
+				float posX = std::stof(misc::extractBetween(line, t, '#'));
+				float posY = std::stof(misc::extractBetween(line, t, '#'));
+				float rot = std::stof(misc::extractBetween(line, t, '#'));
+				float sizeX = std::stof(misc::extractBetween(line, t, '#'));
+				float sizeY = std::stof(misc::extractBetween(line, t, '#'));
+				std::string textureName = misc::extractBetween(line, t, '#');
+
+				//set
+				obj->rectangle.setPosition(sf::Vector2f(posX, posY));
+				obj->rectangle.setRotation(rot);
+				obj->rectangle.setSize(sf::Vector2f(sizeX, sizeY));
+				obj->textureName = textureName;
+
+				//texture
+				bool t_found = 0;
+				for (int i = 0; i < textures.size() && !t_found; i++)
 				{
-					obj->rectangle.setTexture(&textures[i]->texture);
-					t_found = 1;
+					if (textures[i]->name == obj->textureName)
+					{
+						obj->rectangle.setTexture(&textures[i]->texture);
+						t_found = 1;
+					}
 				}
+
+				if (!t_found)
+					std::cout << "Unable to load " << textureName << ".\n";
+			}
+			//rect
+			else if (line[0] == 'r')
+			{
+				//parse
+				float posX = std::stof(misc::extractBetween(line, t, '#'));
+				float posY = std::stof(misc::extractBetween(line, t, '#'));
+				float rot = std::stof(misc::extractBetween(line, t, '#'));
+				float sizeX = std::stof(misc::extractBetween(line, t, '#'));
+				float sizeY = std::stof(misc::extractBetween(line, t, '#'));
+
+				//set
+				obj->rectangle.setPosition(sf::Vector2f(posX, posY));
+				obj->rectangle.setRotation(rot);
+				obj->rectangle.setSize(sf::Vector2f(sizeX, sizeY));
 			}
 
-			if (!t_found)
-				std::cout << "Unable to load " << textureName << ".\n";
+			//push
+			objects.push_back(obj);
 		}
-		//rect
-		else if (line[0] == 'r')
-		{
-			//parse
-			float posX = std::stof(misc::extractBetween(line, t, '#'));
-			float posY = std::stof(misc::extractBetween(line, t, '#'));
-			float rot = std::stof(misc::extractBetween(line, t, '#'));
-			float sizeX = std::stof(misc::extractBetween(line, t, '#'));
-			float sizeY = std::stof(misc::extractBetween(line, t, '#'));
-
-			//set
-			obj->rectangle.setPosition(sf::Vector2f(posX, posY));
-			obj->rectangle.setRotation(rot);
-			obj->rectangle.setSize(sf::Vector2f(sizeX, sizeY));
-		}
-
-		//push
-		objects.push_back(obj);
+	}
+	else
+	{
+		std::cout << "Unable to load " << _filename << std::endl;
 	}
 
 	return objects;

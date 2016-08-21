@@ -14,7 +14,7 @@ int main()
 
 	//console
 	HWND consoleWindow = GetConsoleWindow();
-	SetWindowPos(consoleWindow, 0, 1283, 0, 640, 1080, 0);
+	SetWindowPos(consoleWindow, 0, 1283, 0, 645, 1080, 0);
 
 	//window
 	sf::RenderWindow screen(sf::VideoMode(1280, 720), "Game");

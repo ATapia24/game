@@ -5,16 +5,16 @@
 #include <SFML\Graphics.hpp>
 #include "Box2D\Box2D.h"
 #include "WindowMgr.h"
-#include "globals.h"
+#include "misc.h"
 #include "Timer.h"
 #include <string>
 
 enum EntityType
 {
 	PLAYER = 0x0001,
-	FLOOR = 0x0002,
-	SOLID = 0x0004,
-	PROJECTILE = 0x0008
+	SOLID = 0x0002,
+	PROJECTILE = 0x0004,
+	SCREEN = 0x0008
 };
 
 struct Point
@@ -34,6 +34,7 @@ protected:
 	sf::Sprite sprite;
 	sf::Texture texture;
 	sf::RectangleShape hitbox;
+	bool onScreen;
 
 	//spawn
 	bool spawned;
@@ -90,6 +91,8 @@ public:
 	//collision
 	void startContact(Entity* entity);
 	void endContact(Entity* enitity);
+	void setOnScreen(bool _onScreen) { onScreen = _onScreen;}
+	bool isOneScreen() { return onScreen; }
 
 	EntityType getType() { return type; };
 };
