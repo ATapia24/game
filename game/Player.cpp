@@ -340,7 +340,6 @@ void Player::updateAnimations()
 //START CONTACT
 void Player::startContact(Entity* entity)
 {
-	std::cout << "col\n";
 }
 
 //END CONTACT

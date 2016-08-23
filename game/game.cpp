@@ -6,11 +6,44 @@
 #include "WindowMgr.h"
 #include "Debug.h"
 #include "misc.h"
+#include "SFML\Network.hpp"
+#include "Timer.h"
 
 using namespace globals;
 
 int main()
 {
+	/*
+	std::string i;
+	std::cin >> i;
+	sf::IpAddress ip(i);
+	sf::TcpSocket socket;
+	char type, mode;
+	std::cin >> type;
+	std::string text = "Connect to: ";
+
+	if (type == 's')
+	{
+		sf::TcpListener listener;
+		listener.listen(2000);
+		listener.accept(socket);
+		text += "Server\n";
+	}
+	else if(type == 'c')
+	{
+		socket.connect(ip, 2000);
+		text += "Client\n";
+	}
+
+	socket.send(text.c_str(), text.length() + 1);
+	
+	char buffer[2000];
+	size_t recieved;
+	socket.receive(buffer, sizeof(buffer), recieved);
+	std::cout << buffer << std::endl;
+
+	system("pause");
+	*/
 
 	//console
 	HWND consoleWindow = GetConsoleWindow();

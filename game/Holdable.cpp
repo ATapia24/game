@@ -46,7 +46,5 @@ void Holdable::fire(float angle, b2Vec2 pos)
 void Holdable::draw()
 {
 	for (unsigned int i = 0; i < bullets.size(); i++)
-	{
 		bullets[i]->draw();
-	}
 }

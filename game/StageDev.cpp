@@ -37,13 +37,16 @@ void StageDev::load()
 	vb = new ViewBlocker;
 	vb->set(player, window, world);
 
-	n_walls = 2000;
+	n_walls = 1000;
 	walls = new Solid[n_walls];
 
 	for (int i = 0; i < n_walls; i++)
 	{
-		walls[i].getHitbox().setSize(sf::Vector2f(misc::random(1, 500), misc::random(1, 500)));
-		walls[i].initialize(window, world, 1, 1, misc::random(0, 100000), misc::random(0, 100000));
+		if(i < 100)
+		walls[i].getHitbox().setSize(sf::Vector2f(50, 200));
+		else
+			walls[i].getHitbox().setSize(sf::Vector2f(misc::random(10, 200), misc::random(10, 200)));
+		walls[i].initialize(window, world, 1, 1, misc::random(10, 100000), misc::random(10, 10000));
 		walls[i].spawn();
 		vb->addObject(walls[i]);
 	}
@@ -95,6 +98,7 @@ void StageDev::draw()
 
 	for (int i = 0; i < n_walls; i++)
 		walls[i].draw();
+
 }
 
 //BEGIN CONTACT
@@ -124,7 +128,6 @@ void StageDev::BeginContact(b2Contact* contact)
 		break;
 
 	case EntityType::SCREEN:
-		std::cout << "screen\n";
 		break;
 	
 	default:

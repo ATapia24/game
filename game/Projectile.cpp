@@ -31,7 +31,6 @@ void Projectile::update()
 //START CONTACT
 void Projectile::startContact(Entity* entity)
 {
-	std::cout << "col\n";
 	entity->getHitbox().setFillColor(sf::Color::Green);
 }
 

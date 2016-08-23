@@ -57,6 +57,7 @@ public:
 	void addWorld(sf::RectangleShape& rectangle);
 	void addWorld(sf::CircleShape& circle);
 	void addWorld(sf::ConvexShape& convex);
+	void addWorld(sf::VertexArray& vertexArray, sf::Vector2f* points);
 	void addWorld(sf::VertexArray& vertexArray);
 	void draw();
 	sf::RenderWindow* getWindow();

@@ -9,8 +9,8 @@
 #include <thread>
 struct  Blocker
 {
-	sf::ConvexShape shape;
 	Entity* entity;
+	sf::Vector2f points[4];
 };
 
 class ViewBlocker
@@ -24,9 +24,14 @@ class ViewBlocker
 	bool containsMovables;
 	Blocker* blockers;
 	int n_blockers;
-	int max_blockers = 10000;
+	int max_blockers = 1000000;
 	void calculateBlocker(Blocker& blockerd);
 	unsigned int d;
+	sf::VertexArray va;
+	sf::Vector2f* points;
+	int pcount;
+	bool newUpdate;
+
 public:
 	ViewBlocker();
 	~ViewBlocker();
@@ -34,5 +39,6 @@ public:
 	void addObject(Entity& entity);
 	void update();
 	void draw();
+	bool inShadow(const Blocker& entity);
 };
 
