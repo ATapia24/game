@@ -21,8 +21,16 @@ void StageDev::load()
 	player.setName("player");
 	player.getSprite().setScale(3, 3);
 	player.getHitbox().setSize(sf::Vector2f(25, 25));
-	player.initialize(window, world, 1.f, 0.3f, 10.f, -31.875f);
+	player.initialize(window, world, 1.f, 0.3f, 20.f, 20.f);
 	player.spawn();
+
+	bot.setName("Bot");
+	bot.getHitbox().setSize(sf::Vector2f(30, 30));
+	bot.getHitbox().setFillColor(sf::Color::Red);
+	bot.initialize(window, world, 5, 5, 10, 10);
+	bot.spawn();
+	waypoint.set(sf::Keyboard::Space, KeyType::SINGLE);
+
 	bgText.loadFromFile("assets/strike.jpg");
 	bg.setPosition(0, 0);
 	bg.setSize(sf::Vector2f((float)bgText.getSize().x * 10, (float)bgText.getSize().y* 10));
@@ -68,8 +76,11 @@ void StageDev::unload()
 //UPDATE
 void StageDev::update()
 {
-	
+	if(waypoint.getValue())
+	bot.setWaypoint(player.getHitbox().getPosition());
+
 	player.update();
+	bot.update();
 	world->Step(1.0f / 65.f, 8, 3);
 	vb->update();
 
@@ -86,13 +97,13 @@ void StageDev::update()
 void StageDev::draw()
 {
 	window->addWorld(bg);
-	//menu.draw();
 
 	for (unsigned int i = 0; i < objects.size(); i++)
 		window->addWorld(objects[i]->rectangle);
 
 	
 	player.draw();
+	bot.draw();
 
 	vb->draw();
 

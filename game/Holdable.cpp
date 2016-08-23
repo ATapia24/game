@@ -36,10 +36,10 @@ void Holdable::update()
 //FIRE
 void Holdable::fire(float angle, b2Vec2 pos)
 {
-	Projectile* bullet = new Projectile;
-	bullet->initialize(window, world, 1, 1, 0, 0);
-	bullet->spawn(angle, pos);
-	bullets.push_back(bullet);
+		Projectile* bullet = new Projectile;
+		bullet->initialize(window, world, 1, 1, 20, 0);
+		bullet->spawn(angle, pos);
+		bullets.push_back(bullet);
 }
 
 //DRAW

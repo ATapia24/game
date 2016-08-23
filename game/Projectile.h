@@ -10,6 +10,7 @@ private:
 	Timer time;
 	float speed;
 	int lifetime;
+	bool pastPlayer;
 public:
 	Projectile();
 	~Projectile();

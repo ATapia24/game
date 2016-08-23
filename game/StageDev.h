@@ -23,6 +23,7 @@
 #include "EditorObject.h"
 #include "Solid.h"
 #include "ViewBlocker.h"
+#include "Actor.h"
 
 class StageDev : public Stage, public b2ContactListener
 {
@@ -43,6 +44,8 @@ private:
 	sf::VertexArray* va;
 	sf::RectangleShape area;
 	Timer t1, t2;
+	Actor bot;
+	Key waypoint;
 public:
 	StageDev();
 	~StageDev();

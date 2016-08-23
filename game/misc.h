@@ -8,6 +8,7 @@
 #include "dirent.h"
 #include <cmath>
 #include <iostream>
+#include "Box2D\Box2D.h"
 
 //RESOLUTION
 #define NATIVE_WIDTH 1920
@@ -42,6 +43,7 @@ namespace misc
 	bool isLetter(const char c);
 	float distance(const sf::Vector2f a, const sf::Vector2f b);
 	float lineAngle(const sf::Vector2f centerpoint, const sf::Vector2f endpoint);
+	float lineAngle(const  b2Vec2 centerpoint, const b2Vec2 endpoint);
 	sf::Vector2f midpoint(const sf::Vector2f a, const sf::Vector2f b);
 	sf::Vector2f pointLocation(const sf::Vector2f point, const float angle, const float distance);
 	bool intersects(const sf::Vector2f p1, const sf::Vector2f p2, const sf::Vector2f p3, const sf::Vector2f p4);

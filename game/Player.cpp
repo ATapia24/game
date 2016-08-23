@@ -23,7 +23,7 @@ Player::Player()
 	keyLeft.set(sf::Keyboard::A, KeyType::REPEATED);
 	keyRight.set(sf::Keyboard::D, KeyType::REPEATED);
 	keySprint.set(sf::Keyboard::LShift, KeyType::REPEATED);
-	fire.set(sf::Mouse::Button::Left, KeyType::REPEATED);
+	fire.set(sf::Mouse::Button::Left, KeyType::SINGLE);
 
 	sprite.setOrigin(sf::Vector2f(hitbox.getSize().x / 2, hitbox.getSize().y / 2));
 	viewOffsetY = 400;
@@ -54,7 +54,6 @@ void Player::update()
 		input();
 		updateMovement();
 		gun.update();
-		//updateAnimations();
 		updateCamera();
 	}
 }
@@ -222,12 +221,6 @@ void Player::sprintAdjust(b2Vec2& vect)
 	vect *= sprintSpeed;
 }
 
-//JUMP
-void Player::jump()
-{
-
-}
-
 //INPUT
 void Player::input()
 {
@@ -276,7 +269,7 @@ void Player::initialize(WindowMgr* _window, b2World* _world, float density, floa
 	bodyDef->type = b2_dynamicBody;
 	spawnPointX = x;
 	spawnPointY = y;
-	bodyDef->position.Set(spawnPointX, spawnPointY);
+	bodyDef->position.Set(spawnPointX, -spawnPointY);
 	body = world->CreateBody(bodyDef);
 	body->SetUserData(this);
 
@@ -288,7 +281,7 @@ void Player::initialize(WindowMgr* _window, b2World* _world, float density, floa
 	fixtureDef = new b2FixtureDef();
 	fixtureDef->shape = shape;
 	fixtureDef->filter.categoryBits = EntityType::PLAYER;
-	fixtureDef->filter.maskBits = EntityType::SOLID;
+	fixtureDef->filter.maskBits = EntityType::SOLID | EntityType::PROJECTILE | EntityType::PLAYER;
 
 	//properties
 	fixtureDef->density = density;
@@ -307,34 +300,11 @@ void Player::initialize(WindowMgr* _window, b2World* _world, float density, floa
 	screenFixture->shape = screenShape;
 	screenFixture->isSensor = 1;
 	screenFixture->filter.categoryBits = EntityType::SCREEN;
-	screenFixture->filter.maskBits = EntityType::SOLID | EntityType::PROJECTILE;
+	screenFixture->filter.maskBits = EntityType::SOLID | EntityType::PROJECTILE | EntityType::PLAYER;
 	b2Fixture* screenFix = screenBody->CreateFixture(screenFixture);
 	screenFix->SetUserData((void*)3);
 
 	gun.load(window, world);
-}
-
-//UPDATE ANIMATIONS
-void Player::updateAnimations()
-{
-	switch (state)
-	{
-	case PlayerState::walking_right:
-		player_body.update(sprite, 1, 4);
-		break;
-
-	case PlayerState::walking_left:
-		player_body.update(sprite, 5, 8);
-		break;
-
-	case PlayerState::standing_right:
-		player_body.update(sprite, 1, 1);
-		break;
-
-	case PlayerState::standng_left:
-		player_body.update(sprite, 8, 8);
-		break;
-	}
 }
 
 //START CONTACT

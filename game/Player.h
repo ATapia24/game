@@ -5,19 +5,10 @@
 #include "Holdable.h"
 #include <cmath>
 
-enum PlayerState
-{
-	walking_left,
-	walking_right,
-	standng_left,
-	standing_right
-};
-
 class Player : public Entity
 {
 
 private:
-	PlayerState state;
 	sf::Sprite weapon;
 	Holdable gun;
 
@@ -35,7 +26,6 @@ private:
 	b2Vec2 forwardVel, backwardVel, leftVel, rightVel;
 
 	//animations
-	void updateAnimations();
 	Animation walk_right, walk_left, stand_right, stand_left;
 	Animation lmg_right, lmg_left;
 	Animation player_body;
@@ -70,11 +60,6 @@ public:
 	void stopWalkLeft();
 	void diagonalAdjust();
 	void sprintAdjust(b2Vec2& vect);
-	void jump();
-
-	//state
-	PlayerState getState() { return state; }
-	void setState(PlayerState _state) { state = _state; }
 
 	void startContact(Entity* entity);
 	void endContact(Entity* entity);

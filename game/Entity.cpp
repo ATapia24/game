@@ -165,7 +165,7 @@ void Entity::stopWalkLeft()
 void Entity::spawn()
 {
 	spawned = 1;
-	bodyDef->position.Set(spawnPointX, spawnPointY);
+	bodyDef->position.Set(spawnPointX, -spawnPointY);
 }
 
 //kill

@@ -19,6 +19,14 @@ Projectile::~Projectile()
 //UPDATE
 void Projectile::update()
 {
+	if (!pastPlayer && (time.getTimeInt() > 16))
+	{
+		b2Filter f = body->GetFixtureList()->GetFilterData();
+		f.maskBits += EntityType::PLAYER;
+		body->GetFixtureList()->SetFilterData(f);
+		pastPlayer = 1;
+	}
+
 	if (time.getTimeInt() > lifetime)
 		kill();
 	else if (spawned)
@@ -83,6 +91,6 @@ void Projectile::initialize(WindowMgr* _window, b2World* _world, float density, 
 	fixtureDef->filter.categoryBits = EntityType::PROJECTILE;
 	fixtureDef->filter.maskBits = EntityType::SCREEN | EntityType::SOLID | EntityType::PROJECTILE;
 	fixtureDef->density = density;
-	fixtureDef->friction = 5;
+	fixtureDef->friction = friction;
 	body->CreateFixture(fixtureDef);
 }

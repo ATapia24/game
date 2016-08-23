@@ -51,7 +51,7 @@ int main()
 
 	//window
 	sf::RenderWindow screen(sf::VideoMode(1280, 720), "Game");
-	screen.setFramerateLimit(2500);
+	screen.setFramerateLimit(65);
 	WindowMgr window(screen, 1920, 1080);
 
 	debug.setWindowMgr(window);
