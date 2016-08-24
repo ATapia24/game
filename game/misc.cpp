@@ -203,3 +203,43 @@ bool misc::inPolygon(sf::Vector2f p, sf::Vector2f poly[], const int sides)
 
 	return oddNodes;
 }
+
+//GET AREA POINTS
+std::vector<sf::Vector2f> misc::getAreaPoints(const sf::RectangleShape shape, const float resolustion, const bool sides)
+{
+	std::vector<sf::Vector2f> points;
+	sf::Vector2f p;
+	
+	//get number of point
+	int xPoints = shape.getSize().x / resolustion;
+	int yPoints = shape.getSize().y / resolustion;
+	int xpos = shape.getPosition().x;
+	int ypos = shape.getPosition().y;
+	int wOffset = shape.getSize().x / 2;
+	int hOffset = shape.getSize().y / 2;
+
+	//corners
+	sf::Vector2f p1(xpos - wOffset, ypos - hOffset);
+	sf::Vector2f p2(xpos + wOffset, ypos - hOffset);
+	sf::Vector2f p3(xpos + wOffset, ypos + hOffset);
+	sf::Vector2f p4(xpos - wOffset, ypos + hOffset);
+	points.push_back(p1);
+	points.push_back(p2);
+	points.push_back(p3);
+	points.push_back(p4);
+
+
+	//side 1
+	float a1 = lineAngle(p1, p2);
+	float a2 = lineAngle(p1, p4);
+	float d1 = distance(p1, p2);
+	float d2 = distance(p1, p4);
+	int n1 = (d1 / resolustion) + 1;
+	int n2 = (d2 / resolustion) + 1;
+
+	for (int i = 0; i < n1; i++)
+		for (int j = 0; j < n2; j++)
+			points.push_back(sf::Vector2f(pointLocation(pointLocation(p1, a2, resolustion  * j+1), a1, resolustion * i+1)));
+
+	return points;
+}

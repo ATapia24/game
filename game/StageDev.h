@@ -24,6 +24,7 @@
 #include "Solid.h"
 #include "ViewBlocker.h"
 #include "Actor.h"
+#include "PathFinder.h"
 
 class StageDev : public Stage, public b2ContactListener
 {
@@ -41,6 +42,8 @@ private:
 	b2World* world;
 	Map map;
 
+	PathFinder pathf;
+	sf::VertexArray grid;
 	sf::VertexArray* va;
 	sf::RectangleShape area;
 	Timer t1, t2;

@@ -223,6 +223,7 @@
     <ClInclude Include="misc.h" />
     <ClInclude Include="NativePosition.h" />
     <ClInclude Include="NetworkManager.h" />
+    <ClInclude Include="PathFinder.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Projectile.h" />
     <ClInclude Include="Solid.h" />
@@ -337,6 +338,7 @@
     <ClCompile Include="misc.cpp" />
     <ClCompile Include="NativePosition.cpp" />
     <ClCompile Include="NetworkManager.cpp" />
+    <ClCompile Include="PathFinder.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Projectile.cpp" />
     <ClCompile Include="Solid.cpp" />

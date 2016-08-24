@@ -5,8 +5,9 @@ ViewBlocker::ViewBlocker()
 {
 	blockers = new Blocker[max_blockers];
 	containsMovables = 0;
-	points = new sf::Vector2f[10000000];
 	pcount = 0;
+	points.setPrimitiveType(sf::Triangles);
+	blockerColor = sf::Color(0, 0, 0, 200);
 }
 
 
@@ -24,7 +25,6 @@ void ViewBlocker::update()
 	if (center != lastCenter || player->getHitbox().getRotation() != lastRotation || containsMovables)
 	{
 		pcount = 0;
-		newUpdate = 1;
 		for (int i = 0; i < n_blockers; i++)
 			if (blockers[i].entity->isOneScreen())
 				calculateBlocker(blockers[i]);
@@ -38,15 +38,7 @@ void ViewBlocker::update()
 //DRAW
 void ViewBlocker::draw()
 {
-	if (newUpdate)
-	{
-		va.resize(pcount);
-		for (int i = 0; i < pcount; i++)
-			va[i] = points[i];
-		newUpdate = 0;
-	}
-
-	window->addWorld(va, points);
+	window->addWorld(points);
 }
 
 //CALCULATE BLOCKER
@@ -99,48 +91,30 @@ void ViewBlocker::calculateBlocker(Blocker& blocker)
 	sf::Vector2f tip2 = misc::pointLocation(bp1, misc::lineAngle(center, bp2), 60000);
 
 	//setup triangle in points array
+	points.resize(pcount + 6);
 	points[0 + pcount] = bp1;
 	points[1 + pcount] = tip1;
 	points[2 + pcount] = tip2;
 	points[3 + pcount] = bp2;
 	points[4 + pcount] = bp1;
 	points[5 + pcount] = tip2;
+
+	//set color
+	points[0 + pcount].color = blockerColor;
+	points[1 + pcount].color = blockerColor;
+	points[2 + pcount].color = blockerColor;
+	points[3 + pcount].color = blockerColor;
+	points[4 + pcount].color = blockerColor;
+	points[5 + pcount].color = blockerColor;
+
+	//adjust pcount
 	pcount += 6;
 }
 
 //IN SHADOW
 bool ViewBlocker::inShadow(const Blocker& blocker)
 {
-	sf::Vector2f poly[4];
-	int adj = 0;
 
-	sf::Vector2f p[4];
-	float widthOff = blocker.entity->getHitbox().getSize().x / 2;
-	float heightOffset = blocker.entity->getHitbox().getSize().y / 2;
-	p[0] = sf::Vector2f(blocker.entity->getHitbox().getPosition().x - widthOff, blocker.entity->getHitbox().getPosition().y - heightOffset);
-	p[1] = sf::Vector2f(blocker.entity->getHitbox().getPosition().x + widthOff, blocker.entity->getHitbox().getPosition().y - heightOffset);
-	p[2] = sf::Vector2f(blocker.entity->getHitbox().getPosition().x - widthOff, blocker.entity->getHitbox().getPosition().y + heightOffset);
-	p[3] = sf::Vector2f(blocker.entity->getHitbox().getPosition().x + widthOff, blocker.entity->getHitbox().getPosition().y + heightOffset);
-
-	for (int i = 0; i < n_blockers; i++)
-	{
-		poly[0] = points[0 + adj];
-		poly[0] = points[1 + adj];
-		poly[0] = points[2 + adj];
-		poly[0] = points[3 + adj];
-		adj++;
-
-		for (int j = 0; j < 4; j++)
-		{
-			if (!misc::inPolygon(p[i], poly, 4))
-			{
-				return 0;
-			}
-		}
-
-	}
-
-	std::cout << "in shadow\n";
 	return 1;
 }
 

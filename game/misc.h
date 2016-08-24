@@ -43,12 +43,12 @@ namespace misc
 	bool isLetter(const char c);
 	float distance(const sf::Vector2f a, const sf::Vector2f b);
 	float lineAngle(const sf::Vector2f centerpoint, const sf::Vector2f endpoint);
-	float lineAngle(const  b2Vec2 centerpoint, const b2Vec2 endpoint);
 	sf::Vector2f midpoint(const sf::Vector2f a, const sf::Vector2f b);
 	sf::Vector2f pointLocation(const sf::Vector2f point, const float angle, const float distance);
 	bool intersects(const sf::Vector2f p1, const sf::Vector2f p2, const sf::Vector2f p3, const sf::Vector2f p4);
 	int random(int min, int max);
 	bool inPolygon(sf::Vector2f point, sf::Vector2f poly[], const int n_points);
+	std::vector<sf::Vector2f> getAreaPoints(const sf::RectangleShape shape, const float resolustion, const bool sides);
 }
 
 #endif

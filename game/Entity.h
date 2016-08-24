@@ -87,6 +87,7 @@ public:
 	virtual void kill();
 	virtual bool wasKilled();
 	virtual bool isAlive();
+	sf::Vector2f getSpawnPoint() { return sf::Vector2f(spawnPointX, spawnPointY); }
 
 	//collision
 	void startContact(Entity* entity);
@@ -96,4 +97,3 @@ public:
 
 	EntityType getType() { return type; };
 };
-

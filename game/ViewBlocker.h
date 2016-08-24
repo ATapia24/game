@@ -31,10 +31,9 @@ class ViewBlocker
 	int max_blockers = 1000000;
 
 	void calculateBlocker(Blocker& blocker);
-	sf::VertexArray va;
-	sf::Vector2f* points;
+	sf::VertexArray points;
 	int pcount;
-	bool newUpdate;
+	sf::Color blockerColor;
 
 public:
 	ViewBlocker();

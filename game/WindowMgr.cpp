@@ -220,6 +220,21 @@ void WindowMgr::addWorld(sf::ConvexShape& convex)
 	worldSize++;
 }
 
+//World - ADD VERTEX ARRAY
+void WindowMgr::addWorld(sf::VertexArray& vertexArray)
+{
+	worldQueue[worldSize].type = 6;
+	sf::VertexArray v(vertexArray.getPrimitiveType(), vertexArray.getVertexCount());
+	v = vertexArray;
+	for (int i = 0; i < vertexArray.getVertexCount(); i++)
+	{
+		v[i] = sf::Vector2f(v[i].position.x * widthScale, v[i].position.y * heightScale);
+		v[i].color = vertexArray[i].color;
+	}
+	worldQueue[worldSize].vertexArray = new sf::VertexArray(v);
+	worldSize++;
+}
+
 //SET MOUSE VISIBLE
 void WindowMgr::setMouseVisible(bool _mouseVisible)
 {
@@ -231,29 +246,4 @@ void WindowMgr::setMouseVisible(bool _mouseVisible)
 bool WindowMgr::isMouseVisible()
 {
 	return mouseVisible;
-}
-
-
-//World - ADD VERTEX ARRAY
-void WindowMgr::addWorld(sf::VertexArray& vertexArray, sf::Vector2f* points)
-{
-	worldQueue[worldSize].type = 6;
-	size_t n = vertexArray.getVertexCount();
-	sf::VertexArray quad(sf::Triangles, n);
-	for (int i = 0; i < n; i++)
-	{
-		quad[i].position = sf::Vector2f(points[i].x * widthScale, points[i].y * heightScale);
-		quad[i].color = sf::Color(0, 0, 0, 255);
-	}
-	worldQueue[worldSize].vertexArray = new sf::VertexArray(quad);
-	worldSize++;
-}
-
-// World - ADD VERTEX ARRAY
-void WindowMgr::addWorld(sf::VertexArray& vertexArray)
-{
-	worldQueue[worldSize].type = 6;
-	worldQueue[worldSize].vertexArray = new sf::VertexArray(vertexArray);
-
-	worldSize++;
 }

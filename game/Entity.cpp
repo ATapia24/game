@@ -40,13 +40,9 @@ void Entity::initialize(WindowMgr* _window, b2World* _world, float density, floa
 	
 	//dynamic or tsatic
 	if (moveable)
-	{
-		this->bodyDef->type = b2_dynamicBody;
-	}
+		bodyDef->type = b2_dynamicBody;
 	else
-	{
-		this->bodyDef->type = b2_staticBody;
-	}
+		bodyDef->type = b2_staticBody;
 
 	//pos
 	spawnPointX = x;
