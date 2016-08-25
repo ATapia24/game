@@ -45,15 +45,15 @@ void StageDev::load()
 	vb = new ViewBlocker;
 	vb->set(player, window, world);
 
-	n_walls = 3;
+	n_walls = 30;
 	walls = new Solid[n_walls];
 
 	for (int i = 0; i < n_walls; i++)
 	{
-	//	if(i < 100)
-		//walls[i].getHitbox().setSize(sf::Vector2f(50, 200));
-		//else
-		walls[i].getHitbox().setSize(sf::Vector2f(misc::random(1, 5), misc::random(1, 5)));
+		if(i < 10)
+		walls[i].getHitbox().setSize(sf::Vector2f(10, 400));
+		else
+		walls[i].getHitbox().setSize(sf::Vector2f(misc::random(1, 5), misc::random(1, 500)));
 		walls[i].initialize(window, world, 1, 1, misc::random(1, 1000), misc::random(1, 1000));
 		walls[i].spawn();
 		vb->addObject(walls[i]);
@@ -61,9 +61,7 @@ void StageDev::load()
 		pathf.addObject(walls[i]);
 	}
 
-	pathf.setPathMesh(6, 7);
-	grid = pathf.getGrid();
-	pathf.findPath(sf::Vector2f(49, 74), sf::Vector2f(124, 149));
+	pathf.setPathMesh(1000, 1000);
 
 
 	area.setFillColor(sf::Color(200, 200, 200, 100));
@@ -82,9 +80,12 @@ void StageDev::unload()
 //UPDATE
 void StageDev::update()
 {
-	if(waypoint.getValue())
-	bot.setWaypoint(player.getHitbox().getPosition());
-
+	if (waypoint.getValue())
+	{
+		bot.clearWaypoints();
+		bot.setWaypoints(pathf.findPath(bot.getHitbox().getPosition(), player.getHitbox().getPosition()));
+		grid = pathf.getGrid();
+	}
 	player.update();
 	bot.update();
 	world->Step(1.0f / 65.f, 8, 3);
@@ -111,7 +112,7 @@ void StageDev::draw()
 	player.draw();
 	bot.draw();
 
-	vb->draw();
+	//vb->draw();
 
 	for (int i = 0; i < n_walls; i++)
 		walls[i].draw();

@@ -39,6 +39,7 @@ void PathFinder::setPathMesh(unsigned int _width, unsigned  int _height)
 			pathMesh[w][h].g = 0;
 			pathMesh[w][h].onOpen = 0;
 			pathMesh[w][h].onClosed = 0;
+			pathMesh[w][h].keyNode = 0;
 
 			pathMesh[w][h].x = w;
 			pathMesh[w][h].y = h;
@@ -74,69 +75,70 @@ sf::Vector2i PathFinder::getPathMeshCoordinates(sf::Vector2f pos)
 }
 
 //FIND PATH
-void PathFinder::findPath(const sf::Vector2f start, const sf::Vector2f end)
+std::vector<sf::Vector2f> PathFinder::findPath(const sf::Vector2f start, const sf::Vector2f end)
 {
-	sf::Vector2i g = getPathMeshCoordinates(end);
-	calculateH(g);
-	float d;
-	std::cout << "\n\n";
-	PathNode* low = calculateNodes(getPathMeshCoordinates(start))[0];
-	closed.push_back(low);
-	low->onOpen = 0;
-	low->onClosed = 1;
-
-	for (int i = 0; i < height; i++)
-	{
-		for (int j = 0; j < width; j++)
-		{
-			if (&pathMesh[j][i] == low)
-				std::cout << ' ' << ' ';
-			else
-				std::cout << pathMesh[j][i].onOpen << ' ';
-		}
-
-		std::cout << '\n';
-	}
-
-
-	d = sqrt((g.x - low->x)*(g.x - low->x) + (g.y - low->y)*(g.y - low->y));
-	system("PAUSE");
+	sf::Vector2i goalCoords = getPathMeshCoordinates(end);
+	sf::Vector2i startCoords = getPathMeshCoordinates(start);
+	PathNode* currentNode = calculateNodes(startCoords)[0];
+	PathNode* startNode = &pathMesh[startCoords.x][startCoords.y];
+	PathNode* goalNode = &pathMesh[goalCoords.x][goalCoords.y];
+	
+	//start setup
+	pathFound = 1;
+	calculateH(goalCoords);
+	closed.push_back(currentNode);
+	currentNode->onClosed = 1;
 
 	do {
-		std::cout << "\n\n";
-		std::vector<PathNode*> nodes = calculateNodes(sf::Vector2i(low->x, low->y));
+		std::vector<PathNode*> nodes = calculateNodes(sf::Vector2i(currentNode->x, currentNode->y));
+
 		if (nodes.size() > 0)
-			low = nodes[0];
-		else break;
-
-		for (int i = 0; i < height; i++)
+			currentNode = nodes[0];
+		else
 		{
-			for (int j = 0; j < width; j++)
-			{
-				if (&pathMesh[j][i] == low)
-					std::cout << ' ' << ' ';
-				else
-					std::cout << pathMesh[j][i].onOpen << ' ';
-			}
+			pathFound = 0;
+			break;
+		}
 
-			std::cout << '\n';
+		//remove from open and add to closed
+		removeFromList(currentNode, open);
+		currentNode->onClosed = 1;
+		closed.push_back(currentNode);
+		currentNode->onOpen = 0;
+
+	} while (currentNode != goalNode);
+
+	std::vector<sf::Vector2f> path;
+	float sizeOffset = GRID_SIZE / 2;
+	if (currentNode == goalNode)
+		while (currentNode != startNode && currentNode != nullptr)
+		{
+			path.insert(path.begin(), sf::Vector2f((currentNode->x * GRID_SIZE) + sizeOffset, (currentNode->y * GRID_SIZE) + sizeOffset));
+			currentNode->keyNode = 1;
+			currentNode = currentNode->parent;
 		}
 
 
-		d = sqrt((g.x - low->x)*(g.x - low->x) + (g.y - low->y)*(g.y - low->y));
+	//std::cout << "Path Found: " << pathFound
+	for (int i = 0; i < open.size(); i++)
+	{
+		open[i]->g = 0;
+		open[i]->onOpen = 0;
+		open[i]->onClosed = 0;
+		open[i]->parent = nullptr;
+	}
 
-		//	std::cout << "h: " << low->h << "\n\n";
-		system("PAUSE");
+	for (int i = 0; i < closed.size(); i++)
+	{
+		closed[i]->g = 0;
+		closed[i]->onOpen = 0;
+		closed[i]->onClosed = 0;
+		closed[i]->parent = nullptr;
+	}
 
-		//remove from open and add to closed
-		removeFromList(low, open);
-		low->onClosed = 1;
-		closed.push_back(low);
-		low->onOpen = 0;
-	} while (d > 1);
-
-	//std::cout << "done\n";
-	//special check
+	open.clear();
+	closed.clear();
+	return path;
 }
 
 //CALCULATE NODES
@@ -156,9 +158,6 @@ std::vector<PathNode*> PathFinder::calculateNodes(sf::Vector2i index)
 	//parent - add to closed
 	closed.push_back(&pathMesh[index.x][index.y]);
 
-	//set invalid
-	pathMesh[index.x][index.y].valid = 0;
-
 	//surrounding note vector
 	std::vector<PathNode*> nodes;
 	PathNode* parent = &pathMesh[index.x][index.y];
@@ -173,17 +172,20 @@ std::vector<PathNode*> PathFinder::calculateNodes(sf::Vector2i index)
 		{
 			if (c->onOpen)
 			{
-				betterMove(parent, c, DIAGONAL_COST);
+				if (parent->g + DIAGONAL_COST < c->g)
+					c->parent = parent;
 			}
 			else
 			{
-				c->parent = &pathMesh[index.x][index.y];
-				c->g = pathMesh[index.x][index.y].g + DIAGONAL_COST;
-				c->f = c->g + c->h;
+				c->parent = parent;
 				c->onOpen = 1;
 				nodes.push_back(c);
 				open.push_back(c);
 			}
+
+			nodes.push_back(c);
+			c->g = parent->g + DIAGONAL_COST;
+			c->f = c->g + c->h;
 		}
 	}
 
@@ -195,17 +197,20 @@ std::vector<PathNode*> PathFinder::calculateNodes(sf::Vector2i index)
 		{
 			if (c->onOpen)
 			{
-				betterMove(parent, c, DIAGONAL_COST);
+				if (parent->g + NORMAL_COST < c->g)
+					c->parent = parent;
 			}
 			else
 			{
-				c->parent = &pathMesh[index.x][index.y];
-				c->g = pathMesh[index.x][index.y].g + NORMAL_COST;
-				c->f = c->g + c->h;
+				c->parent = parent;
 				c->onOpen = 1;
 				nodes.push_back(c);
 				open.push_back(c);
 			}
+
+			nodes.push_back(c);
+			c->g = parent->g + NORMAL_COST;
+			c->f = c->g + c->h;
 		}
 	}
 	//top right
@@ -216,17 +221,20 @@ std::vector<PathNode*> PathFinder::calculateNodes(sf::Vector2i index)
 		{
 			if (c->onOpen)
 			{
-				betterMove(parent, c, DIAGONAL_COST);
+				if (parent->g + DIAGONAL_COST < c->g)
+					c->parent = parent;
 			}
 			else
 			{
 				c->parent = &pathMesh[index.x][index.y];
-				c->g = pathMesh[index.x][index.y].g + DIAGONAL_COST;
-				c->f = c->g + c->h;
 				c->onOpen = 1;
 				nodes.push_back(c);
 				open.push_back(c);
 			}
+
+			nodes.push_back(c);
+			c->g = parent->g + DIAGONAL_COST;
+			c->f = c->g + c->h;
 		}
 	}
 
@@ -238,17 +246,20 @@ std::vector<PathNode*> PathFinder::calculateNodes(sf::Vector2i index)
 		{
 			if (c->onOpen)
 			{
-				betterMove(parent, c, DIAGONAL_COST);
+				if (parent->g + NORMAL_COST < c->g)
+					c->parent = parent;
 			}
 			else
 			{
-				c->parent = &pathMesh[index.x][index.y];
-				c->g = pathMesh[index.x][index.y].g + NORMAL_COST;
-				c->f = c->g + c->h;
+				c->parent = parent;
 				c->onOpen = 1;
 				nodes.push_back(c);
 				open.push_back(c);
 			}
+
+			nodes.push_back(c);
+			c->g = parent->g + NORMAL_COST;
+			c->f = c->g + c->h;
 		}
 	}
 
@@ -261,17 +272,20 @@ std::vector<PathNode*> PathFinder::calculateNodes(sf::Vector2i index)
 
 			if (c->onOpen)
 			{
-					betterMove(parent, c, DIAGONAL_COST);
+				if (parent->g + NORMAL_COST < c->g)
+					c->parent = parent;
 			}
 			else
 			{
-				c->parent = &pathMesh[index.x][index.y];
-				c->g = pathMesh[index.x][index.y].g + NORMAL_COST;
-				c->f = c->g + c->h;
+				c->parent = parent;
 				c->onOpen = 1;
 				nodes.push_back(c);
 				open.push_back(c);
 			}
+
+			nodes.push_back(c);
+			c->g = parent->g + NORMAL_COST;
+			c->f = c->g + c->h;
 		}
 	}
 
@@ -283,17 +297,20 @@ std::vector<PathNode*> PathFinder::calculateNodes(sf::Vector2i index)
 		{
 			if (c->onOpen)
 			{
-				betterMove(parent, c, DIAGONAL_COST);
+				if (parent->g + DIAGONAL_COST < c->g)
+					c->parent = parent;
 			}
 			else
 			{
-				c->parent = &pathMesh[index.x][index.y];
-				c->g = pathMesh[index.x][index.y].g + DIAGONAL_COST;
-				c->f = c->g + c->h;
+				c->parent = parent;
 				c->onOpen = 1;
 				nodes.push_back(c);
 				open.push_back(c);
 			}
+
+			nodes.push_back(c);
+			c->g = parent->g + DIAGONAL_COST;
+			c->f = c->g + c->h;
 		}
 	}
 	//bottom mid
@@ -304,19 +321,19 @@ std::vector<PathNode*> PathFinder::calculateNodes(sf::Vector2i index)
 		{
 			if (c->onOpen)
 			{
-				betterMove(parent, c, DIAGONAL_COST);
+				if (parent->g + NORMAL_COST < c->g)
+					c->parent = parent;
 			}
 			else
 			{
-				c->parent = &pathMesh[index.x][index.y];
-				c->g = pathMesh[index.x][index.y].g + NORMAL_COST;
-				c->f = c->g + c->h;
-				c->onOpen = 1;
-				nodes.push_back(c);					
+				c->parent = parent;
+				c->onOpen = 1;					
 				open.push_back(c);
 			}
 
-			std::cout << "x " << c->f << ' ' << c->h << ' ' << c->g << "x \n";
+			nodes.push_back(c);
+			c->g = parent->g + NORMAL_COST;
+			c->f = c->g + c->h;
 		}
 	}
 
@@ -328,17 +345,19 @@ std::vector<PathNode*> PathFinder::calculateNodes(sf::Vector2i index)
 		{
 			if (c->onOpen)
 			{
-				betterMove(parent, c, DIAGONAL_COST);
+				if (parent->g + DIAGONAL_COST < c->g)
+					c->parent = parent;
 			}
 			else
 			{
-				c->parent = &pathMesh[index.x][index.y];
-				c->g = pathMesh[index.x][index.y].g + DIAGONAL_COST;
-				c->f = c->g + c->h;
+				c->parent = parent;
 				c->onOpen = 1;
-				nodes.push_back(c);
 				open.push_back(c);
 			}
+
+			nodes.push_back(c);
+			c->g = parent->g + DIAGONAL_COST;
+			c->f = c->g + c->h;
 		}
 	}
 
@@ -357,15 +376,6 @@ std::vector<PathNode*> PathFinder::calculateNodes(sf::Vector2i index)
 	return nodes;
 }
 
-//BETTER MOVE
-bool PathFinder::betterMove(PathNode* a, PathNode* b, unsigned int moveCost)
-{
-	if (a->g + moveCost > b->g)
-		b->parent = a;
-
-	return 0;
-}
-
 //REMOVE FROM CLOSED
 void PathFinder::removeFromList(PathNode* node, std::vector<PathNode*> list)
 {
@@ -381,19 +391,24 @@ void PathFinder::removeFromList(PathNode* node, std::vector<PathNode*> list)
 std::vector<sf::RectangleShape> PathFinder::getGrid()
 {
 	std::vector<sf::RectangleShape> grid;
-	for(int i=0; i<width; i++)
-		for (int j = 0; j < height; j++)
+	for(int i=0; i<100; i++)
+		for (int j = 0; j < 100; j++)
 		{
 			sf::RectangleShape s;
 			s.setOutlineThickness(1);
 			s.setOutlineColor(sf::Color::Black);
 			s.setSize(sf::Vector2f(GRID_SIZE, GRID_SIZE));
 			s.setPosition(sf::Vector2f(i * GRID_SIZE, j * GRID_SIZE));
+			if (pathMesh[i][j].keyNode)
+			{
+				s.setFillColor(sf::Color(0, 255, 0, 50));
+				grid.push_back(s);
+			}
+			
 			if (!pathMesh[i][j].valid)
 			{
 				s.setFillColor(sf::Color(255, 0, 0, 50));
 				grid.push_back(s);
-
 			}
 		}
 	return grid;

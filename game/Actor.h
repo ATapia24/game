@@ -8,9 +8,9 @@ private:
 	float moveSpeed, sprintSpeed, walkSpeed;
 	bool walking, sprinting;
 	sf::Vector2f waypoint;
+	std::vector<sf::Vector2f> waypoints;
 	bool waypointReached;
 	void startWaypoint();
-	void endWaypoint();
 
 public:
 	Actor();
@@ -33,6 +33,8 @@ public:
 	void diagonalAdjust();
 	void sprintAdjust(b2Vec2& vect);
 	void setWaypoint(sf::Vector2f _waypoint);
+	void setWaypoints(std::vector<sf::Vector2f> _waypoints);
+	void clearWaypoints();
 	void updateWaypoint();
 
 	//movement speeds

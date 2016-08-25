@@ -181,19 +181,40 @@ void Actor::stopWalkLeft()
 void Actor::setWaypoint(sf::Vector2f _waypoint)
 {
 	waypoint = _waypoint;
+	//startWaypoint();
+}
+
+//SET WAYPOINTS
+void Actor::setWaypoints(std::vector<sf::Vector2f> _waypoints)
+{
+	waypointReached = 0;
+	waypoints = _waypoints;
+	waypoint = waypoints[0];
 	startWaypoint();
 }
+
+
 
 //UPDATE WAYPOINT
 void Actor::updateWaypoint()
 {
 	if (!waypointReached)
 	{
-		std::cout << misc::distance(waypoint, hitbox.getPosition()) << ' ' << hitbox.getSize().x / 2 << '\n';
 		if (misc::distance(waypoint, hitbox.getPosition()) < hitbox.getSize().x / 2)
 		{
-			stopWalkForward();
-			waypointReached = 1;
+			if (waypoints.size() <= 1)
+			{
+				waypointReached = 1;
+				stopWalkForward();
+				waypoints.clear();
+			}
+			else
+			{
+				waypoints.erase(waypoints.begin());
+				waypoint = waypoints[0];
+				stopWalkForward();
+				startWaypoint();
+			}
 		}
 	}
 }
@@ -207,10 +228,11 @@ void Actor::startWaypoint()
 	walkForward();
 }
 
-//ENDWAYPOINT
-void Actor::endWaypoint()
+//CLEAR WAYPOINTS
+void Actor::clearWaypoints()
 {
-
+	waypointReached = 1;
+	waypoints.clear();
 }
 
 //DIAGONAL ADJUST
