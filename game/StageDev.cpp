@@ -45,7 +45,7 @@ void StageDev::load()
 	vb = new ViewBlocker;
 	vb->set(player, window, world);
 
-	n_walls = 150;
+	n_walls = 3;
 	walls = new Solid[n_walls];
 
 	for (int i = 0; i < n_walls; i++)
@@ -53,16 +53,17 @@ void StageDev::load()
 	//	if(i < 100)
 		//walls[i].getHitbox().setSize(sf::Vector2f(50, 200));
 		//else
-			walls[i].getHitbox().setSize(sf::Vector2f(misc::random(1, 700), misc::random(1, 700)));
-		walls[i].initialize(window, world, 1, 1, misc::random(1, 25000), misc::random(1, 25000));
+		walls[i].getHitbox().setSize(sf::Vector2f(misc::random(1, 5), misc::random(1, 5)));
+		walls[i].initialize(window, world, 1, 1, misc::random(1, 1000), misc::random(1, 1000));
 		walls[i].spawn();
 		vb->addObject(walls[i]);
 		walls[i].setName(misc::intToString(i));
 		pathf.addObject(walls[i]);
 	}
 
-	pathf.setPathMesh(100, 100);
+	pathf.setPathMesh(6, 7);
 	grid = pathf.getGrid();
+	pathf.findPath(sf::Vector2f(49, 74), sf::Vector2f(124, 149));
 
 
 	area.setFillColor(sf::Color(200, 200, 200, 100));
@@ -115,7 +116,8 @@ void StageDev::draw()
 	for (int i = 0; i < n_walls; i++)
 		walls[i].draw();
 
-	window->addWorld(grid);
+	for(int i=0; i<grid.size(); i++)
+	window->addWorld(grid[i]);
 }
 
 //BEGIN CONTACT

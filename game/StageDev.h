@@ -43,7 +43,7 @@ private:
 	Map map;
 
 	PathFinder pathf;
-	sf::VertexArray grid;
+	std::vector<sf::RectangleShape> grid;
 	sf::VertexArray* va;
 	sf::RectangleShape area;
 	Timer t1, t2;
