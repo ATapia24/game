@@ -5,18 +5,20 @@
 #include <cmath>
 #include <vector>
 
+#include "Timer.h"
+
 struct PathNode
 {
 	bool valid;
 	int h;
 	int g;
 	int f;
-	int move_cost;
 	bool onOpen;
 	bool onClosed;
 	int x, y;
 	PathNode* parent;
 	bool keyNode;
+	int openIndex;
 };
 
 class PathFinder
@@ -24,17 +26,15 @@ class PathFinder
 private:
 	PathNode** pathMesh;
 	unsigned int width, height;
-	const unsigned int GRID_SIZE = 25;
-	const unsigned int DIAGONAL_COST = 14;
-	const unsigned int NORMAL_COST = 10;
+	const unsigned int GRID_SIZE = 25, DIAGONAL_COST = 14, NORMAL_COST = 10;
 	std::vector<Entity*> objects;
-	std::vector<PathNode*> open;
-	std::vector<PathNode*> closed;
-	sf::Vector2i getPathMeshCoordinates(sf::Vector2f pos);
+	std::vector<PathNode*> open, closed;
 	PathNode* calculateNodes(sf::Vector2i index);
-	int distance(PathNode* a, PathNode* b);
 	PathNode* goalNode, *startNode;
-
+	int distance(PathNode* a, PathNode* b);
+	sf::Vector2i getIndex(sf::Vector2f pos);
+	std::vector<PathNode*> getSides(PathNode* current);
+	Timer t;
 public:
 	void addObject(Entity& object);
 	void setPathMesh(unsigned int _width, unsigned  int _height);

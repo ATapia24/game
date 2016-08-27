@@ -51,17 +51,17 @@ void StageDev::load()
 	for (int i = 0; i < n_walls; i++)
 	{
 		if(i < 10)
-		walls[i].getHitbox().setSize(sf::Vector2f(10, 400));
+		walls[i].getHitbox().setSize(sf::Vector2f(500, 1000));
 		else
-		walls[i].getHitbox().setSize(sf::Vector2f(misc::random(1, 5), misc::random(1, 500)));
-		walls[i].initialize(window, world, 1, 1, misc::random(1, 1000), misc::random(1, 1000));
+		walls[i].getHitbox().setSize(sf::Vector2f(misc::random(10, 500), misc::random(10, 500)));
+		walls[i].initialize(window, world, 1, 1, misc::random(1, 5000), misc::random(1, 5000));
 		walls[i].spawn();
 		vb->addObject(walls[i]);
 		walls[i].setName(misc::intToString(i));
 		pathf.addObject(walls[i]);
 	}
 
-	pathf.setPathMesh(100, 100);
+	pathf.setPathMesh(5000, 5000);
 	//pathf.findPath(sf::Vector2f(26, 51), sf::Vector2f(101, 126));
 
 
@@ -83,13 +83,12 @@ void StageDev::update()
 {
 	if (waypoint.getValue())
 	{
-		std::cout << "p: " << bot.getHitbox().getPosition().x << ' ' << bot.getHitbox().getPosition().y << '\n';
 		bot.clearWaypoints();
 		std::vector<sf::Vector2f> wp = pathf.findPath(bot.getHitbox().getPosition(), player.getHitbox().getPosition());
 		if (wp.size() > 0)
 		{
 			bot.setWaypoints(wp);
-			grid = pathf.getGrid();
+			//grid = pathf.getGrid();
 			pathf.clearNodes();
 		}
 	}
@@ -119,7 +118,7 @@ void StageDev::draw()
 	player.draw();
 	bot.draw();
 
-	//vb->draw();
+	vb->draw();
 
 	for (int i = 0; i < n_walls; i++)
 		walls[i].draw();

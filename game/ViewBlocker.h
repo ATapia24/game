@@ -42,6 +42,5 @@ public:
 	void addObject(Entity& entity);
 	void update();
 	void draw();
-	bool inShadow(const Blocker& blocker);
 };
 

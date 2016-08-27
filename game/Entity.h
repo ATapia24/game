@@ -3,6 +3,7 @@
 #include <iostream>
 #include <vector>
 #include <SFML\Graphics.hpp>
+#include <stdio.h>
 #include "Box2D\Box2D.h"
 #include "WindowMgr.h"
 #include "misc.h"
@@ -34,7 +35,8 @@ protected:
 	sf::Sprite sprite;
 	sf::Texture texture;
 	sf::RectangleShape hitbox;
-	bool onScreen;
+	sf::Vector2f viewBlockerPoints[4];
+	unsigned int N_VBP = 4;
 
 	//spawn
 	bool spawned;
@@ -70,8 +72,8 @@ public:
 	virtual sf::Texture& getTexture();
 	virtual sf::RectangleShape& getHitbox() { return hitbox; }
 	virtual b2Body* getBody() { return body; }
-	void setName(std::string _name);
-	std::string getName();
+	virtual void setName(std::string _name);
+	virtual std::string getName();
 
 	//move
 	virtual void input();
@@ -90,6 +92,7 @@ public:
 	sf::Vector2f getSpawnPoint() { return sf::Vector2f(spawnPointX, spawnPointY); }
 
 	//collision
+	bool onScreen;
 	void startContact(Entity* entity);
 	void endContact(Entity* enitity);
 	void setOnScreen(bool _onScreen) { onScreen = _onScreen;}

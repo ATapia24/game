@@ -31,14 +31,12 @@ void PathFinder::setPathMesh(unsigned int _width, unsigned  int _height)
 	for (int w = 0; w < width; w++)
 		pathMesh[w] = new PathNode[height];
 
-	//set all to valid
+	//clear
 	for (int w = 0; w < width; w++)
 		for (int h = 0; h < height; h++)
 		{
 			pathMesh[w][h].valid = 1;
 			pathMesh[w][h].g = 0;
-			pathMesh[w][h].f = 0;
-			pathMesh[w][h].move_cost = 0;
 			pathMesh[w][h].onOpen = 0;
 			pathMesh[w][h].onClosed = 0;
 			pathMesh[w][h].keyNode = 0;
@@ -53,7 +51,7 @@ void PathFinder::setPathMesh(unsigned int _width, unsigned  int _height)
 
 		for (int p = 0; p < points.size(); p++)
 		{
-			sf::Vector2i pos = getPathMeshCoordinates(points[p]);
+			sf::Vector2i pos = getIndex(points[p]);
 
 			if (pos.x >= 0 && pos.y >= 0 && pos.x < width - 1 && pos.y < height - 1)
 				pathMesh[pos.x][pos.y].valid = 0;
@@ -62,7 +60,7 @@ void PathFinder::setPathMesh(unsigned int _width, unsigned  int _height)
 }
 
 //GET PATH MESH COORDINATES
-sf::Vector2i PathFinder::getPathMeshCoordinates(sf::Vector2f pos)
+sf::Vector2i PathFinder::getIndex(sf::Vector2f pos)
 {
 	return sf::Vector2i(pos.x / GRID_SIZE, pos.y / GRID_SIZE);
 }
@@ -70,196 +68,171 @@ sf::Vector2i PathFinder::getPathMeshCoordinates(sf::Vector2f pos)
 //FIND PATH
 std::vector<sf::Vector2f> PathFinder::findPath(const sf::Vector2f start, const sf::Vector2f end)
 {
-	//start
-	sf::Vector2i start_coords = getPathMeshCoordinates(start);
+	t.start();
+	//coords nodes
+	sf::Vector2i start_coords = getIndex(start);
+	sf::Vector2i goal_coords = getIndex(end);
+
+
+	//nodes
 	startNode = &pathMesh[start_coords.x][start_coords.y];
-
-	//goal
-	sf::Vector2i goal_coords = getPathMeshCoordinates(end);
 	goalNode = &pathMesh[goal_coords.x][goal_coords.y];
-
-	PathNode* low = calculateNodes(getPathMeshCoordinates(start));
-	float d = misc::distance(sf::Vector2f(low->x, low->y), sf::Vector2f(goalNode->x, goalNode->y));
+	PathNode* current = calculateNodes(start_coords);
+	
 	//loop until goal
-	while (d > 1.5)
+	while (distance(current, goalNode) != 0)
 	{
-		/*std::cout << "distance: " << d << '\n';
-		for (int i = 0; i < height; i++)
+		
+		//get lowest f, h if equal
+		for (int i = 0; i < open.size(); i++)
 		{
-			for (int j = 0; j < width; j++)
-			{
-				PathNode* n = &pathMesh[j][i];
-
-				if (n->f == 10)
-					std::cout << '0' << n->f << ' ';
-				else
-					std::cout << n->f << ' ';
-				/*if (n == low)
-					std::cout << 'x' << ' ';
-				else if (n->onOpen)
-					std::cout << 's' << ' ';
-				else if (n->onClosed)
-					std::cout << '#' << ' ';
-				else if (!n->valid)
-					std::cout << ' ' << ' ';
-				else if (n == goal)
-					std::cout << 'G' << ' ';
-				else
-					std::cout << '.' << ' ';
-			}
-			std::cout << '\n';
+			if (open[i]->f < current->f || (open[i]->f == current->f && open[i]->h < current->h))
+				current = open[i];
 		}
 
-		system("PAUSE");*/
+		//if on node break
+		if (distance(goalNode, current) == 0)
+			break;
 
-		low = calculateNodes(sf::Vector2i(low->x, low->y));
-		d = misc::distance(sf::Vector2f(low->x, low->y), sf::Vector2f(goalNode->x, goalNode->y));
+		//calc
+		current = calculateNodes(sf::Vector2i(current->x, current->y));
 	}
 
-	if (low == goalNode)
-		std::cout << "PATH FOUND\N";
-
+	//get path points
 	std::vector<sf::Vector2f> path;
 	float sizeOffset = GRID_SIZE / 2;
-		while (low != startNode && low != nullptr)
-		{
-			std::cout << "loop\n";
-			path.insert(path.begin(), sf::Vector2f((low->x * GRID_SIZE) + sizeOffset, (low->y * GRID_SIZE) + sizeOffset));
-			low->keyNode = 1;
-			low = low->parent;
-		}
+	while (current != startNode)
+	{
+		path.insert(path.begin(), sf::Vector2f((current->x * GRID_SIZE) + sizeOffset, (current->y * GRID_SIZE) + sizeOffset));
+		current->keyNode = 1;
+		current = current->parent;
+	}
 
-
+	t.stop();
+	std::cout << "time: " << t.getTimeInt() << '\n';
 	return path;
 }
 
 //CALCULATE NODES
 PathNode* PathFinder::calculateNodes(sf::Vector2i index)
 {
-	//get edges
-	bool top = 0, left = 0, right = 0, bottom = 0;
-	if (index.y <= 0)
-		top = 1;
-	else if (index.y >= height - 1)
-		bottom = 1;
-	if (index.x <= 0)
-		left = 1;
-	else if (index.x >= width - 1)
-		right = 1;
 
-
-	std::vector<PathNode*> sides;
-	PathNode* main = &pathMesh[index.x][index.y];
-
-	//top left
-	if (!top && !left)
-	{
-		PathNode* topLeft = &pathMesh[main->x - 1][main->y - 1];
-		topLeft->move_cost = DIAGONAL_COST;
-		sides.push_back(topLeft);
-	}
-
-	//top mid
-	if (!top)
-	{
-		PathNode* topMid = &pathMesh[main->x][main->y - 1];
-		topMid->move_cost = NORMAL_COST;
-		sides.push_back(topMid);
-	}
-
-	//top right
-	if (!top && !right)
-	{
-		PathNode* topRight = &pathMesh[main->x + 1][main->y - 1];
-		topRight->move_cost = DIAGONAL_COST;
-		sides.push_back(topRight);
-	}
-
-	//mid left
-	if (!left)
-	{
-		PathNode* midLeft = &pathMesh[main->x - 1][main->y];
-		midLeft->move_cost = NORMAL_COST;
-		sides.push_back(midLeft);
-	}
-
-	//mid right
-	if (!right)
-	{
-		PathNode* midRight = &pathMesh[main->x + 1][main->y];
-		midRight->move_cost = NORMAL_COST;
-		sides.push_back(midRight);
-	}
-
-	//bottom left
-	if (!left && !bottom)
-	{
-		PathNode* btmLeft = &pathMesh[main->x - 1][main->y + 1];
-		btmLeft->move_cost = DIAGONAL_COST;
-		sides.push_back(btmLeft);
-	}
-
-	//bottom mid
-	if (!bottom)
-	{
-		PathNode* btmMid = &pathMesh[main->x][main->y + 1];
-		btmMid->move_cost = NORMAL_COST;
-		sides.push_back(btmMid);
-	}
-
-	//bottom right
-	if (!bottom && !right)
-	{
-		PathNode* btmRight = &pathMesh[main->x + 1][main->y + 1];
-		btmRight->move_cost = DIAGONAL_COST;
-		sides.push_back(btmRight);
-	}
-
-	//add main to closed
-	main->onOpen = 0;
+	//remove current from open and add to closed
+	PathNode* current = &pathMesh[index.x][index.y];
 	for (int i = 0; i < open.size(); i++)
-		if (open[i] == main)
+		if (open[i] == current)
+		{
 			open.erase(open.begin() + i);
+			i = open.size() + 1;
+		}
+	closed.push_back(current);
+	current->onClosed = 1;
+	current->onOpen = 0;
 
-	closed.push_back(main);
-	main->onClosed = 1;
+	//get sides
+	std::vector<PathNode*> sides = getSides(current);
 
 	//calcs
 	for (int i = 0; i < sides.size(); i++)
 	{
 		if (!sides[i]->onClosed && sides[i]->valid)
 		{
-			int cost = main->g + distance(main, sides[i]);
+			int cost = current->g + distance(current, sides[i]);
 			if (cost < sides[i]->g || !sides[i]->onOpen)
 			{
 				sides[i]->g = cost;
 				sides[i]->h = distance(goalNode, sides[i]);
-				sides[i]->parent = main;
+				sides[i]->parent = current;
 
 				if (!sides[i]->onOpen)
 				{
 					sides[i]->onOpen = 1;
+					sides[i]->openIndex = open.size();
 					open.push_back(sides[i]);
 				}
-			}
-		}
-	}
 
-	//sort
-	for (int i = 0; i < open.size(); i++)
-	{
-		for (int j = 0; j < open.size(); j++)
-		{
-			if (open[i]->f > open[j]->f)
-			{
-				PathNode* tmp = open[i];
-				open[i] = open[j];
-				open[j] = tmp;
+				sides[i]->f = sides[i]->g + sides[i]->h;
 			}
 		}
 	}
 
 	return open[0];
+}
+
+//GET SIDES
+std::vector<PathNode*> PathFinder::getSides(PathNode* current)
+{
+	//get edges
+	bool top = 0, left = 0, right = 0, bottom = 0;
+	if (current->y <= 0)
+		top = 1;
+	else if (current->y >= height - 1)
+		bottom = 1;
+	if (current->x <= 0)
+		left = 1;
+	else if (current->x >= width - 1)
+		right = 1;
+
+	//vect
+	std::vector<PathNode*> sides;
+
+	//top left
+	if (!top && !left)
+	{
+		PathNode* topLeft = &pathMesh[current->x - 1][current->y - 1];
+		sides.push_back(topLeft);
+	}
+
+	//top mid
+	if (!top)
+	{
+		PathNode* topMid = &pathMesh[current->x][current->y - 1];
+		sides.push_back(topMid);
+	}
+
+	//top right
+	if (!top && !right)
+	{
+		PathNode* topRight = &pathMesh[current->x + 1][current->y - 1];
+		sides.push_back(topRight);
+	}
+
+	//mid left
+	if (!left)
+	{
+		PathNode* midLeft = &pathMesh[current->x - 1][current->y];
+		sides.push_back(midLeft);
+	}
+
+	//mid right
+	if (!right)
+	{
+		PathNode* midRight = &pathMesh[current->x + 1][current->y];
+		sides.push_back(midRight);
+	}
+
+	//bottom left
+	if (!left && !bottom)
+	{
+		PathNode* btmLeft = &pathMesh[current->x - 1][current->y + 1];
+		sides.push_back(btmLeft);
+	}
+
+	//bottom mid
+	if (!bottom)
+	{
+		PathNode* btmMid = &pathMesh[current->x][current->y + 1];
+		sides.push_back(btmMid);
+	}
+
+	//bottom right
+	if (!bottom && !right)
+	{
+		PathNode* btmRight = &pathMesh[current->x + 1][current->y + 1];
+		sides.push_back(btmRight);
+	}
+
+	return sides;
 }
 
 //DISTANCE

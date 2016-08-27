@@ -48,6 +48,7 @@ namespace misc
 	bool intersects(const sf::Vector2f p1, const sf::Vector2f p2, const sf::Vector2f p3, const sf::Vector2f p4);
 	int random(int min, int max);
 	bool inPolygon(sf::Vector2f point, sf::Vector2f poly[], const int n_points);
+	bool inQuad(sf::Vector2f point, sf::Vector2f p1, sf::Vector2f p2, sf::Vector2f p3, sf::Vector2f p4);
 	std::vector<sf::Vector2f> getAreaPoints(const sf::RectangleShape shape, const float resolustion, const bool sides);
 }
 

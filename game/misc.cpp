@@ -168,27 +168,6 @@ sf::Vector2f misc::pointLocation(const sf::Vector2f point, const float angle, co
 }
 
 //IN POLYGON
-/*bool misc::inPolygon(sf::Vector2f p0, sf::Vector2f p[], const int sides)
-{
-	size_t n = 4;
-	bool result = false;
-	for (size_t i = 0; i < n; ++i) {
-		size_t j = (i + 1) % n;
-		if (
-			// Does p0.y lies in half open y range of edge.
-			// N.B., horizontal edges never contribute
-			((p[j].y <= p0.y && p0.y < p[i].y) ||
-			(p[i].y <= p0.y && p0.y < p[j].y)) &&
-			// is p to the left of edge?
-				(p0.x < p[j].x + (p[i].x - p[j].x) * (p0.y - p[j].y) /
-			(p[i].y - p[j].y))
-			)
-			result = !result;
-	}
-	return result;
-}*/
-
-//IN POLYGON
 bool misc::inPolygon(sf::Vector2f p, sf::Vector2f poly[], const int sides)
 {
 	int   i, j = sides - 1;
@@ -202,6 +181,12 @@ bool misc::inPolygon(sf::Vector2f p, sf::Vector2f poly[], const int sides)
 	}
 
 	return oddNodes;
+}
+
+//INT QUAD
+bool misc::inQuad(sf::Vector2f point, sf::Vector2f p1, sf::Vector2f p2, sf::Vector2f p3, sf::Vector2f p4)
+{
+
 }
 
 //GET AREA POINTS

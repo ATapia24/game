@@ -21,7 +21,7 @@ void ViewBlocker::update()
 {
 	center = misc::pointLocation(player->getHitbox().getPosition(), -player->getBody()->GetAngle() + PIh, player->getHitbox().getSize().y/3);
 
-	//check for new center or roatation or movables
+	//check for new center or rotation or movables
 	if (center != lastCenter || player->getHitbox().getRotation() != lastRotation || containsMovables)
 	{
 		pcount = 0;
@@ -109,13 +109,6 @@ void ViewBlocker::calculateBlocker(Blocker& blocker)
 
 	//adjust pcount
 	pcount += 6;
-}
-
-//IN SHADOW
-bool ViewBlocker::inShadow(const Blocker& blocker)
-{
-
-	return 1;
 }
 
 //SET CENTER

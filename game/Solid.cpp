@@ -52,5 +52,4 @@ void Solid::initialize(WindowMgr* _window, b2World* _world, float density, float
 	fixtureDef->filter.categoryBits = EntityType::SOLID;
 	fixtureDef->filter.maskBits = EntityType::PROJECTILE | EntityType::SCREEN | EntityType::PLAYER;
 	body->CreateFixture(fixtureDef);
-	//body->CreateFixture(shape, 0);
 }
