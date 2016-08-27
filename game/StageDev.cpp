@@ -27,7 +27,7 @@ void StageDev::load()
 	bot.setName("Bot");
 	bot.getHitbox().setSize(sf::Vector2f(30, 30));
 	bot.getHitbox().setFillColor(sf::Color::Red);
-	bot.initialize(window, world, 5, 5, 10, 10);
+	bot.initialize(window, world, 5, 5, 5, 5);
 	bot.spawn();
 	waypoint.set(sf::Keyboard::Space, KeyType::SINGLE);
 
@@ -61,7 +61,8 @@ void StageDev::load()
 		pathf.addObject(walls[i]);
 	}
 
-	pathf.setPathMesh(1000, 1000);
+	pathf.setPathMesh(100, 100);
+	//pathf.findPath(sf::Vector2f(26, 51), sf::Vector2f(101, 126));
 
 
 	area.setFillColor(sf::Color(200, 200, 200, 100));
@@ -82,9 +83,15 @@ void StageDev::update()
 {
 	if (waypoint.getValue())
 	{
+		std::cout << "p: " << bot.getHitbox().getPosition().x << ' ' << bot.getHitbox().getPosition().y << '\n';
 		bot.clearWaypoints();
-		bot.setWaypoints(pathf.findPath(bot.getHitbox().getPosition(), player.getHitbox().getPosition()));
-		grid = pathf.getGrid();
+		std::vector<sf::Vector2f> wp = pathf.findPath(bot.getHitbox().getPosition(), player.getHitbox().getPosition());
+		if (wp.size() > 0)
+		{
+			bot.setWaypoints(wp);
+			grid = pathf.getGrid();
+			pathf.clearNodes();
+		}
 	}
 	player.update();
 	bot.update();

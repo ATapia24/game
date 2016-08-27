@@ -11,6 +11,7 @@ struct PathNode
 	int h;
 	int g;
 	int f;
+	int move_cost;
 	bool onOpen;
 	bool onClosed;
 	int x, y;
@@ -24,16 +25,15 @@ private:
 	PathNode** pathMesh;
 	unsigned int width, height;
 	const unsigned int GRID_SIZE = 25;
-	const unsigned int DIAGONAL_COST = 10;
+	const unsigned int DIAGONAL_COST = 14;
 	const unsigned int NORMAL_COST = 10;
-	bool pathFound;
 	std::vector<Entity*> objects;
 	std::vector<PathNode*> open;
 	std::vector<PathNode*> closed;
-	void calculateH(const sf::Vector2i end);
 	sf::Vector2i getPathMeshCoordinates(sf::Vector2f pos);
-	std::vector<PathNode*> calculateNodes(sf::Vector2i index);
-	void removeFromList(PathNode* node, std::vector<PathNode*> list);
+	PathNode* calculateNodes(sf::Vector2i index);
+	int distance(PathNode* a, PathNode* b);
+	PathNode* goalNode, *startNode;
 
 public:
 	void addObject(Entity& object);
@@ -42,5 +42,6 @@ public:
 	PathFinder();
 	~PathFinder();
 	std::vector<sf::RectangleShape> getGrid();
+	void clearNodes();
 };
 
