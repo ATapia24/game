@@ -26,10 +26,11 @@ void StageEditor::load()
 	view->setRotation(0);
 	view->setCenter(0, 0);
 
-	gridTexture.loadFromFile("assets/grid_green.png", sf::IntRect(0, 0, 1920, 1080));
-	//gridTexture.loadFromFile("assets/strike.jpg");
+	window->setMouseVisible(1);
+	gridTexture.loadFromFile("assets/grid_white.png", sf::IntRect(0, 0, 1920, 1080));
 	gridTexture.setRepeated(true);
 	background.setTexture(gridTexture);
+	background.setColor(sf::Color(255, 255, 255, 100));
 
 	zoomSpeed = 0.01f;
 	zoomAmount = 1;
@@ -53,6 +54,8 @@ void StageEditor::load()
 	n_objects = 0;
 
 
+	width = 2000;
+	height = 2000;
 	background.setPosition(0, 0);
 	background.setTextureRect(sf::IntRect(0, 0, 6000, 6000));
 
@@ -444,8 +447,8 @@ void StageEditor::updateDrag()
 	{
 	case ObjType::RECTANGLE:
 		objects[objectIndex.getIndex()].type = ObjType::RECTANGLE;
-		x = (((float)sf::Mouse::getPosition(*window->getWindow()).x * zoomAmount) - (view->getSize().x / 2) + view->getCenter().x) / window->getScale().x;
-		y = (((float)sf::Mouse::getPosition(*window->getWindow()).y * zoomAmount) - (view->getSize().y / 2) + view->getCenter().y) / window->getScale().y;
+		x = (((float)sf::Mouse::getPosition(*window->getWindow()).x * zoomAmount) - (view->getSize().x / 2) + view->getCenter().x) / window->getScale().x - objects[objectIndex.getIndex()].rectangle.getPosition().x;
+		y = (((float)sf::Mouse::getPosition(*window->getWindow()).y * zoomAmount) - (view->getSize().y / 2) + view->getCenter().y) / window->getScale().y - objects[objectIndex.getIndex()].rectangle.getPosition().y;
 		objects[objectIndex.getIndex()].rectangle.setSize(sf::Vector2f(x, y));
 		break;
 
@@ -553,6 +556,10 @@ void StageEditor::endDrag()
 			rect->setPosition(rect->getPosition().x, rect->getPosition().y + rect->getSize().y);
 			rect->setSize(sf::Vector2f(rect->getSize().x, -rect->getSize().y));
 		}
+
+		//set origin
+		objects[objectIndex.getIndex()].originUpdate();
+
 		break;
 
 	//case ObjType::CIRCLE:
@@ -565,8 +572,8 @@ void StageEditor::endDrag()
 //DRAW
 void StageEditor::draw()
 {
-	window->addWorld(background);
 	drawObjects();
+	window->addWorld(background);
 	menu.draw();
 }
 

@@ -12,8 +12,10 @@ Map::~Map()
 }
 
 //LOAD FILE
-std::vector<EditorObject*> Map::loadFile(std::string _filename, std::vector<Texture*> textures)
+std::vector<Entity*> Map::loadFile(std::string _filename, std::vector<Texture*> textures, WindowMgr* _window, b2World* _world)
 {
+	window = _window;
+	world = _world;
 	std::ifstream f;
 	f.open(_filename.c_str());
 	std::string line;
@@ -23,10 +25,9 @@ std::vector<EditorObject*> Map::loadFile(std::string _filename, std::vector<Text
 	{
 
 		objects.clear();
-
+		Entity* obj;
 		while (!f.eof())
 		{
-			EditorObject* obj = new EditorObject;
 			std::getline(f, line);
 			//static
 			if (line[0] == 's')
@@ -38,16 +39,29 @@ std::vector<EditorObject*> Map::loadFile(std::string _filename, std::vector<Text
 				float sizeX = std::stof(misc::extractBetween(line, t, '#'));
 				float sizeY = std::stof(misc::extractBetween(line, t, '#'));
 				std::string textureName = misc::extractBetween(line, t, '#');
+				std::string type = misc::extractBetween(line, t, '#');
+				Entity* entity;
+
+				if (type == "solid")
+				{
+					entity = new Solid;
+					entity->getHitbox().setSize(sf::Vector2f(sizeX, sizeY));
+					entity->initialize(window, world, 1, 1, posX / PHYS_SCALE, posY / PHYS_SCALE);
+					entity->getBody()->SetTransform(entity->getBody()->GetPosition(), rot * DEG2RAD);
+				}
+				else
+					std::cout << "unknown type\n";
 
 				//set
-				obj->rectangle.setPosition(sf::Vector2f(posX, posY));
-				obj->rectangle.setRotation(rot);
-				obj->rectangle.setSize(sf::Vector2f(sizeX, sizeY));
-				obj->textureName = textureName;
+				//obj
+				//obj->rectangle.setPosition(sf::Vector2f(posX, posY));
+				//obj->rectangle.setRotation(rot);
+				//obj->rectangle.setSize(sf::Vector2f(sizeX, sizeY));
+				//obj->textureName = textureName;
 
 				//texture
 				bool t_found = 0;
-				for (int i = 0; i < textures.size() && !t_found; i++)
+				/*for (int i = 0; i < textures.size() && !t_found; i++)
 				{
 					if (textures[i]->name == obj->textureName)
 					{
@@ -57,31 +71,29 @@ std::vector<EditorObject*> Map::loadFile(std::string _filename, std::vector<Text
 				}
 
 				if (!t_found)
-					std::cout << "Unable to load " << textureName << ".\n";
+					std::cout << "Unable to load " << textureName << ".\n";*/
 			}
 			//rect
 			else if (line[0] == 'r')
 			{
-				//parse
 				float posX = std::stof(misc::extractBetween(line, t, '#'));
 				float posY = std::stof(misc::extractBetween(line, t, '#'));
 				float rot = std::stof(misc::extractBetween(line, t, '#'));
 				float sizeX = std::stof(misc::extractBetween(line, t, '#'));
 				float sizeY = std::stof(misc::extractBetween(line, t, '#'));
-
-				//set
-				obj->rectangle.setPosition(sf::Vector2f(posX, posY));
-				obj->rectangle.setRotation(rot);
-				obj->rectangle.setSize(sf::Vector2f(sizeX, sizeY));
+				std::string textureName = misc::extractBetween(line, t, '#');
+				std::cout << posX << '_' << posY << '\n';
+				obj = new Solid;
+				obj->getHitbox().setSize(sf::Vector2f(sizeX, sizeY));
+				obj->getHitbox().setFillColor(sf::Color::Magenta);
+				obj->initialize(window, world, 1, 1, posX / PHYS_SCALE, posY / PHYS_SCALE);
+				obj->getBody()->SetTransform(obj->getBody()->GetPosition(), rot * DEG2RAD);
 			}
+
+		}
 
 			//push
 			objects.push_back(obj);
-		}
-	}
-	else
-	{
-		std::cout << "Unable to load " << _filename << std::endl;
 	}
 
 	return objects;
@@ -90,6 +102,7 @@ std::vector<EditorObject*> Map::loadFile(std::string _filename, std::vector<Text
 //GENERATE FILE
 void Map::generateFile(std::string filename, EditorObject* objects, unsigned int n_objects)
 {
+	filename = "Assets/" + filename;
 	std::ofstream f(filename.c_str());
 	char t = ',';
 	for (int i = 0; i < n_objects; i++)

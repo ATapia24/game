@@ -36,10 +36,6 @@ void StageDev::load()
 	bg.setSize(sf::Vector2f((float)bgText.getSize().x * 10, (float)bgText.getSize().y* 10));
 	bg.setTexture(&bgText);
 
-	textures.addFolder("test");
-	textures.loadTextures();
-	objects = map.loadFile("Assets/editor.txt", textures.getTextures());
-
 
 	//VB
 	vb = new ViewBlocker;
@@ -61,6 +57,15 @@ void StageDev::load()
 		pathf.addObject(walls[i]);
 	}
 
+	textures.addFolder("test");
+	textures.loadTextures();
+	objects = map.loadFile("Assets/editor.txt", textures.getTextures(), window, world);
+
+	for (int i = 0; i < objects.size(); i++)
+	{
+		objects[i]->spawn();
+		pathf.addObject(*objects[i]);
+	}
 	pathf.setPathMesh(5000, 5000);
 	//pathf.findPath(sf::Vector2f(26, 51), sf::Vector2f(101, 126));
 
@@ -112,7 +117,7 @@ void StageDev::draw()
 	window->addWorld(bg);
 
 	for (unsigned int i = 0; i < objects.size(); i++)
-		window->addWorld(objects[i]->rectangle);
+		objects[i]->draw();
 
 	
 	player.draw();

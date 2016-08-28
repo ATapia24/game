@@ -39,7 +39,7 @@ private:
 		sf::VertexArray* vertexArray;
 	};
 
-	const long int MAX_DRAW_SIZE = 1000000;
+	const long int MAX_DRAW_SIZE = 10000000;
 	unsigned int guiSize, worldSize;
 	queueType *guiQueue, *worldQueue;
 

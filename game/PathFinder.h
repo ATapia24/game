@@ -31,6 +31,7 @@ private:
 	std::vector<PathNode*> open, closed;
 	PathNode* calculateNodes(sf::Vector2i index);
 	PathNode* goalNode, *startNode;
+	bool invalidGoalNode;
 	int distance(PathNode* a, PathNode* b);
 	sf::Vector2i getIndex(sf::Vector2f pos);
 	std::vector<PathNode*> getSides(PathNode* current);

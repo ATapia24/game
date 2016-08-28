@@ -155,10 +155,12 @@ void EditorObject::growTop(float size)
 	switch (type)
 	{
 	case ObjType::RECTANGLE:
+	{
 		rectangle.setSize(sf::Vector2f(rectangle.getSize().x, rectangle.getSize().y + size));
-		rectangle.move(0, -size);
+		rectangle.setOrigin(sf::Vector2f(rectangle.getSize().x / 2, rectangle.getSize().y / 2));
+		rectangle.setPosition(misc::pointLocation(rectangle.getPosition(), -rectangle.getRotation() * DEG2RAD + PIh, size / 2));
 		break;
-
+	}
 	case ObjType::CIRCLE:
 		break;
 
@@ -168,6 +170,7 @@ void EditorObject::growTop(float size)
 	case ObjType::DYNAMIC_OBJ:
 		break;
 	}
+
 }
 
 //GROW BOTTOM
@@ -176,9 +179,12 @@ void EditorObject::growBottom(float size)
 	switch (type)
 	{
 	case ObjType::RECTANGLE:
+	{
 		rectangle.setSize(sf::Vector2f(rectangle.getSize().x, rectangle.getSize().y + size));
+		rectangle.setOrigin(sf::Vector2f(rectangle.getSize().x / 2, rectangle.getSize().y / 2));
+		rectangle.setPosition(misc::pointLocation(rectangle.getPosition(), -rectangle.getRotation() * DEG2RAD - PIh, size / 2));
 		break;
-
+	}
 	case ObjType::CIRCLE:
 		break;
 
@@ -188,6 +194,7 @@ void EditorObject::growBottom(float size)
 	case ObjType::DYNAMIC_OBJ:
 		break;
 	}
+
 }
 
 //GROW LEFT
@@ -197,7 +204,8 @@ void EditorObject::growLeft(float size)
 	{
 	case ObjType::RECTANGLE:
 		rectangle.setSize(sf::Vector2f(rectangle.getSize().x + size, rectangle.getSize().y));
-		rectangle.move(-size, 0);
+		rectangle.setOrigin(sf::Vector2f(rectangle.getSize().x / 2, rectangle.getSize().y / 2));
+		rectangle.setPosition(misc::pointLocation(rectangle.getPosition(), -rectangle.getRotation() * DEG2RAD + PI, size / 2));
 		break;
 
 	case ObjType::CIRCLE:
@@ -218,6 +226,8 @@ void EditorObject::growRight(float size)
 	{
 	case ObjType::RECTANGLE:
 		rectangle.setSize(sf::Vector2f(rectangle.getSize().x + size, rectangle.getSize().y));
+		rectangle.setOrigin(sf::Vector2f(rectangle.getSize().x / 2, rectangle.getSize().y / 2));
+		rectangle.setPosition(misc::pointLocation(rectangle.getPosition(), -rectangle.getRotation() * DEG2RAD, size / 2));
 		break;
 
 	case ObjType::CIRCLE:
@@ -229,6 +239,7 @@ void EditorObject::growRight(float size)
 	case ObjType::DYNAMIC_OBJ:
 		break;
 	}
+
 }
 
 //SHRINK LEFT
@@ -240,7 +251,8 @@ void EditorObject::shrinkLeft(float size)
 		if (rectangle.getSize().x > 0)
 		{
 			rectangle.setSize(sf::Vector2f(rectangle.getSize().x - size, rectangle.getSize().y));
-			rectangle.move(sf::Vector2f(size, 0));
+			rectangle.setOrigin(sf::Vector2f(rectangle.getSize().x / 2, rectangle.getSize().y / 2));
+			rectangle.setPosition(misc::pointLocation(rectangle.getPosition(), -rectangle.getRotation() * DEG2RAD, size / 2));
 		}
 		break;
 
@@ -254,6 +266,7 @@ void EditorObject::shrinkLeft(float size)
 	case ObjType::DYNAMIC_OBJ:
 		break;
 	}
+
 }
 
 //SHRINK RIGHT
@@ -265,6 +278,8 @@ void EditorObject::shrinkRight(float size)
 		if (rectangle.getSize().x > 0)
 		{
 			rectangle.setSize(sf::Vector2f(rectangle.getSize().x - size, rectangle.getSize().y));
+			rectangle.setOrigin(sf::Vector2f(rectangle.getSize().x / 2, rectangle.getSize().y / 2));
+			rectangle.setPosition(misc::pointLocation(rectangle.getPosition(), -rectangle.getRotation() * DEG2RAD - PI, size / 2));
 		}
 		break;
 
@@ -278,6 +293,7 @@ void EditorObject::shrinkRight(float size)
 	case ObjType::DYNAMIC_OBJ:
 		break;
 	}
+
 }
 
 //SHRINK TOP
@@ -289,7 +305,8 @@ void EditorObject::shrinkTop(float size)
 		if (rectangle.getSize().y > 0)
 		{
 			rectangle.setSize(sf::Vector2f(rectangle.getSize().x, rectangle.getSize().y - size));
-			rectangle.move(sf::Vector2f(0, size));
+			rectangle.setOrigin(sf::Vector2f(rectangle.getSize().x / 2, rectangle.getSize().y / 2));
+			rectangle.setPosition(misc::pointLocation(rectangle.getPosition(), -rectangle.getRotation() * DEG2RAD - PIh, size / 2));
 		}
 		break;
 
@@ -314,7 +331,30 @@ void EditorObject::shrinkBottom(float size)
 		if (rectangle.getSize().y > 0)
 		{
 			rectangle.setSize(sf::Vector2f(rectangle.getSize().x, rectangle.getSize().y - size));
+			rectangle.setOrigin(sf::Vector2f(rectangle.getSize().x / 2, rectangle.getSize().y / 2));
+			rectangle.setPosition(misc::pointLocation(rectangle.getPosition(), -rectangle.getRotation() * DEG2RAD + PIh, size / 2));
 		}
+		break;
+
+	case ObjType::CIRCLE:
+		break;
+
+	case ObjType::STATIC_OBJ:
+		break;
+
+	case ObjType::DYNAMIC_OBJ:
+		break;
+	}
+}
+
+//ORIGIN UPDATE
+void EditorObject::originUpdate()
+{
+	switch (type)
+	{
+	case ObjType::RECTANGLE:
+		rectangle.setOrigin(sf::Vector2f(rectangle.getSize().x / 2, rectangle.getSize().y / 2));
+		rectangle.setPosition(sf::Vector2f((rectangle.getSize().x / 2) + rectangle.getPosition().x, (rectangle.getSize().y / 2) + rectangle.getPosition().y));
 		break;
 
 	case ObjType::CIRCLE:

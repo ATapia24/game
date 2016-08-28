@@ -45,6 +45,8 @@ private:
 	Map map;
 	sf::Sprite background;
 	sf::Texture gridTexture;
+	unsigned int width, height;
+	const int GRID_SIZE = 25;
 	EditorObject* objects;
 	const int MAX_OBJECTS = 10000;
 	int n_objects;

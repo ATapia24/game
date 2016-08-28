@@ -3,18 +3,25 @@
 #include <fstream>
 #include <string>
 #include <vector>
-#include "EditorObject.h"
 #include "misc.h"
+#include "EditorObject.h"
+#include "Entity.h"
+#include "misc.h"
+#include "Solid.h"
 #include "TextureManager.h"
+#include "Box2D/Box2D.h"
+#include "WindowMgr.h"
 
 class Map
 {
 private:
-	std::vector<EditorObject*> objects;
+	WindowMgr* window;
+	b2World* world;
+	std::vector<Entity*> objects;
 public:
 	Map();
 	~Map();
 	void generateFile(std::string _filename, EditorObject* objects, unsigned int n_objects);
-	std::vector<EditorObject*> loadFile(std::string _filename, std::vector<Texture*> textures);
+	std::vector<Entity*> loadFile(std::string _filename, std::vector<Texture*> textures, WindowMgr* _window, b2World* _world);
 };
 

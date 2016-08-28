@@ -68,7 +68,7 @@ sf::Vector2i PathFinder::getIndex(sf::Vector2f pos)
 //FIND PATH
 std::vector<sf::Vector2f> PathFinder::findPath(const sf::Vector2f start, const sf::Vector2f end)
 {
-	t.start();
+	//t.start();
 	//coords nodes
 	sf::Vector2i start_coords = getIndex(start);
 	sf::Vector2i goal_coords = getIndex(end);
@@ -78,6 +78,15 @@ std::vector<sf::Vector2f> PathFinder::findPath(const sf::Vector2f start, const s
 	startNode = &pathMesh[start_coords.x][start_coords.y];
 	goalNode = &pathMesh[goal_coords.x][goal_coords.y];
 	PathNode* current = calculateNodes(start_coords);
+
+	//check for invalid goal node
+	if (!goalNode->valid)
+	{
+		goalNode->valid = 1;
+		invalidGoalNode = 1;
+	}
+	else
+		invalidGoalNode = 0;
 	
 	//loop until goal
 	while (distance(current, goalNode) != 0)
@@ -108,8 +117,14 @@ std::vector<sf::Vector2f> PathFinder::findPath(const sf::Vector2f start, const s
 		current = current->parent;
 	}
 
-	t.stop();
-	std::cout << "time: " << t.getTimeInt() << '\n';
+	//t.stop();
+	//std::cout << "time: " << t.getTimeInt() << '\n';
+
+
+	//reset invalid goal node
+	if (invalidGoalNode)
+		goalNode->valid = 0;
+
 	return path;
 }
 

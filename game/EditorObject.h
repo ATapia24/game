@@ -1,6 +1,9 @@
 #pragma once
 
 #include <SFML\Graphics.hpp>
+#include "misc.h"
+#include <iostream>
+#include <cmath>
 #include <string>
 
 enum ObjType
@@ -39,6 +42,7 @@ public:
 	void shrinkRight(float size);
 	void shrinkTop(float size);
 	void shrinkBottom(float size);
+	void originUpdate();
 
 	EditorObject();
 	~EditorObject();

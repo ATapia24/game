@@ -32,7 +32,7 @@ private:
 	sf::Texture bgText;
 	sf::RectangleShape bg;
 	TextureManager textures;
-	std::vector<EditorObject*> objects;
+	std::vector<Entity*> objects;
 	Player player;
 	
 	ViewBlocker* vb;
