@@ -19,6 +19,14 @@ WindowMgr::WindowMgr(sf::RenderWindow& window, const float _NATIVE_WIDTH, const 
 	worldSize = 0;
 }
 
+/*
+void WindowMgr::loadQueues()
+{
+	guiQueue = new queueType[MAX_DRAW_SIZE];
+	worldQueue = new queueType[MAX_DRAW_SIZE];
+	
+}*/
+
 //DRAW
 void WindowMgr::draw()
 {
