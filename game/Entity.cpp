@@ -38,7 +38,7 @@ void Entity::initialize(WindowMgr* _window, b2World* _world, float density, floa
 	sprite.setOrigin(originOffsetX / sprite.getScale().x, originOffsetY / sprite.getScale().y);
 	bodyDef = new b2BodyDef();
 	
-	//dynamic or tsatic
+	//dynamic or static
 	if (moveable)
 		bodyDef->type = b2_dynamicBody;
 	else
@@ -50,7 +50,7 @@ void Entity::initialize(WindowMgr* _window, b2World* _world, float density, floa
 	bodyDef->position.Set(spawnPointX, spawnPointY);
 
 	//def
-	bodyDef->position.Set(x / 32, y / 32);
+	bodyDef->position.Set(x / PHYS_SCALE, y / PHYS_SCALE);
 	body = world->CreateBody(bodyDef);
 	body->SetUserData(this);
 
@@ -111,7 +111,7 @@ void Entity::draw()
 	if (spawned && onScreen)
 	{
 		window->addWorld(hitbox);
-		window->addWorld(sprite);
+		//window->addWorld(sprite);
 	}
 }
 

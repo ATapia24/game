@@ -215,6 +215,7 @@
     <ClInclude Include="Entity.h" />
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="globals.h" />
+    <ClInclude Include="GUI_Button.h" />
     <ClInclude Include="Holdable.h" />
     <ClInclude Include="Index.h" />
     <ClInclude Include="KeyManager.h" />
@@ -330,6 +331,7 @@
     <ClCompile Include="game.cpp" />
     <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="globals.cpp" />
+    <ClCompile Include="GUI_Button.cpp" />
     <ClCompile Include="Holdable.cpp" />
     <ClCompile Include="Index.cpp" />
     <ClCompile Include="KeyManager.cpp" />

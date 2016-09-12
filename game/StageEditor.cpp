@@ -107,6 +107,7 @@ void StageEditor::load()
 	keyControl.set(sf::Keyboard::LControl, KeyType::REPEATED);
 	keySave.set(sf::Keyboard::S, KeyType::REPEATED);
 
+	button.set(window, CHECK_BOX, sf::Vector2f(500, 500), sf::Vector2f(100, 100));
 }
 
 //LOAD TEXTURES
@@ -137,6 +138,8 @@ void StageEditor::update()
 	default:
 		break;
 	}
+
+	//std::cout << button.getValue() << '\n';
 }
 
 void StageEditor::placeUpdate()
@@ -313,6 +316,8 @@ void StageEditor::generalInput()
 	//delete object
 	if (deleteKey.getValue())
 		deleteObject(objectIndex.getIndex());
+
+	button.update();
 }
 
 //MODE UPDATE
@@ -575,6 +580,7 @@ void StageEditor::draw()
 	drawObjects();
 	window->addWorld(background);
 	menu.draw();
+	button.draw();
 }
 
 //DRAW OBJECTS

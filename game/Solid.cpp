@@ -38,13 +38,13 @@ void Solid::initialize(WindowMgr* _window, b2World* _world, float density, float
 	sprite.setPosition(x, y);
 
 	//def
-	bodyDef->position.Set(x / 32, y / -32);
+	bodyDef->position.Set(x / PHYS_SCALE, y / -PHYS_SCALE);
 	body = world->CreateBody(bodyDef);
 	body->SetUserData(this);
 
 	//shape
 	shape = new b2PolygonShape();
-	shape->SetAsBox(originOffsetX / 32, originOffsetY / 32);
+	shape->SetAsBox(originOffsetX / PHYS_SCALE, originOffsetY / PHYS_SCALE);
 
 	//fixture
 	fixtureDef = new b2FixtureDef();
@@ -52,4 +52,6 @@ void Solid::initialize(WindowMgr* _window, b2World* _world, float density, float
 	fixtureDef->filter.categoryBits = EntityType::SOLID;
 	fixtureDef->filter.maskBits = EntityType::PROJECTILE | EntityType::SCREEN | EntityType::PLAYER;
 	body->CreateFixture(fixtureDef);
+
+	std::cout << hitbox.getPosition().x << ' ' << hitbox.getPosition().y << '\n';
 }

@@ -41,7 +41,7 @@ void StageDev::load()
 	vb = new ViewBlocker;
 	vb->set(player, window, world);
 
-	n_walls = 30;
+	n_walls = 1;
 	walls = new Solid[n_walls];
 
 	for (int i = 0; i < n_walls; i++)
@@ -60,20 +60,15 @@ void StageDev::load()
 	textures.addFolder("test");
 	textures.loadTextures();
 	objects = map.loadFile("Assets/editor.txt", textures.getTextures(), window, world);
-
+	std::cout << "SIZE: " << objects.size() << '\n';
 	for (int i = 0; i < objects.size(); i++)
 	{
 		objects[i]->spawn();
 		pathf.addObject(*objects[i]);
+		vb->addObject(*objects[i]);
 	}
-	pathf.setPathMesh(5000, 5000);
-	//pathf.findPath(sf::Vector2f(26, 51), sf::Vector2f(101, 126));
 
-
-	area.setFillColor(sf::Color(200, 200, 200, 100));
-	area.setPosition(0, 0);
-	area.setSize(sf::Vector2f(1000, 1000));
-	//area.setRotation(70);
+	pathf.setPathMesh(100, 100);
 }
 
 //UNLOAD
@@ -93,7 +88,7 @@ void StageDev::update()
 		if (wp.size() > 0)
 		{
 			bot.setWaypoints(wp);
-			//grid = pathf.getGrid();
+			grid = pathf.getGrid();
 			pathf.clearNodes();
 		}
 	}
@@ -116,6 +111,9 @@ void StageDev::draw()
 {
 	window->addWorld(bg);
 
+
+	vb->draw();
+
 	for (unsigned int i = 0; i < objects.size(); i++)
 		objects[i]->draw();
 
@@ -123,13 +121,13 @@ void StageDev::draw()
 	player.draw();
 	bot.draw();
 
-	vb->draw();
 
 	for (int i = 0; i < n_walls; i++)
 		walls[i].draw();
 
 	for(int i=0; i<grid.size(); i++)
 	window->addWorld(grid[i]);
+
 }
 
 //BEGIN CONTACT

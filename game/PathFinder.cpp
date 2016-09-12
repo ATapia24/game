@@ -117,10 +117,6 @@ std::vector<sf::Vector2f> PathFinder::findPath(const sf::Vector2f start, const s
 		current = current->parent;
 	}
 
-	//t.stop();
-	//std::cout << "time: " << t.getTimeInt() << '\n';
-
-
 	//reset invalid goal node
 	if (invalidGoalNode)
 		goalNode->valid = 0;

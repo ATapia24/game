@@ -41,37 +41,6 @@ std::vector<Entity*> Map::loadFile(std::string _filename, std::vector<Texture*> 
 				std::string textureName = misc::extractBetween(line, t, '#');
 				std::string type = misc::extractBetween(line, t, '#');
 				Entity* entity;
-
-				if (type == "solid")
-				{
-					entity = new Solid;
-					entity->getHitbox().setSize(sf::Vector2f(sizeX, sizeY));
-					entity->initialize(window, world, 1, 1, posX / PHYS_SCALE, posY / PHYS_SCALE);
-					entity->getBody()->SetTransform(entity->getBody()->GetPosition(), rot * DEG2RAD);
-				}
-				else
-					std::cout << "unknown type\n";
-
-				//set
-				//obj
-				//obj->rectangle.setPosition(sf::Vector2f(posX, posY));
-				//obj->rectangle.setRotation(rot);
-				//obj->rectangle.setSize(sf::Vector2f(sizeX, sizeY));
-				//obj->textureName = textureName;
-
-				//texture
-				bool t_found = 0;
-				/*for (int i = 0; i < textures.size() && !t_found; i++)
-				{
-					if (textures[i]->name == obj->textureName)
-					{
-						obj->rectangle.setTexture(&textures[i]->texture);
-						t_found = 1;
-					}
-				}
-
-				if (!t_found)
-					std::cout << "Unable to load " << textureName << ".\n";*/
 			}
 			//rect
 			else if (line[0] == 'r')
@@ -82,20 +51,24 @@ std::vector<Entity*> Map::loadFile(std::string _filename, std::vector<Texture*> 
 				float sizeX = std::stof(misc::extractBetween(line, t, '#'));
 				float sizeY = std::stof(misc::extractBetween(line, t, '#'));
 				std::string textureName = misc::extractBetween(line, t, '#');
-				std::cout << posX << '_' << posY << '\n';
 				obj = new Solid;
 				obj->getHitbox().setSize(sf::Vector2f(sizeX, sizeY));
-				obj->getHitbox().setFillColor(sf::Color::Magenta);
-				obj->initialize(window, world, 1, 1, posX / PHYS_SCALE, posY / PHYS_SCALE);
-				obj->getBody()->SetTransform(obj->getBody()->GetPosition(), rot * DEG2RAD);
+				//obj->getHitbox().setOrigin(sizeX / 2, sizeY / 2);
+				obj->getHitbox().setPosition(sf::Vector2f(posX, posY));
+				obj->getHitbox().setRotation(rot);
+				obj->getHitbox().setFillColor(sf::Color::White);
+				obj->initialize(window, world, 1, 1, posX, posY);
+				obj->getBody()->SetTransform(obj->getBody()->GetPosition(), rot * -DEG2RAD);
 			}
 
-		}
-
-			//push
+			//add
 			objects.push_back(obj);
+		}
 	}
 
+
+	for (int i = 0; i < objects.size(); i++)
+		objects[i]->spawn();
 	return objects;
 }
 

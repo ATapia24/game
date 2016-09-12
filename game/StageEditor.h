@@ -23,6 +23,7 @@
 #include "TextureManager.h"
 #include "Index.h"
 #include "Map.h"
+#include "GUI_Button.h"
 
 struct Object
 {
@@ -122,6 +123,7 @@ private:
 	Key keyDown;
 	Key keyLeft;
 	Key keyRight;
+	GUI_Button button;
 
 	void loadTextures();
 public:

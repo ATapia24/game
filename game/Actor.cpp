@@ -236,6 +236,7 @@ void Actor::clearWaypoints()
 }
 
 //DIAGONAL ADJUST
+//Desc. adjust diagonal movement speed
 void Actor::diagonalAdjust()
 {
 	if (m_forward)
