@@ -73,7 +73,13 @@ void Player::updateMovement()
 {
 	//tmp reset pos
 	if (fire.getValue())
+	{
 		gun.fire(body->GetAngle(), body->GetPosition());
+		gun.fire(body->GetAngle(), body->GetPosition());
+		gun.fire(body->GetAngle(), body->GetPosition());
+		gun.fire(body->GetAngle(), body->GetPosition());
+		gun.fire(body->GetAngle(), body->GetPosition());
+	}
 
 
 	//movement

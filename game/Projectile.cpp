@@ -7,7 +7,7 @@ Projectile::Projectile()
 	speed = 50;
 	lifetime = 3000;
 	hitbox.setSize(sf::Vector2f(5, 5));
-	hitbox.setFillColor(sf::Color::Red);
+	hitbox.setFillColor(sf::Color::Black);
 	moveable = 1;
 }
 
@@ -83,7 +83,7 @@ void Projectile::initialize(WindowMgr* _window, b2World* _world, float density, 
 
 	//shape
 	shape = new b2PolygonShape();
-	shape->SetAsBox(originOffsetX / 32, originOffsetY / 32);
+	shape->SetAsBox(originOffsetX / PHYS_SCALE, originOffsetY / PHYS_SCALE);
 
 	//fixture
 	fixtureDef = new b2FixtureDef();

@@ -45,7 +45,6 @@ private:
 	PathFinder pathf;
 	std::vector<sf::RectangleShape> grid;
 	sf::VertexArray* va;
-	sf::RectangleShape area;
 	Timer t1, t2;
 	Actor bot;
 	Key waypoint;

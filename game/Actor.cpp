@@ -22,7 +22,7 @@ Actor::Actor()
 	rightVel.SetZero();
 
 	sprintSpeed = 12;
-	moveSpeed = 20;
+	moveSpeed = 30;
 	walkSpeed = 1.2;
 }
 

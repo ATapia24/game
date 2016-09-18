@@ -53,7 +53,6 @@ std::vector<Entity*> Map::loadFile(std::string _filename, std::vector<Texture*> 
 				std::string textureName = misc::extractBetween(line, t, '#');
 				obj = new Solid;
 				obj->getHitbox().setSize(sf::Vector2f(sizeX, sizeY));
-				//obj->getHitbox().setOrigin(sizeX / 2, sizeY / 2);
 				obj->getHitbox().setPosition(sf::Vector2f(posX, posY));
 				obj->getHitbox().setRotation(rot);
 				obj->getHitbox().setFillColor(sf::Color::White);

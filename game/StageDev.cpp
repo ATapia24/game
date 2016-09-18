@@ -16,7 +16,7 @@ StageDev::StageDev(StageManager* _stageManager, WindowMgr* _window)
 void StageDev::load()
 {
 	window->getWindow()->setMouseCursorVisible(1);
-	world = new b2World(b2Vec2(0, 0));
+	world = new b2World(b2Vec2(200, -200));
 	world->SetContactListener(this);
 	player.setName("player");
 	player.getSprite().setScale(3, 3);
@@ -27,14 +27,14 @@ void StageDev::load()
 	bot.setName("Bot");
 	bot.getHitbox().setSize(sf::Vector2f(30, 30));
 	bot.getHitbox().setFillColor(sf::Color::Red);
-	bot.initialize(window, world, 5, 5, 5, 5);
+	bot.initialize(window, world, 1, 0, 5, 5);
 	bot.spawn();
 	waypoint.set(sf::Keyboard::Space, KeyType::SINGLE);
 
-	bgText.loadFromFile("assets/strike.jpg");
+	//bgText.loadFromFile("assets/strike.jpg");
+	bg.setFillColor(sf::Color(100, 100, 100, 255));
 	bg.setPosition(0, 0);
-	bg.setSize(sf::Vector2f((float)bgText.getSize().x * 10, (float)bgText.getSize().y* 10));
-	bg.setTexture(&bgText);
+	bg.setSize(sf::Vector2f(20000, 20000));
 
 
 	//VB
@@ -68,7 +68,7 @@ void StageDev::load()
 		vb->addObject(*objects[i]);
 	}
 
-	pathf.setPathMesh(100, 100);
+	pathf.setPathMesh(1000, 1000);
 }
 
 //UNLOAD
@@ -88,7 +88,7 @@ void StageDev::update()
 		if (wp.size() > 0)
 		{
 			bot.setWaypoints(wp);
-			grid = pathf.getGrid();
+			//grid = pathf.getGrid();
 			pathf.clearNodes();
 		}
 	}
@@ -112,21 +112,21 @@ void StageDev::draw()
 	window->addWorld(bg);
 
 
+	player.draw();
+	bot.draw();
+
 	vb->draw();
 
 	for (unsigned int i = 0; i < objects.size(); i++)
 		objects[i]->draw();
 
-	
-	player.draw();
-	bot.draw();
 
 
 	for (int i = 0; i < n_walls; i++)
 		walls[i].draw();
 
-	for(int i=0; i<grid.size(); i++)
-	window->addWorld(grid[i]);
+	//for(int i=0; i<grid.size(); i++)
+	//window->addWorld(grid[i]);
 
 }
 

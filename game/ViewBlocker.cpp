@@ -7,7 +7,7 @@ ViewBlocker::ViewBlocker()
 	containsMovables = 0;
 	pcount = 0;
 	points.setPrimitiveType(sf::Triangles);
-	blockerColor = sf::Color(0, 0, 0, 200);
+	blockerColor = sf::Color(0, 0, 0, 255);
 }
 
 
@@ -46,10 +46,10 @@ void ViewBlocker::calculateBlocker(Blocker& blocker)
 {
 	//get body points
 	sf::Vector2f p[4];
-	p[0] = sf::Vector2f(blocker.entity->getHitbox().getPosition().x - blocker.widthOffset, blocker.entity->getHitbox().getPosition().y - blocker.heightOffset);
-	p[1] = sf::Vector2f(blocker.entity->getHitbox().getPosition().x + blocker.widthOffset, blocker.entity->getHitbox().getPosition().y - blocker.heightOffset);
-	p[2] = sf::Vector2f(blocker.entity->getHitbox().getPosition().x - blocker.widthOffset, blocker.entity->getHitbox().getPosition().y + blocker.heightOffset);
-	p[3] = sf::Vector2f(blocker.entity->getHitbox().getPosition().x + blocker.widthOffset, blocker.entity->getHitbox().getPosition().y + blocker.heightOffset);
+	p[0] = blocker.entity->getHitbox().getTransform().transformPoint(blocker.entity->getHitbox().getPoint(0));
+	p[1] = blocker.entity->getHitbox().getTransform().transformPoint(blocker.entity->getHitbox().getPoint(1));
+	p[2] = blocker.entity->getHitbox().getTransform().transformPoint(blocker.entity->getHitbox().getPoint(2));
+	p[3] = blocker.entity->getHitbox().getTransform().transformPoint(blocker.entity->getHitbox().getPoint(3));
 
 	//sort body points by distance ascending order
 	sf::Vector2f tmp;
