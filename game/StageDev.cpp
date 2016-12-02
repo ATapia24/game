@@ -16,7 +16,7 @@ StageDev::StageDev(StageManager* _stageManager, WindowMgr* _window)
 void StageDev::load()
 {
 	window->getWindow()->setMouseCursorVisible(1);
-	world = new b2World(b2Vec2(200, -200));
+	world = new b2World(b2Vec2(0, 0));
 	world->SetContactListener(this);
 	player.setName("player");
 	player.getSprite().setScale(3, 3);
@@ -69,6 +69,23 @@ void StageDev::load()
 	}
 
 	pathf.setPathMesh(1000, 1000);
+
+	lightmapTexture.create(1280, 720);
+	lightmap.setTexture(lightmapTexture.getTexture());
+
+	lightTexture.loadFromFile("Assets/light.png");
+
+
+	lightSprite.setTexture(lightTexture);
+	//lightSprite.setTextureRect(sf::IntRect(0, 0, 512, 512));
+	lightSprite.setScale(5.f, 5.f);
+	lightSprite.setOrigin(sf::Vector2f(lightTexture.getSize().x /2 , lightTexture.getSize().y / 2));
+	lightSprite.setColor(sf::Color(255, 255, 255, 100));
+
+	l2.setTexture(lightTexture);
+	l2.setScale(0.35f, 0.35f);
+	l2.setOrigin(sf::Vector2f(lightTexture.getSize().x / 2, lightTexture.getSize().y / 2));
+	//l2.setColor(sf::Color::Blue);
 }
 
 //UNLOAD
@@ -110,10 +127,13 @@ void StageDev::update()
 void StageDev::draw()
 {
 	window->addWorld(bg);
-
-
-	player.draw();
 	bot.draw();
+	lightSprite.setPosition(player.getHitbox().getPosition());
+	//l2.setPosition(player.getHitbox().getPosition());
+	window->addWorld(l2, sf::BlendAdd);
+	window->addWorld(lightSprite, sf::BlendAdd);
+	player.draw();
+	
 
 	vb->draw();
 

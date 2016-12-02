@@ -16,7 +16,7 @@ private:
 	float sprintSpeed;
 
 	//tmp
-	Key_M fire;
+	Key_M fire, fire2;
 	
 	//input
 	Key keySprint;

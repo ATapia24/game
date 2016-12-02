@@ -24,6 +24,7 @@ Player::Player()
 	keyRight.set(sf::Keyboard::D, KeyType::REPEATED);
 	keySprint.set(sf::Keyboard::LShift, KeyType::REPEATED);
 	fire.set(sf::Mouse::Button::Left, KeyType::SINGLE);
+	fire2.set(sf::Mouse::Button::Right, KeyType::REPEATED);
 
 	sprite.setOrigin(sf::Vector2f(hitbox.getSize().x / 2, hitbox.getSize().y / 2));
 	viewOffsetY = 400;
@@ -73,13 +74,9 @@ void Player::updateMovement()
 {
 	//tmp reset pos
 	if (fire.getValue())
-	{
 		gun.fire(body->GetAngle(), body->GetPosition());
+	else if (fire2.getValue())
 		gun.fire(body->GetAngle(), body->GetPosition());
-		gun.fire(body->GetAngle(), body->GetPosition());
-		gun.fire(body->GetAngle(), body->GetPosition());
-		gun.fire(body->GetAngle(), body->GetPosition());
-	}
 
 
 	//movement

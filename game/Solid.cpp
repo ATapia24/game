@@ -26,6 +26,7 @@ void Solid::initialize(WindowMgr* _window, b2World* _world, float density, float
 	originOffsetY = hitbox.getSize().y / 2;
 	hitbox.setOrigin(originOffsetX, originOffsetY);
 	sprite.setOrigin(originOffsetX / sprite.getScale().x, originOffsetY / sprite.getScale().y);
+	hitbox.setFillColor(sf::Color(200, 200, 200, 255));
 	bodyDef = new b2BodyDef();
 
 	//static

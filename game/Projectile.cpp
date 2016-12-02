@@ -31,7 +31,7 @@ void Projectile::update()
 		kill();
 	else if (spawned)
 	{
-		hitbox.setPosition(sf::Vector2f(body->GetPosition().x * 32, body->GetPosition().y * -32));
+		hitbox.setPosition(sf::Vector2f(body->GetPosition().x * PHYS_SCALE, body->GetPosition().y * -PHYS_SCALE));
 		hitbox.setRotation(body->GetAngle() * RAD2DEG);
 	}
 }

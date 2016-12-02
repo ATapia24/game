@@ -37,9 +37,10 @@ private:
 		sf::CircleShape* circle;
 		sf::ConvexShape* convex;
 		sf::VertexArray* vertexArray;
+		sf::BlendMode blendMode;
 	};
 
-	const long int MAX_DRAW_SIZE = 10000000;
+	const long int MAX_DRAW_SIZE = 100000;
 	unsigned int guiSize, worldSize;
 	queueType *guiQueue, *worldQueue;
 
@@ -58,6 +59,7 @@ public:
 	void addWorld(sf::CircleShape& circle);
 	void addWorld(sf::ConvexShape& convex);
 	void addWorld(sf::VertexArray& vertexArray);
+	void addWorld(sf::Sprite& sprite, const sf::BlendMode blendMode);
 	void draw();
 	sf::RenderWindow* getWindow();
 	sf::View* getWorldView() { return &worldView; };

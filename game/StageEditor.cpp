@@ -415,10 +415,11 @@ void StageEditor::startDrag()
 		break;
 
 	case ObjType::CIRCLE:
-		//objects[objectIndex.getIndex()].type = ObjType::CIRCLE;
-		//x = ((float)sf::Mouse::getPosition(*window->getWindow()).x * zoomAmount) - (view->getSize().x / 2) + view->getCenter().x / window->getScale().x;
-		//y = ((float)sf::Mouse::getPosition(*window->getWindow()).y * zoomAmount) - (view->getSize().y / 2) + view->getCenter().y / window->getScale().y;
-		//objects[objectIndex.getIndex()].circle.setPosition(x, y);
+		objects[objectIndex.getIndex()].type = ObjType::CIRCLE;
+		x = (((float)sf::Mouse::getPosition(*window->getWindow()).x * zoomAmount) - (view->getSize().x / 2) + view->getCenter().x) / window->getScale().x;
+		y = (((float)sf::Mouse::getPosition(*window->getWindow()).y * zoomAmount) - (view->getSize().y / 2) + view->getCenter().y) / window->getScale().y;
+		objects[objectIndex.getIndex()].circle.setOrigin(sf::Vector2f(objects[objectIndex.getIndex()].circle.getRadius() / 2, objects[objectIndex.getIndex()].circle.getRadius() / 2));
+		objects[objectIndex.getIndex()].circle.setPosition(x, y);
 		break;
 
 	case ObjType::STATIC_OBJ:
@@ -447,7 +448,7 @@ void StageEditor::startDrag()
 void StageEditor::updateDrag()
 {
 	//calculate size based on rect and mouse position
-	float x, y;
+	float x, y, x1, y1, x2, y2, radius;
 	switch (dragTypeIndex.getIndex())
 	{
 	case ObjType::RECTANGLE:
@@ -458,13 +459,19 @@ void StageEditor::updateDrag()
 		break;
 
 	case ObjType::CIRCLE:
-		/*float x1 = (((float)sf::Mouse::getPosition(*window->getWindow()).x * zoomAmount) - (view->getSize().x / 2) + view->getCenter().x) / window->getScale().x - objects[objectIndex].circle.getPosition().x;
-		float y1 = (((float)sf::Mouse::getPosition(*window->getWindow()).y * zoomAmount) - (view->getSize().y / 2) + view->getCenter().y) / window->getScale().y - objects[objectIndex].circle.getPosition().y;
-		float x2 = objects[objectIndex].circle.getPosition().x + objects[objectIndex].circle.getRadius() / window->getScale().x;
-		float y2 = objects[objectIndex].circle.getPosition().y + objects[objectIndex].circle.getRadius() / window->getScale().y;
-		float radius = sqrt(pow(x2 - x1, 2.f) + pow(y2 - y1, 2.f));
-		std::cout << radius << std::endl;
-		objects[objectIndex].circle.setRadius(radius);*/
+		/*
+		x1 = (((float)sf::Mouse::getPosition(*window->getWindow()).x * zoomAmount) - (view->getSize().x / 2) + view->getCenter().x) / window->getScale().x - objects[objectIndex.getIndex()].circle.getPosition().x;
+		y1 = (((float)sf::Mouse::getPosition(*window->getWindow()).y * zoomAmount) - (view->getSize().y / 2) + view->getCenter().y) / window->getScale().y - objects[objectIndex.getIndex()].circle.getPosition().y;
+		x2 = objects[objectIndex.getIndex()].circle.getPosition().x + objects[objectIndex.getIndex()].circle.getRadius() / window->getScale().x;
+		y2 = objects[objectIndex.getIndex()].circle.getPosition().y + objects[objectIndex.getIndex()].circle.getRadius() / window->getScale().y;
+		radius = sqrt(pow(x2 - x1, 2.f) + pow(y2 - y1, 2.f));
+		std::cout << radius << std::endl;*/
+		x = (((float)sf::Mouse::getPosition(*window->getWindow()).x * zoomAmount) - (view->getSize().x / 2) + view->getCenter().x) / window->getScale().x - objects[objectIndex.getIndex()].rectangle.getPosition().x;
+		y = (((float)sf::Mouse::getPosition(*window->getWindow()).y * zoomAmount) - (view->getSize().y / 2) + view->getCenter().y) / window->getScale().y - objects[objectIndex.getIndex()].rectangle.getPosition().y;
+		radius = misc::distance(objects[objectIndex.getIndex()].circle.getPosition(), sf::Vector2f(x, y));
+		objects[objectIndex.getIndex()].circle.setRadius(radius);
+		objects[objectIndex.getIndex()].circle.setOrigin(sf::Vector2f(objects[objectIndex.getIndex()].circle.getRadius() / window->getScale().x / 2, objects[objectIndex.getIndex()].circle.getRadius() / window->getScale().y / 2));
+
 		break;
 
 	case ObjType::STATIC_OBJ:

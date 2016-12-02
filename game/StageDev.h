@@ -48,6 +48,12 @@ private:
 	Timer t1, t2;
 	Actor bot;
 	Key waypoint;
+
+	sf::Texture lightTexture;
+	sf::Sprite lightSprite, l2;
+	sf::RenderTexture lightmapTexture;
+	sf::Sprite lightmap;
+
 public:
 	StageDev();
 	~StageDev();
