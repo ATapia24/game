@@ -1,5 +1,6 @@
 #include "WindowMgr.h"
 
+//CONSTRUCTOR
 WindowMgr::WindowMgr(sf::RenderWindow& window, const float _NATIVE_WIDTH, const float _NATIVE_HEIGHT)
 {
 	//window
@@ -16,6 +17,13 @@ WindowMgr::WindowMgr(sf::RenderWindow& window, const float _NATIVE_WIDTH, const 
 	worldQueue = new queueType[MAX_DRAW_SIZE];
 	guiSize = 0;
 	worldSize = 0;
+}
+
+//DECONSTRUCTOR
+WindowMgr::~WindowMgr()
+{
+	delete[] guiQueue;
+	delete[] worldQueue;
 }
 
 //DRAW

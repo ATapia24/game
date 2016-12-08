@@ -29,7 +29,7 @@ class ViewBlocker
 
 	Blocker* blockers;
 	int n_blockers;
-	int max_blockers = 1000000;
+	int max_blockers = 100000;
 
 	void calculateBlocker(Blocker& blocker);
 	sf::VertexArray points;

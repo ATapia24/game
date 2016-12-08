@@ -36,8 +36,9 @@ private:
 	queueType *guiQueue, *worldQueue;
 
 public:
-	WindowMgr::WindowMgr() {};
-	WindowMgr::WindowMgr(sf::RenderWindow& window, const float _NATIVE_WIDTH, const float _NATIVE_HEIGHT);
+	WindowMgr() {};
+	~WindowMgr();
+	WindowMgr(sf::RenderWindow& window, const float _NATIVE_WIDTH, const float _NATIVE_HEIGHT);
 	void setResolution(int width, int height, bool fullscreen, bool border);
 	void addGui(sf::Sprite& sprite);
 	void addGui(sf::Text& text);

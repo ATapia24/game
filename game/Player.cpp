@@ -38,6 +38,8 @@ Player::Player()
 	backwardVel.SetZero();
 	leftVel.SetZero();
 	rightVel.SetZero();
+
+	hitbox.setFillColor(sf::Color::White);
 }
 
 
