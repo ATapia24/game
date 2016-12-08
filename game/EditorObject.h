@@ -1,6 +1,7 @@
-#pragma once
+#ifndef EDITOR_OBJECT_H
+#define EDITOR_OBJECT_H
 
-#include <SFML\Graphics.hpp>
+#include <SFML/Graphics.hpp>
 #include "misc.h"
 #include <iostream>
 #include <cmath>
@@ -48,3 +49,4 @@ public:
 	~EditorObject();
 };
 
+#endif

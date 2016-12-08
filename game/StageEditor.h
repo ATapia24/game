@@ -1,12 +1,14 @@
-#pragma once
+#ifndef STAGEEDITOR_H
+#define STAGEEDITOR_H
+
 #include "Stage.h"
 #include <iostream>
 #include <string>
 #include <vector>
 #include <cmath>
 #include <stdlib.h>
-#include <SFML\Graphics.hpp>
-#include <SFML\Window\Keyboard.hpp>
+#include <SFML/Graphics.hpp>
+#include <SFML/Window/Keyboard.hpp>
 #include <stdio.h>
 #include <time.h>
 #include <typeinfo>
@@ -136,3 +138,4 @@ public:
 	void draw();
 };
 
+#endif

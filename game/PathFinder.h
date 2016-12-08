@@ -1,4 +1,6 @@
-#pragma once
+#ifndef PATHFINDER_H
+#define PATHFINDER_H
+
 #include <iostream>
 #include "misc.h"
 #include "Entity.h"
@@ -46,3 +48,4 @@ public:
 	void clearNodes();
 };
 
+#endif

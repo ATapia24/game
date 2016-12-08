@@ -1,4 +1,6 @@
-#pragma once
+#ifndef NETWORKMANAGER
+#define NETWORKMANAGER
+
 class NetworkManager
 {
 public:
@@ -6,3 +8,4 @@ public:
 	~NetworkManager();
 };
 
+#endif

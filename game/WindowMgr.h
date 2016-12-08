@@ -1,9 +1,10 @@
-#pragma once
+#ifndef WINDOWMGR_H
+#define WINDOWMGR_H
 
-#include <SFML\Graphics.hpp>
+#include <SFML/Graphics.hpp>
 #include <iostream>
 #include "misc.h"
-#include <SFML\System\Thread.hpp>
+#include <SFML/System/Thread.hpp>
 #include <thread>
 
 //WINDOW MGR CLASS
@@ -69,3 +70,5 @@ public:
 	void setMouseVisible(bool _mouseVisible);
 	bool isMouseVisible();
 };
+
+#endif

@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include <windows.h>
 #include <SFML/Graphics.hpp>
 #include "globals.h"
@@ -6,7 +5,7 @@
 #include "WindowMgr.h"
 #include "Debug.h"
 #include "misc.h"
-#include "SFML\Network.hpp"
+#include <SFML\Network.hpp>
 #include "Timer.h"
 
 using namespace globals;

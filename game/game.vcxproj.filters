@@ -24,12 +24,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="stdafx.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="targetver.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="WindowMgr.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -84,9 +78,6 @@
     <ClInclude Include="StageEditor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Desktop\include\dirent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="EditorObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -103,9 +94,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Map.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Solid.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Projectile.h">
@@ -270,6 +258,9 @@
     <ClInclude Include="GUI_Button.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Solid.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="assets\bg.jpg">
@@ -370,9 +361,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Timer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="StageManager.cpp">

@@ -1,4 +1,6 @@
-#pragma once
+#ifndef PLAYER_H
+#define PLAYER_H
+
 #include "Entity.h"
 #include "Animation.h"
 #include "KeyManager.h"
@@ -65,3 +67,4 @@ public:
 	void endContact(Entity* entity);
 };
 
+#endif

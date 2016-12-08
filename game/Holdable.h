@@ -1,10 +1,11 @@
-#pragma once
+#ifndef HOLDABLE_H
+#define HOLDABLE_H
 
-#include <SFML\Graphics.hpp>
+#include <SFML/Graphics.hpp>
 #include "Animation.h"
 #include "Projectile.h"
 #include "WindowMgr.h"
-#include "Box2D\Box2D.h"
+#include "Box2D/Box2D.h"
 #include <vector>
 
 class Holdable
@@ -25,3 +26,4 @@ public:
 	void fire(float angle, b2Vec2 pos);
 };
 
+#endif

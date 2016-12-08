@@ -1,7 +1,8 @@
-#pragma once
+#ifndef VIEWBLOCKER_H
+#define VIEWBLOCKER_H
 
-#include "SFML\Graphics.hpp"
-#include "Box2D\Box2D.h"
+#include <SFML/Graphics.hpp>
+#include "Box2D/Box2D.h"
 #include "WindowMgr.h"
 #include "Entity.h"
 #include "globals.h"
@@ -44,3 +45,4 @@ public:
 	void draw();
 };
 
+#endif

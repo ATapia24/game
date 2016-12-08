@@ -1,6 +1,7 @@
-#pragma once
+#ifndef TEXTUREMANAGER_H
+#define TEXTUREMANAGER_H
 
-#include <SFML\Graphics.hpp>
+#include <SFML/Graphics.hpp>
 #include <iostream>
 #include <vector>
 #include "misc.h"
@@ -26,3 +27,4 @@ public:
 	std::vector<Texture*> getTextures();
 };
 
+#endif

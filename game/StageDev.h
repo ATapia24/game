@@ -1,11 +1,14 @@
+#ifndef STAGEDEV_H
+#define STAGEDEV_H
+
 #include "Stage.h"
 #include <iostream>
 #include <string>
 #include <vector>
 #include <cmath>
 #include <stdlib.h>
-#include <SFML\Graphics.hpp>
-#include <SFML\Window\Keyboard.hpp>
+#include <SFML/Graphics.hpp>
+#include <SFML/Window/Keyboard.hpp>
 #include <stdio.h>
 #include <time.h>
 #include <typeinfo>
@@ -17,7 +20,7 @@
 #include "NativePosition.h"
 #include "Entity.h"
 #include "TextureManager.h"
-#include "Box2D\Box2D.h"
+#include "Box2D/Box2D.h"
 #include "KeyManager.h"
 #include "Map.h"
 #include "EditorObject.h"
@@ -65,3 +68,5 @@ public:
 	void BeginContact(b2Contact* contact);
 	void EndContact(b2Contact* contact);
 };
+
+#endif

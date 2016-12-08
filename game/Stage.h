@@ -1,8 +1,9 @@
-#pragma once
+#ifndef STAGE_H
+#define STAGE_H
 
 #include <iostream>
 #include <string>
-#include <SFML\Graphics.hpp>
+#include <SFML/Graphics.hpp>
 #include "StageManager.h"
 #include "WindowMgr.h"
 
@@ -29,3 +30,4 @@ public:
 
 };
 
+#endif

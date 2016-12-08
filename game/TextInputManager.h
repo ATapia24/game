@@ -1,8 +1,9 @@
-#pragma once
+#ifndef TEXTINPUTMANAGER_H
+#define TEXTINPUTMANAGER_H
 
 #include <iostream>
 #include <string>
-#include <SFML\Graphics.hpp>
+#include <SFML/Graphics.hpp>
 #include <Windows.h>
 #include "KeyManager.h"
 #include "misc.h"
@@ -45,3 +46,4 @@ public:
 	void forceDone();
 };
 
+#endif

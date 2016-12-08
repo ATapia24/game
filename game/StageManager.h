@@ -1,7 +1,8 @@
-#pragma once
+#ifndef STAGEMANAGER_H
+#define STAGEMANAGER_H
 
 #include <iostream>
-#include <SFML\Graphics.hpp>
+#include <SFML/Graphics.hpp>
 #include <string>
 #include "globals.h"
 #include "StageManager.h"
@@ -31,3 +32,4 @@ public:
 	void addStage(Stage* stage, int index);
 };
 
+#endif

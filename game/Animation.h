@@ -1,6 +1,7 @@
-#pragma once
+#ifndef ANIMATION_H
+#define ANIMATION_H
 
-#include <SFML\Graphics.hpp>
+#include <SFML/Graphics.hpp>
 #include <string>
 #include "Timer.h"
 #include <iostream>
@@ -31,3 +32,4 @@ public:
 	void update(sf::Sprite& s, int start, int end);
 };
 
+#endif

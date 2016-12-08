@@ -1,10 +1,11 @@
-#pragma once
+#ifndef ENTITY_H
+#define ENTITY_H
 
 #include <iostream>
 #include <vector>
-#include <SFML\Graphics.hpp>
+#include <SFML/Graphics.hpp>
 #include <stdio.h>
-#include "Box2D\Box2D.h"
+#include "Box2D/Box2D.h"
 #include "WindowMgr.h"
 #include "misc.h"
 #include "Timer.h"
@@ -100,3 +101,5 @@ public:
 
 	EntityType getType() { return type; };
 };
+
+#endif

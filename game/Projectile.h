@@ -1,4 +1,5 @@
-#pragma once
+#ifndef PROJECTILE_H
+#define PROJECTILE_H
 
 #include "Entity.h"
 #include "Timer.h"
@@ -21,3 +22,4 @@ public:
 	void endContact(Entity* entity);
 };
 
+#endif

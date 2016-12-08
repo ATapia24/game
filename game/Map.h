@@ -1,4 +1,6 @@
-#pragma once
+#ifndef MAP_H
+#define MAP_H
+
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -25,3 +27,4 @@ public:
 	std::vector<Entity*> loadFile(std::string _filename, std::vector<Texture*> textures, WindowMgr* _window, b2World* _world);
 };
 
+#endif

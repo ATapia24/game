@@ -1,8 +1,9 @@
-#pragma once
+#ifndef DEBUG_H
+#define DEBUG_H
 
 #include <iostream>
 #include <string>
-#include <SFML\Graphics.hpp>
+#include <SFML/Graphics.hpp>
 #include "MenuList.h"
 #include "misc.h"
 #include "WindowMgr.h"
@@ -48,3 +49,5 @@ public:
 	void update();
 	void add(std::string& string);
 };
+
+#endif

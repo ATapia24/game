@@ -1,4 +1,6 @@
-#pragma once
+#ifndef SOLID_H
+#define SOLID_H
+
 #include "Entity.h"
 class Solid : public Entity
 {
@@ -10,3 +12,4 @@ public:
 	void initialize(WindowMgr* _window, b2World* _world, float density, float friction, float x, float y);
 };
 
+#endif

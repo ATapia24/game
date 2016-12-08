@@ -1,6 +1,7 @@
-#pragma once
+#ifndef NATIVEPOSITION_H
+#define NATIVEPOSITION_H
 
-#include <SFML\Graphics.hpp>
+#include <SFML/Graphics.hpp>
 
 class NativePosition
 {
@@ -26,3 +27,4 @@ public:
 	float y();
 };
 
+#endif

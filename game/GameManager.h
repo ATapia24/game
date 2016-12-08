@@ -1,7 +1,8 @@
-#pragma once
+#ifndef GAMEMANAGER_H
+#define GAMEMANAGER_H
 
 #include <iostream>
-#include <SFML\Graphics.hpp>
+#include <SFML/Graphics.hpp>
 #include "StageManager.h"
 #include "WindowMgr.h"
 #include "globals.h"
@@ -33,3 +34,4 @@ public:
 	~GameManager();
 };
 
+#endif

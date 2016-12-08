@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "WindowMgr.h"
 
 WindowMgr::WindowMgr(sf::RenderWindow& window, const float _NATIVE_WIDTH, const float _NATIVE_HEIGHT)

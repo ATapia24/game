@@ -1,6 +1,7 @@
-#pragma once
+#ifndef KEYMANAGER_H
+#define KEYMANAGER_H
 
-#include <SFML\Graphics.hpp>
+#include <SFML/Graphics.hpp>
 #include "Timer.h"
 
 enum KeyType
@@ -56,3 +57,4 @@ public:
 	const bool getValue();
 };
 
+#endif

@@ -1,4 +1,5 @@
-#pragma once
+#ifndef GUI_BUTTON_H
+#define GUI_BUTTON_H
 
 #include <SFML/Graphics.hpp>
 #include <iostream>
@@ -38,3 +39,4 @@ public:
 	void setValue(bool _value) { value = _value; }
 };
 
+#endif

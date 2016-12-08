@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "ViewBlocker.h"
 
 ViewBlocker::ViewBlocker()

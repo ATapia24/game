@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "StageDev.h"
 
 StageDev::StageDev(){}

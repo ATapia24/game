@@ -1,4 +1,5 @@
-#pragma once
+#ifndef MENULIST_H
+#define MENULIST_H
 
 #include <iostream>
 #include <string>
@@ -89,3 +90,4 @@ public:
 	void clear();
 };
 
+#endif

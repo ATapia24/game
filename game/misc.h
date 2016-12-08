@@ -4,11 +4,11 @@
 #include <string>
 #include <sstream>
 #include <vector>
-#include "SFML\Graphics.hpp"
+#include <SFML/Graphics.hpp>
 #include "dirent.h"
 #include <cmath>
 #include <iostream>
-#include "Box2D\Box2D.h"
+#include "Box2D/Box2D.h"
 
 //RESOLUTION
 #define NATIVE_WIDTH 1920

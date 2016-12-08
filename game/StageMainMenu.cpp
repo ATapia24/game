@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "StageMainMenu.h"
 
 StageMainMenu::StageMainMenu(){}
