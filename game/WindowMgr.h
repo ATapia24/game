@@ -8,16 +8,6 @@
 #include <thread>
 
 //WINDOW MGR CLASS
-/*enum QueuTypes
-{
-	SPRITE,
-	TEXT,
-	RECTANGLE,
-	CIRCLE,
-	CONVEX,
-	VERTEXARRAY
-};*/
-
 class WindowMgr
 {
 

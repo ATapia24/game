@@ -18,14 +18,6 @@ WindowMgr::WindowMgr(sf::RenderWindow& window, const float _NATIVE_WIDTH, const 
 	worldSize = 0;
 }
 
-/*
-void WindowMgr::loadQueues()
-{
-	guiQueue = new queueType[MAX_DRAW_SIZE];
-	worldQueue = new queueType[MAX_DRAW_SIZE];
-	
-}*/
-
 //DRAW
 void WindowMgr::draw()
 {
@@ -134,7 +126,7 @@ void WindowMgr::addGui(sf::Sprite& sprite)
 	guiQueue[guiSize].sprite = new sf::Sprite(sprite);
 	guiQueue[guiSize].sprite->setScale(guiQueue[guiSize].sprite->getScale().x, guiQueue[guiSize].sprite->getScale().y);
 	guiQueue[guiSize].sprite->setPosition(guiQueue[guiSize].sprite->getPosition().x * widthScale, guiQueue[guiSize].sprite->getPosition().y * heightScale);
-	guiQueue[worldSize].blendMode = sf::BlendNone;
+	guiQueue[worldSize].blendMode = sf::BlendAlpha;
 	guiSize++;
 }
 
@@ -145,7 +137,7 @@ void WindowMgr::addGui(sf::Text& text)
 	guiQueue[guiSize].text = new sf::Text(text);
 	guiQueue[guiSize].text->setScale(widthScale, heightScale);
 	guiQueue[guiSize].text->setPosition(guiQueue[guiSize].text->getPosition().x * widthScale, guiQueue[guiSize].text->getPosition().y * heightScale);
-	guiQueue[worldSize].blendMode = sf::BlendNone;
+	guiQueue[worldSize].blendMode = sf::BlendAlpha;
 	guiSize++;
 }
 
@@ -156,7 +148,7 @@ void WindowMgr::addGui(sf::RectangleShape& rectangle)
 	guiQueue[guiSize].rectangle = new sf::RectangleShape(rectangle);
 	guiQueue[guiSize].rectangle->setScale(widthScale, heightScale);
 	guiQueue[guiSize].rectangle->setPosition(widthScale * guiQueue[guiSize].rectangle->getPosition().x, heightScale* guiQueue[guiSize].rectangle->getPosition().y);
-	guiQueue[worldSize].blendMode = sf::BlendNone;
+	guiQueue[worldSize].blendMode = sf::BlendAlpha;
 	guiSize++;
 }
 
@@ -167,7 +159,7 @@ void WindowMgr::addGui(sf::CircleShape& circle)
 	guiQueue[guiSize].circle = new sf::CircleShape(circle);
 	guiQueue[guiSize].circle->setScale(widthScale, heightScale);
 	guiQueue[guiSize].circle->setPosition(widthScale * guiQueue[guiSize].circle->getPosition().x, heightScale* guiQueue[guiSize].circle->getPosition().y);
-	guiQueue[worldSize].blendMode = sf::BlendNone;
+	guiQueue[worldSize].blendMode = sf::BlendAlpha;
 	guiSize++;
 }
 
@@ -178,7 +170,7 @@ void WindowMgr::addGui(sf::ConvexShape& convex)
 	guiQueue[guiSize].convex = new sf::ConvexShape(convex);
 	guiQueue[guiSize].convex->setScale(widthScale, heightScale);
 	guiQueue[guiSize].convex->setPosition(widthScale * guiQueue[guiSize].convex->getPosition().x, heightScale* guiQueue[guiSize].convex->getPosition().y);
-	guiQueue[worldSize].blendMode = sf::BlendNone;
+	guiQueue[worldSize].blendMode = sf::BlendAlpha;
 	guiSize++;
 }
 
@@ -189,7 +181,7 @@ void WindowMgr::addWorld(sf::Sprite& sprite)
 	worldQueue[worldSize].sprite = new sf::Sprite(sprite);
 	worldQueue[worldSize].sprite->setScale(widthScale * worldQueue[worldSize].sprite->getScale().x, heightScale* worldQueue[worldSize].sprite->getScale().y);
 	worldQueue[worldSize].sprite->setPosition(worldQueue[worldSize].sprite->getPosition().x * widthScale, worldQueue[worldSize].sprite->getPosition().y * heightScale);
-	worldQueue[worldSize].blendMode = sf::BlendNone;
+	worldQueue[worldSize].blendMode = sf::BlendAlpha;
 	worldSize++;
 }
 
@@ -200,7 +192,7 @@ void WindowMgr::addWorld(sf::Text& text)
 	worldQueue[worldSize].text = new sf::Text(text);
 	worldQueue[worldSize].text->setScale(widthScale, heightScale);
 	worldQueue[worldSize].text->setPosition(widthScale * worldQueue[worldSize].text->getPosition().x, heightScale* worldQueue[worldSize].text->getPosition().y);
-	worldQueue[worldSize].blendMode = sf::BlendNone;
+	worldQueue[worldSize].blendMode = sf::BlendAlpha;
 	worldSize++;
 }
 
@@ -211,7 +203,7 @@ void WindowMgr::addWorld(sf::RectangleShape& rectangle)
 	worldQueue[worldSize].rectangle = new sf::RectangleShape(rectangle);
 	worldQueue[worldSize].rectangle->setScale(widthScale, heightScale);
 	worldQueue[worldSize].rectangle->setPosition(widthScale * worldQueue[worldSize].rectangle->getPosition().x, heightScale* worldQueue[worldSize].rectangle->getPosition().y);
-	worldQueue[worldSize].blendMode = sf::BlendNone;
+	worldQueue[worldSize].blendMode = sf::BlendAlpha;
 	worldSize++;
 }
 
@@ -222,7 +214,7 @@ void WindowMgr::addWorld(sf::CircleShape& circle)
 	worldQueue[worldSize].circle = new sf::CircleShape(circle);
 	worldQueue[worldSize].circle->setScale(widthScale, heightScale);
 	worldQueue[worldSize].circle->setPosition(widthScale * worldQueue[worldSize].circle->getPosition().x, heightScale* worldQueue[worldSize].circle->getPosition().y);
-	worldQueue[worldSize].blendMode = sf::BlendNone;
+	worldQueue[worldSize].blendMode = sf::BlendAlpha;
 	worldSize++;
 }
 
@@ -233,7 +225,7 @@ void WindowMgr::addWorld(sf::ConvexShape& convex)
 	worldQueue[worldSize].convex = new sf::ConvexShape(convex);
 	worldQueue[worldSize].convex->setScale(widthScale, heightScale);
 	worldQueue[worldSize].convex->setPosition(widthScale * worldQueue[worldSize].convex->getPosition().x, heightScale* worldQueue[worldSize].convex->getPosition().y);
-	worldQueue[worldSize].blendMode = sf::BlendNone;
+	worldQueue[worldSize].blendMode = sf::BlendAlpha;
 	worldSize++;
 }
 
